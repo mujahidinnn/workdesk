@@ -64,10 +64,80 @@
         }
       })();
     </script>
+    <!-- Logo draw loop, shared by the splash and <LogoMark animated>. Paths use
+         pathLength=1; offset ±1.1 (not ±1) so a zero-length dash leaves no round-cap dot. -->
+    <style>
+      .logo-draw-wave,
+      .logo-draw-arrow,
+      .logo-draw-text { animation: 3.2s ease-in-out infinite both; }
+      .logo-draw-wave,
+      .logo-draw-arrow { stroke-dasharray: 1 2; }
+      .logo-draw-wave { animation-name: logo-draw-wave; }
+      .logo-draw-arrow { animation-name: logo-draw-arrow; }
+      .logo-draw-text { animation-name: logo-draw-text; }
+      @keyframes logo-draw-wave {
+        0% { stroke-dashoffset: 1.1; }
+        35%, 75% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: -1.1; }
+      }
+      @keyframes logo-draw-arrow {
+        0%, 27% { stroke-dashoffset: 1.1; }
+        42%, 88% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: -1.1; }
+      }
+      @keyframes logo-draw-text {
+        0%, 42% { opacity: 0; transform: translateY(4px); }
+        50%, 75% { opacity: 1; transform: none; }
+        83%, 100% { opacity: 0; transform: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .logo-draw-wave,
+        .logo-draw-arrow,
+        .logo-draw-text { animation: none; stroke-dasharray: none; }
+      }
+      #splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+        background: hsl(240 5% 97.5%);
+        color: hsl(152 76% 32%);
+      }
+      #splash p {
+        margin: 0;
+        font: 600 14px Inter, system-ui, sans-serif;
+        color: hsl(240 10% 10%);
+      }
+      html.dark #splash {
+        background: hsl(240 6% 4%);
+        color: hsl(152 76% 40%);
+      }
+      html.dark #splash p { color: hsl(240 5% 96%); }
+    </style>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="splash" role="status" aria-label="Loading WorkDesk">
+        <svg viewBox="0 0 40 22.5" height="40" aria-hidden="true">
+          <mask id="splash-ribbon">
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#fff" stroke-width="5.39">
+              <path class="logo-draw-wave" pathLength="1" d="M3.19 3.35C3.54 4.66 4.44 8.66 5.31 11.19C6.18 13.73 7.24 17.18 8.42 18.55C9.59 19.91 11.03 20.26 12.34 19.36C13.64 18.46 15.2 15.6 16.26 13.15C17.32 10.7 17.89 4.66 18.71 4.66C19.53 4.66 20.1 10.7 21.16 13.15C22.22 15.6 23.77 18.46 25.08 19.36C26.39 20.26 27.83 19.69 29 18.55C30.17 17.4 31.02 15.06 32.11 12.5C33.2 9.94 34.97 4.74 35.54 3.19" />
+              <path class="logo-draw-arrow" pathLength="1" d="M27.41 9.77L35.54 3.19L36.81 13.57" stroke-linecap="butt" stroke-linejoin="miter" />
+            </g>
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000" stroke-width="2.29">
+              <path class="logo-draw-wave" pathLength="1" d="M3.19 3.35C3.54 4.66 4.44 8.66 5.31 11.19C6.18 13.73 7.24 17.18 8.42 18.55C9.59 19.91 11.03 20.26 12.34 19.36C13.64 18.46 15.2 15.6 16.26 13.15C17.32 10.7 17.89 4.66 18.71 4.66C19.53 4.66 20.1 10.7 21.16 13.15C22.22 15.6 23.77 18.46 25.08 19.36C26.39 20.26 27.83 19.69 29 18.55C30.17 17.4 31.02 15.06 32.11 12.5C33.2 9.94 34.97 4.74 35.54 3.19" />
+              <path class="logo-draw-arrow" pathLength="1" d="M27.41 9.77L35.54 3.19L36.81 13.57" stroke-linecap="butt" stroke-linejoin="miter" />
+            </g>
+          </mask>
+          <rect width="100%" height="100%" fill="currentColor" mask="url(#splash-ribbon)" />
+        </svg>
+        <p class="logo-draw-text">WorkDesk</p>
+      </div>
+    </div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script type="module" src="/src/main.tsx"></script>
   </body>

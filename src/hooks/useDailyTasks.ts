@@ -80,23 +80,39 @@ export function useDashboardSummary() {
   });
 }
 
+export interface ProjectTaskStats {
+  project_code: string;
+  count: number;
+  avgProgress: number;
+  openProblems: number;
+}
+
 export function useTasksPerProject() {
-  return useQuery<{ project_code: string; count: number }[]>({
+  return useQuery<ProjectTaskStats[]>({
     queryKey: ["tasks-per-project"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("t_daily_tasks")
-        .select(`project:m_projects(project_code)`);
+        .select(`progress_pct, problem_desc, is_resolved, project:m_projects(project_code)`);
       if (error) throw error;
-      const counts: Record<string, number> = {};
+      const stats: Record<string, ProjectTaskStats & { sum: number }> = {};
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (data as any[]).forEach((row: any) => {
         const code = row.project?.project_code || "Unknown";
-        counts[code] = (counts[code] || 0) + 1;
+        const s = (stats[code] ??= {
+          project_code: code,
+          count: 0,
+          avgProgress: 0,
+          openProblems: 0,
+          sum: 0,
+        });
+        s.count++;
+        s.sum += row.progress_pct ?? 0;
+        if (row.problem_desc?.trim() && !row.is_resolved) s.openProblems++;
       });
-      return Object.entries(counts).map(([project_code, count]) => ({
-        project_code,
-        count,
+      return Object.values(stats).map(({ sum, ...s }) => ({
+        ...s,
+        avgProgress: Math.round(sum / s.count),
       }));
     },
   });

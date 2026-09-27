@@ -6,14 +6,19 @@ import { RefreshCw, ShieldAlert, Trash2, Database } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/auth";
 import { useJobTitles } from "@/hooks/useJobTitles";
+import { nationalHolidays } from "@/hooks/useHolidays";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmationModal } from "@/components/ui/DeleteConfirmationModal";
+import { DetailDialog, type DetailField } from "@/components/ui/DetailDialog";
+import { detailRowProps } from "@/components/ui/detail-row";
+import { cn } from "@/lib/utils";
 import {
   ActivityChart,
   type ActivityBucket,
 } from "@/components/superadmin/ActivityChart";
 import {
   MonitorPanels,
+  clickableRow,
   type Monitor,
 } from "@/components/superadmin/MonitorPanels";
 
@@ -43,6 +48,7 @@ export default function SuperadminPage() {
   const { isSuperadmin, isLoading } = useAuth();
   const qc = useQueryClient();
   const [confirm, setConfirm] = useState<"wipe" | "seed" | null>(null);
+  const [detail, setDetail] = useState<{ title: string; fields: DetailField[] } | null>(null);
   const jobTitles = useJobTitles();
 
   const stats = useQuery<Stats>({
@@ -69,7 +75,15 @@ export default function SuperadminPage() {
 
   const run = useMutation({
     mutationFn: async (fn: "superadmin_wipe_all_data" | "superadmin_seed_demo_data") => {
-      const { error } = await supabase.rpc(fn);
+      if (fn === "superadmin_wipe_all_data") {
+        const { error } = await supabase.rpc(fn);
+        if (error) throw error;
+        return;
+      }
+      // Holidays shape attendance and workdays, so the seed needs them up front.
+      const y = new Date().getFullYear();
+      const { rows } = await nationalHolidays([y - 1, y, y + 1]);
+      const { error } = await supabase.rpc(fn, { p_holidays: rows });
       if (error) throw error;
     },
     onSuccess: (_d, fn) => {
@@ -118,7 +132,30 @@ export default function SuperadminPage() {
         <h2 className="text-sm font-medium mb-2">Accounts</h2>
         <div className="rounded-lg border border-border bg-card divide-y divide-border">
           {(stats.data?.accounts ?? []).map((a) => (
-            <div key={a.id} className="flex items-center gap-3 px-3 py-2 text-sm">
+            <div
+              key={a.id}
+              {...detailRowProps(() =>
+                setDetail({
+                  title: "Account",
+                  fields: [
+                    { label: "Name", value: a.full_name },
+                    { label: "Email", value: a.email },
+                    { label: "Job title", value: jobTitles.byUser(a.id) },
+                    { label: "Role", value: a.role },
+                    { label: "Superadmin", value: a.is_superadmin ? "Yes" : "No" },
+                    { label: "Banned", value: a.banned ? "Yes" : "No" },
+                    {
+                      label: "Last sign-in",
+                      value: a.last_sign_in_at
+                        ? new Date(a.last_sign_in_at).toLocaleString()
+                        : "never signed in",
+                    },
+                    { label: "ID", value: <code className="text-xs break-all">{a.id}</code> },
+                  ],
+                }),
+              )}
+              className={cn("flex items-center gap-3 px-3 py-2 text-sm", clickableRow, "rounded-none")}
+            >
               <span className="flex-1 truncate">
                 {a.full_name ?? "-"}{" "}
                 {jobTitles.byUser(a.id) && (
@@ -154,7 +191,21 @@ export default function SuperadminPage() {
         <h2 className="text-sm font-medium mb-2">Recent activity</h2>
         <div className="rounded-lg border border-border bg-card divide-y divide-border">
           {(stats.data?.recent_audit ?? []).map((a) => (
-            <div key={a.id} className="flex gap-3 px-3 py-1.5 text-xs">
+            <div
+              key={a.id}
+              {...detailRowProps(() =>
+                setDetail({
+                  title: "Activity",
+                  fields: [
+                    { label: "Time", value: new Date(a.created_at).toLocaleString() },
+                    { label: "Action", value: a.action },
+                    { label: "Entity", value: a.entity_type },
+                    { label: "Entity ID", value: a.entity_id },
+                  ],
+                }),
+              )}
+              className={cn("flex gap-3 px-3 py-1.5 text-xs", clickableRow, "rounded-none")}
+            >
               <span className="text-muted-foreground w-36 shrink-0">
                 {new Date(a.created_at).toLocaleString()}
               </span>
@@ -184,6 +235,12 @@ export default function SuperadminPage() {
           Reset to default data
         </Button>
       </section>
+
+      <DetailDialog
+        title={detail?.title ?? ""}
+        fields={detail?.fields ?? null}
+        onClose={() => setDetail(null)}
+      />
 
       <DeleteConfirmationModal
         open={confirm !== null}

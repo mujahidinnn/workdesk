@@ -8,13 +8,16 @@ const ARROW = "M27.41 9.77L35.54 3.19L36.81 13.57";
 const BAND = 5.39;
 const HOLE = 2.29;
 
-/** `outline` is the real logo (masked hollow ribbon); `solid` is for favicon sizes where the 2px gap turns to mush. */
+/** `outline` is the real logo (masked hollow ribbon); `solid` is for favicon sizes where the 2px gap turns to mush.
+ *  `animated` keyframes live in index.html so the pre-JS splash shares them. */
 export function LogoMark({
   className,
   variant = "outline",
+  animated = false,
 }: {
   className?: string;
   variant?: "outline" | "solid";
+  animated?: boolean;
 }) {
   const id = useId();
   const stroke = {
@@ -22,6 +25,8 @@ export function LogoMark({
     strokeLinecap: "round",
     strokeLinejoin: "round",
   } as const;
+  const wave = animated ? { pathLength: 1, className: "logo-draw-wave" } : {};
+  const arrow = animated ? { pathLength: 1, className: "logo-draw-arrow" } : {};
 
   return (
     <svg
@@ -33,12 +38,12 @@ export function LogoMark({
         <>
           <mask id={id}>
             <g {...stroke} stroke="#fff" strokeWidth={BAND}>
-              <path d={WAVE} />
-              <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" />
+              <path d={WAVE} {...wave} />
+              <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" {...arrow} />
             </g>
             <g {...stroke} stroke="#000" strokeWidth={HOLE}>
-              <path d={WAVE} />
-              <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" />
+              <path d={WAVE} {...wave} />
+              <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" {...arrow} />
             </g>
           </mask>
           <rect
@@ -50,8 +55,8 @@ export function LogoMark({
         </>
       ) : (
         <g {...stroke} stroke="currentColor" strokeWidth={BAND}>
-          <path d={WAVE} />
-          <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" />
+          <path d={WAVE} {...wave} />
+          <path d={ARROW} strokeLinecap="butt" strokeLinejoin="miter" {...arrow} />
         </g>
       )}
     </svg>

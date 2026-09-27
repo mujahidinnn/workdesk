@@ -88,7 +88,7 @@ export function Sidebar() {
                           >
                             {item.label}
                           </p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5 leading-none truncate">
+                          <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight truncate">
                             {item.description}
                           </p>
                         </div>

@@ -25,6 +25,8 @@ export interface Project {
   member_user_ids?: string[];
 }
 
+export const CLOSED_PROJECT_STATUSES = ["Done", "Cancel"];
+
 export type EmploymentType = "Permanent" | "Contract" | "Probation" | "Intern";
 
 export interface Employee {

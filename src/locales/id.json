@@ -57,6 +57,20 @@
     "signOut": "Keluar"
   },
   "dashboard": {
+    "upcoming": {
+      "deadlines": "Deadline proyek",
+      "leave": "Cuti mendatang · 14 hari",
+      "holidays": "Libur mendatang",
+      "noDeadlines": "Tidak ada deadline 30 hari ke depan",
+      "noLeave": "Tidak ada yang cuti dalam waktu dekat",
+      "noHolidays": "Tidak ada libur mendatang",
+      "today": "Hari ini",
+      "inDays_one": "{{count}} hari lagi",
+      "inDays_other": "{{count}} hari lagi",
+      "overdue_one": "telat {{count}} hari",
+      "overdue_other": "telat {{count}} hari",
+      "viewAll": "Lihat semua"
+    },
     "hris": {
       "presentToday": "Hadir hari ini",
       "ofHeadcount": "dari karyawan aktif",
@@ -191,6 +205,19 @@
     "deleteComment": "Hapus komentar"
   },
   "timeline": {
+    "activeOnly": "Hanya aktif",
+    "late_one": "telat {{count}}h",
+    "late_other": "telat {{count}}h",
+    "lateLegend": "Lewat deadline",
+    "detail": {
+      "deadline": "Deadline",
+      "daysLeft_one": "{{count}} hari lagi",
+      "daysLeft_other": "{{count}} hari lagi",
+      "members": "Anggota",
+      "tasks": "Tugas tercatat",
+      "progress": "Rata-rata progres",
+      "openProblems": "Masalah terbuka"
+    },
     "title": "Linimasa Proyek",
     "subtitle": "Tampilan Gantt semua proyek · {{count}} aktif",
     "monthly": "Bulanan",

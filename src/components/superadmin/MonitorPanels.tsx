@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { DetailDialog, type DetailField } from "@/components/ui/DetailDialog";
+import { detailRowProps } from "@/components/ui/detail-row";
 import { useJobTitles } from "@/hooks/useJobTitles";
 
 export interface Monitor {
@@ -48,6 +50,9 @@ export interface Monitor {
   active_now: { name: string | null; last_at: string }[];
 }
 
+export const clickableRow =
+  "cursor-pointer rounded hover:bg-secondary/40 outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50";
+
 const when = (iso: string) => new Date(iso).toLocaleString();
 const daysAgo = (iso: string) =>
   Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
@@ -94,9 +99,20 @@ function Panel({
   );
 }
 
-function Row({ left, right }: { left: ReactNode; right?: ReactNode }) {
+function Row({
+  left,
+  right,
+  onOpen,
+}: {
+  left: ReactNode;
+  right?: ReactNode;
+  onOpen?: () => void;
+}) {
   return (
-    <div className="flex items-center gap-3 py-1.5">
+    <div
+      {...(onOpen && detailRowProps(onOpen))}
+      className={cn("flex items-center gap-3 py-1.5 px-1", onOpen && clickableRow)}
+    >
       <span className="flex-1 truncate">{left}</span>
       {right !== undefined && (
         <span className="text-muted-foreground shrink-0 tabular-nums">{right}</span>
@@ -109,9 +125,20 @@ const Empty = ({ text = "Nothing here" }: { text?: string }) => (
   <p className="py-1.5 text-muted-foreground">{text}</p>
 );
 
-function Names({ label, names }: { label: string; names: string[] }) {
+function Names({
+  label,
+  names,
+  onOpen,
+}: {
+  label: string;
+  names: string[];
+  onOpen: () => void;
+}) {
   return (
-    <div className="py-1.5">
+    <div
+      {...(names.length > 0 && detailRowProps(onOpen))}
+      className={cn("py-1.5 px-1", names.length > 0 && clickableRow)}
+    >
       <p className="text-muted-foreground mb-0.5">
         {label} · <span className="tabular-nums">{names.length}</span>
       </p>
@@ -144,6 +171,8 @@ function Ranking({ items }: { items: { name: string; n: number }[] }) {
 
 export function MonitorPanels({ m }: { m: Monitor }) {
   const jobTitles = useJobTitles();
+  const [detail, setDetail] = useState<{ title: string; fields: DetailField[] } | null>(null);
+  const open = (title: string, fields: DetailField[]) => () => setDetail({ title, fields });
   const o = m.orphans;
   const orphanCount =
     o.accounts_without_employee.length +
@@ -154,11 +183,20 @@ export function MonitorPanels({ m }: { m: Monitor }) {
     <div className="space-y-6">
       <section>
         <h2 className="text-sm font-medium mb-2">Security</h2>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <Panel title="Failed sign-ins · 7 days" count={m.failed_logins.length}>
             {m.failed_logins.length ? (
               m.failed_logins.map((f, i) => (
-                <Row key={i} left={f.email ?? "-"} right={when(f.created_at)} />
+                <Row
+                  key={i}
+                  left={f.email ?? "-"}
+                  right={when(f.created_at)}
+                  onOpen={open("Failed sign-in", [
+                    { label: "Email", value: f.email },
+                    { label: "Time", value: when(f.created_at) },
+                    { label: "Message", value: f.message, block: true },
+                  ])}
+                />
               ))
             ) : (
               <Empty />
@@ -179,6 +217,15 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                       ? `${daysAgo(a.last_sign_in_at)} days ago`
                       : "never signed in"
                   }
+                  onOpen={open("Inactive account", [
+                    { label: "Name", value: a.full_name },
+                    { label: "Email", value: a.email },
+                    { label: "Job title", value: jobTitles.byUser(a.id) },
+                    {
+                      label: "Last sign-in",
+                      value: a.last_sign_in_at ? when(a.last_sign_in_at) : "never signed in",
+                    },
+                  ])}
                 />
               ))
             ) : (
@@ -192,6 +239,13 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                   key={i}
                   left={`${a.actor ?? "system"}: ${a.action} ${a.entity_type} ${a.entity_id}`}
                   right={when(a.created_at)}
+                  onOpen={open("Access change", [
+                    { label: "Actor", value: a.actor ?? "system" },
+                    { label: "Action", value: a.action },
+                    { label: "Entity", value: a.entity_type },
+                    { label: "Entity ID", value: a.entity_id },
+                    { label: "Time", value: when(a.created_at) },
+                  ])}
                 />
               ))
             ) : (
@@ -203,7 +257,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
 
       <section>
         <h2 className="text-sm font-medium mb-2">Data health</h2>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <Panel title="Errors · 24 hours" count={m.errors.last_24h}>
             {m.errors.recent.length ? (
               m.errors.recent.map((e, i) => (
@@ -215,6 +269,16 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                     </span>
                   }
                   right={when(e.created_at)}
+                  onOpen={open("Error", [
+                    { label: "Source", value: e.source },
+                    { label: "User", value: e.user_name },
+                    { label: "Time", value: when(e.created_at) },
+                    {
+                      label: "Message",
+                      value: <pre className="whitespace-pre-wrap break-words text-xs">{e.message}</pre>,
+                      block: true,
+                    },
+                  ])}
                 />
               ))
             ) : (
@@ -222,14 +286,44 @@ export function MonitorPanels({ m }: { m: Monitor }) {
             )}
           </Panel>
           <Panel title="Unlinked records" count={orphanCount}>
-            <Names label="Accounts without employee" names={o.accounts_without_employee} />
-            <Names label="Active employees without account" names={o.employees_without_account} />
-            <Names label="Projects without members" names={o.projects_without_members} />
+            <Names
+              label="Accounts without employee"
+              names={o.accounts_without_employee}
+              onOpen={open("Accounts without employee", [
+                { label: "Total", value: o.accounts_without_employee.length },
+                { label: "Names", value: o.accounts_without_employee.join(", "), block: true },
+              ])}
+            />
+            <Names
+              label="Active employees without account"
+              names={o.employees_without_account}
+              onOpen={open("Active employees without account", [
+                { label: "Total", value: o.employees_without_account.length },
+                { label: "Names", value: o.employees_without_account.join(", "), block: true },
+              ])}
+            />
+            <Names
+              label="Projects without members"
+              names={o.projects_without_members}
+              onOpen={open("Projects without members", [
+                { label: "Total", value: o.projects_without_members.length },
+                { label: "Names", value: o.projects_without_members.join(", "), block: true },
+              ])}
+            />
           </Panel>
           <Panel title="Storage">
             {m.storage.length ? (
               m.storage.map((s) => (
-                <Row key={s.bucket} left={s.bucket} right={`${s.files} files · ${bytes(s.bytes)}`} />
+                <Row
+                  key={s.bucket}
+                  left={s.bucket}
+                  right={`${s.files} files · ${bytes(s.bytes)}`}
+                  onOpen={open("Storage bucket", [
+                    { label: "Bucket", value: s.bucket },
+                    { label: "Files", value: s.files },
+                    { label: "Size", value: bytes(s.bytes) },
+                  ])}
+                />
               ))
             ) : (
               <Empty text="No files uploaded" />
@@ -240,7 +334,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
 
       <section>
         <h2 className="text-sm font-medium mb-2">HR operations</h2>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <Panel
             title={`Not checked in · ${m.attendance_today.date}`}
             count={m.attendance_today.missing.length}
@@ -259,6 +353,13 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                   key={i}
                   left={`${a.full_name ?? "-"} · ${a.kind} ${a.type}`}
                   right={`${daysAgo(a.created_at)} days`}
+                  onOpen={open("Pending approval", [
+                    { label: "Name", value: a.full_name },
+                    { label: "Kind", value: a.kind },
+                    { label: "Type", value: a.type },
+                    { label: "Submitted", value: when(a.created_at) },
+                    { label: "Waiting", value: `${daysAgo(a.created_at)} days` },
+                  ])}
                 />
               ))
             ) : (
@@ -279,6 +380,11 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                       {r.status}
                     </span>
                   }
+                  onOpen={open("Payroll run", [
+                    { label: "Period", value: r.period.slice(0, 7) },
+                    { label: "Status", value: r.status },
+                    { label: "Finalized", value: r.finalized_at && when(r.finalized_at) },
+                  ])}
                 />
               ))
             ) : (
@@ -290,7 +396,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
 
       <section>
         <h2 className="text-sm font-medium mb-2">Activity</h2>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <Panel title="Most active users · 30 days">
             <Ranking items={m.top_actors} />
           </Panel>
@@ -309,6 +415,10 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                     </span>
                   }
                   right={new Date(a.last_at).toLocaleTimeString()}
+                  onOpen={open("Active user", [
+                    { label: "Name", value: a.name },
+                    { label: "Last activity", value: when(a.last_at) },
+                  ])}
                 />
               ))
             ) : (
@@ -317,6 +427,12 @@ export function MonitorPanels({ m }: { m: Monitor }) {
           </Panel>
         </div>
       </section>
+
+      <DetailDialog
+        title={detail?.title ?? ""}
+        fields={detail?.fields ?? null}
+        onClose={() => setDetail(null)}
+      />
     </div>
   );
 }

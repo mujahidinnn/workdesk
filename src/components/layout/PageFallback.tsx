@@ -8,7 +8,7 @@ export function PageFallback() {
       aria-label="Loading"
       className="flex h-full min-h-[50vh] items-center justify-center"
     >
-      <LogoMark className="h-10 text-primary animate-pulse" />
+      <LogoMark animated className="h-10 text-primary" />
     </div>
   );
 }

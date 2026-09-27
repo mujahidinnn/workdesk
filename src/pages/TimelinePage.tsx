@@ -1,25 +1,46 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   differenceInDays,
+  differenceInCalendarDays,
   addDays,
   startOfMonth,
   endOfMonth,
+  startOfWeek,
+  endOfWeek,
   eachMonthOfInterval,
+  eachWeekOfInterval,
   format,
+  parseISO,
   isSameMonth,
+  isSameWeek,
 } from "date-fns";
-import { CalendarDays, Minus, Search } from "lucide-react";
+import { AlertTriangle, CalendarDays, Minus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/hooks/useProjects";
+import { useTasksPerProject, type ProjectTaskStats } from "@/hooks/useDailyTasks";
+import { DetailDialog, type DetailField } from "@/components/ui/DetailDialog";
+import { detailRowProps } from "@/components/ui/detail-row";
 import { useDateFnsLocale } from "@/lib/dateLocale";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PROJECT_BADGE_COLORS as codeBadgeColors } from "@/lib/colorPalettes";
-import type { Project } from "@/lib/types";
+import { CLOSED_PROJECT_STATUSES, type Project } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type PriorityFilter = "all" | "High" | "Medium" | "Low";
+
+const WEEK = { weekStartsOn: 1 } as const;
+const LABEL_WIDTH = 256;
+const WEEK_COL_PX = 56;
+
+const isClosed = (p: Project) =>
+  CLOSED_PROJECT_STATUSES.includes(p.work_status?.status_name ?? "");
+
+function daysLate(p: Project) {
+  if (!p.end_date || isClosed(p)) return 0;
+  return Math.max(0, differenceInCalendarDays(new Date(), parseISO(p.end_date)));
+}
 
 const priorityConfig = {
   High: {
@@ -74,11 +95,20 @@ export default function TimelinePage() {
   const { t } = useTranslation();
   const dateFnsLocale = useDateFnsLocale();
   const { data: projects = [], isLoading } = useProjects();
+  const { data: taskStats = [] } = useTasksPerProject();
   const [view, setView] = useState<"month" | "week">("month");
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
+  const [activeOnly, setActiveOnly] = useState(true);
+  const [viewing, setViewing] = useState<Project | null>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
 
-  const hasActiveFilter = !!search || priorityFilter !== "all";
+  const statsByCode = useMemo(
+    () => new Map(taskStats.map((s) => [s.project_code, s])),
+    [taskStats],
+  );
+
+  const hasActiveFilter = !!search || priorityFilter !== "all" || activeOnly;
   const filteredProjects = useMemo(() => {
     const q = search.toLowerCase().trim();
     return projects.filter((p) => {
@@ -88,50 +118,66 @@ export default function TimelinePage() {
         p.project_code.toLowerCase().includes(q);
       const matchPriority =
         priorityFilter === "all" || (p.priority ?? "Low") === priorityFilter;
-      return matchSearch && matchPriority;
+      return matchSearch && matchPriority && (!activeOnly || !isClosed(p));
     });
-  }, [projects, search, priorityFilter]);
+  }, [projects, search, priorityFilter, activeOnly]);
 
   const datedProjects = filteredProjects.filter((p) => p.start_date);
   const undatedProjects = filteredProjects.filter((p) => !p.start_date);
 
-  const { rangeStart, rangeEnd, months, totalDays } = useMemo(() => {
-    if (datedProjects.length === 0) {
-      const now = new Date();
-      const s = startOfMonth(now);
-      const e = endOfMonth(addDays(now, 90));
+  const { rangeStart, rangeEnd, columns, totalDays } = useMemo(() => {
+    let minDate = new Date();
+    let maxDate = addDays(minDate, 90);
+    if (datedProjects.length > 0) {
+      const starts = datedProjects.map((p) => parseISO(p.start_date!).getTime());
+      const ends = datedProjects.map((p) =>
+        parseISO(p.end_date ?? p.start_date!).getTime(),
+      );
+      minDate = new Date(Math.min(...starts));
+      maxDate = new Date(Math.max(...ends));
+    }
+
+    const today = new Date();
+    if (view === "week") {
+      const s = startOfWeek(startOfMonth(minDate), WEEK);
+      const e = endOfWeek(endOfMonth(maxDate), WEEK);
       return {
         rangeStart: s,
         rangeEnd: e,
-        months: eachMonthOfInterval({ start: s, end: e }),
         totalDays: differenceInDays(e, s) + 1,
+        columns: eachWeekOfInterval({ start: s, end: e }, WEEK).map((w) => ({
+          key: w.toISOString(),
+          days: 7,
+          label: format(w, "d MMM", { locale: dateFnsLocale }),
+          current: isSameWeek(w, today, WEEK),
+        })),
       };
     }
-
-    const starts = datedProjects.map((p) => new Date(p.start_date!).getTime());
-    const ends = datedProjects.map((p) =>
-      p.end_date
-        ? new Date(p.end_date).getTime()
-        : new Date(p.start_date!).getTime(),
-    );
-
-    const minDate = new Date(Math.min(...starts));
-    const maxDate = new Date(Math.max(...ends));
 
     const s = startOfMonth(minDate);
     const e = endOfMonth(maxDate);
     return {
       rangeStart: s,
       rangeEnd: e,
-      months: eachMonthOfInterval({ start: s, end: e }),
       totalDays: differenceInDays(e, s) + 1,
+      columns: eachMonthOfInterval({ start: s, end: e }).map((m) => ({
+        key: m.toISOString(),
+        days: differenceInDays(endOfMonth(m), m) + 1,
+        label: format(m, "MMM yyyy", { locale: dateFnsLocale }),
+        current: isSameMonth(m, today),
+      })),
     };
-  }, [datedProjects]);
+  }, [datedProjects, view, dateFnsLocale]);
+
+  const minWidth =
+    view === "week"
+      ? Math.max(800, LABEL_WIDTH + columns.length * WEEK_COL_PX)
+      : 800;
 
   function getBarStyle(project: Project) {
     if (!project.start_date) return null;
-    const start = new Date(project.start_date);
-    const end = project.end_date ? new Date(project.end_date) : start;
+    const start = parseISO(project.start_date);
+    const end = project.end_date ? parseISO(project.end_date) : start;
     const offsetDays = differenceInDays(start, rangeStart);
     const durationDays = Math.max(1, differenceInDays(end, start) + 1);
     const left = (offsetDays / totalDays) * 100;
@@ -144,12 +190,16 @@ export default function TimelinePage() {
 
   function getTodayStyle() {
     const today = new Date();
-    const offset = differenceInDays(today, rangeStart);
+    const offset = differenceInCalendarDays(today, rangeStart);
     if (offset < 0 || offset > totalDays) return null;
     return { left: `${(offset / totalDays) * 100}%` };
   }
 
   const todayStyle = getTodayStyle();
+
+  useEffect(() => {
+    todayRef.current?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [view, isLoading]);
 
   const priorityOrder = { High: 0, Medium: 1, Low: 2 };
   const sortedDatedProjects = [...datedProjects].sort((a, b) => {
@@ -213,9 +263,22 @@ export default function TimelinePage() {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          aria-pressed={activeOnly}
+          onClick={() => setActiveOnly((v) => !v)}
+          className={cn(
+            "px-3 py-1 rounded-lg text-xs font-medium border transition-all whitespace-nowrap",
+            activeOnly
+              ? "bg-primary/10 text-primary border-primary/30"
+              : "bg-segment text-muted-foreground border-border hover:text-foreground",
+          )}
+        >
+          {t("timeline.activeOnly")}
+        </button>
       </div>
 
-      <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
         {(["High", "Medium", "Low"] as const).map((p) => (
           <div key={p} className="flex items-center gap-1.5">
             <span
@@ -224,6 +287,10 @@ export default function TimelinePage() {
             <span>{p}</span>
           </div>
         ))}
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full ring-2 ring-destructive" />
+          <span>{t("timeline.lateLegend")}</span>
+        </div>
         {todayStyle && (
           <div className="flex items-center gap-1.5 ml-4">
             <span className="w-px h-3 bg-primary" />
@@ -246,7 +313,10 @@ export default function TimelinePage() {
           data-tour="timeline-gantt"
           className="flex-1 overflow-auto scrollbar-thin"
         >
-          <div className="min-w-[800px] glass-card rounded-xl overflow-hidden">
+          <div
+            className="glass-card rounded-xl overflow-hidden"
+            style={{ minWidth }}
+          >
             <div className="flex border-b border-border">
               <div className="w-36 sm:w-64 flex-shrink-0 px-3 sm:px-4 py-2.5 border-r border-border">
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -254,36 +324,25 @@ export default function TimelinePage() {
                 </span>
               </div>
               <div className="flex-1 relative flex">
-                {months.map((month) => {
-                  const daysInMonth =
-                    differenceInDays(endOfMonth(month), startOfMonth(month)) +
-                    1;
-                  const widthPct = (daysInMonth / totalDays) * 100;
-                  const isCurrentMonth = isSameMonth(month, new Date());
-                  return (
-                    <div
-                      key={month.toISOString()}
-                      style={{ width: `${widthPct}%` }}
+                {columns.map((col) => (
+                  <div
+                    key={col.key}
+                    style={{ width: `${(col.days / totalDays) * 100}%` }}
+                    className={cn(
+                      "border-r border-border/60 px-2 py-2.5 flex-shrink-0",
+                      col.current && "bg-primary/5",
+                    )}
+                  >
+                    <span
                       className={cn(
-                        "border-r border-border/60 px-2 py-2.5 flex-shrink-0",
-                        isCurrentMonth && "bg-primary/5",
+                        "text-[11px] font-semibold whitespace-nowrap",
+                        col.current ? "text-primary" : "text-muted-foreground",
                       )}
                     >
-                      <span
-                        className={cn(
-                          "text-[11px] font-semibold whitespace-nowrap",
-                          isCurrentMonth
-                            ? "text-primary"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {format(month, view === "month" ? "MMM yyyy" : "MMM", {
-                          locale: dateFnsLocale,
-                        })}
-                      </span>
-                    </div>
-                  );
-                })}
+                      {col.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -308,10 +367,14 @@ export default function TimelinePage() {
                 const duration =
                   project.start_date && project.end_date
                     ? differenceInDays(
-                        new Date(project.end_date),
-                        new Date(project.start_date),
+                        parseISO(project.end_date),
+                        parseISO(project.start_date),
                       ) + 1
                     : null;
+                const stats = statsByCode.get(project.project_code);
+                const progress = stats?.avgProgress ?? 0;
+                const late = daysLate(project);
+                const closed = isClosed(project);
 
                 return (
                   <motion.div
@@ -319,7 +382,8 @@ export default function TimelinePage() {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.04 }}
-                    className="flex border-b border-border/40 group hover:bg-secondary/20 transition-colors"
+                    {...detailRowProps(() => setViewing(project))}
+                    className="flex border-b border-border/40 group hover:bg-secondary/20 transition-colors cursor-pointer outline-none focus-visible:bg-secondary/40 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50"
                   >
                     <div className="w-36 sm:w-64 flex-shrink-0 px-3 sm:px-4 py-3 border-r border-border/40 flex flex-col justify-center gap-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -352,39 +416,37 @@ export default function TimelinePage() {
                       <p className="text-xs font-medium text-foreground truncate leading-tight">
                         {project.project_name}
                       </p>
-                      {duration && (
-                        <p className="text-[10px] text-muted-foreground">
-                          {t("timeline.daysShort", { count: duration })}
-                        </p>
-                      )}
+                      <p className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                        {duration && t("timeline.daysShort", { count: duration })}
+                        {project.work_status && (
+                          <span className="truncate">· {project.work_status.status_name}</span>
+                        )}
+                        {late > 0 && (
+                          <span className="flex items-center gap-0.5 font-semibold text-destructive shrink-0">
+                            <AlertTriangle className="w-3 h-3" />
+                            {t("timeline.late", { count: late })}
+                          </span>
+                        )}
+                      </p>
                     </div>
 
                     <div className="flex-1 relative py-3 px-1">
                       <div className="absolute inset-0 flex pointer-events-none">
-                        {months.map((month) => {
-                          const daysInMonth =
-                            differenceInDays(
-                              endOfMonth(month),
-                              startOfMonth(month),
-                            ) + 1;
-                          return (
-                            <div
-                              key={month.toISOString()}
-                              style={{
-                                width: `${(daysInMonth / totalDays) * 100}%`,
-                              }}
-                              className={cn(
-                                "border-r border-border/30 flex-shrink-0",
-                                isSameMonth(month, new Date()) &&
-                                  "bg-primary/3",
-                              )}
-                            />
-                          );
-                        })}
+                        {columns.map((col) => (
+                          <div
+                            key={col.key}
+                            style={{ width: `${(col.days / totalDays) * 100}%` }}
+                            className={cn(
+                              "border-r border-border/30 flex-shrink-0",
+                              col.current && "bg-primary/3",
+                            )}
+                          />
+                        ))}
                       </div>
 
                       {todayStyle && (
                         <div
+                          ref={idx === 0 ? todayRef : undefined}
                           className="absolute top-0 bottom-0 w-px bg-primary/60 z-10 pointer-events-none"
                           style={todayStyle}
                         />
@@ -392,16 +454,25 @@ export default function TimelinePage() {
 
                       {barStyle && (
                         <div
-                          className="absolute top-1/2 -translate-y-1/2 h-7 rounded-full flex items-center px-2.5 z-20 overflow-hidden cursor-default group/bar"
+                          className={cn(
+                            "absolute top-1/2 -translate-y-1/2 h-7 rounded-full flex items-center px-2.5 z-20 overflow-hidden group/bar",
+                            late > 0 && "ring-2 ring-destructive ring-offset-1 ring-offset-card",
+                            closed && "opacity-50 saturate-50",
+                          )}
                           style={{
                             ...barStyle,
                             backgroundImage: pConfig.gradient,
                           }}
-                          title={`${project.project_name} · ${project.start_date} → ${project.end_date ?? "-"}`}
+                          title={`${project.project_name} · ${project.start_date} → ${project.end_date ?? "-"} · ${progress}%`}
                         >
+                          <div
+                            className="absolute inset-y-0 right-0 bg-black/30"
+                            style={{ width: `${100 - progress}%` }}
+                          />
                           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover/bar:opacity-100 transition-opacity" />
                           <p className="text-[10px] text-white font-semibold truncate relative z-10 drop-shadow">
                             {project.project_name}
+                            {stats && ` · ${progress}%`}
                           </p>
                         </div>
                       )}
@@ -446,6 +517,20 @@ export default function TimelinePage() {
         </div>
       )}
 
+      <DetailDialog
+        title={viewing?.project_name ?? ""}
+        fields={
+          viewing &&
+          projectDetailFields(
+            viewing,
+            statsByCode.get(viewing.project_code),
+            t,
+            (d) => format(parseISO(d), "dd MMM yyyy", { locale: dateFnsLocale }),
+          )
+        }
+        onClose={() => setViewing(null)}
+      />
+
       {!isLoading && (
         <div className="text-[11px] text-muted-foreground flex items-center gap-2">
           <CalendarDays className="w-3.5 h-3.5" />
@@ -462,4 +547,42 @@ export default function TimelinePage() {
       )}
     </div>
   );
+}
+
+function projectDetailFields(
+  p: Project,
+  stats: ProjectTaskStats | undefined,
+  t: (k: string, o?: Record<string, unknown>) => string,
+  fmt: (d: string) => string,
+): DetailField[] {
+  const late = daysLate(p);
+  const left =
+    p.end_date && !isClosed(p)
+      ? differenceInCalendarDays(parseISO(p.end_date), new Date())
+      : null;
+  return [
+    { label: t("master.projects.columns.code"), value: p.project_code },
+    { label: t("master.projects.columns.client"), value: p.client },
+    { label: t("master.projects.columns.pic"), value: [p.pic_name, p.pic_contact].filter(Boolean).join(" · ") },
+    { label: t("master.projects.columns.priority"), value: p.priority },
+    { label: t("master.projects.columns.status"), value: p.work_status?.status_name },
+    { label: t("master.projects.columns.type"), value: p.project_types?.map((x) => x.type_name).join(", ") },
+    {
+      label: t("master.projects.columns.period"),
+      value: p.start_date && `${fmt(p.start_date)} → ${p.end_date ? fmt(p.end_date) : "-"}`,
+    },
+    {
+      label: t("timeline.detail.deadline"),
+      value:
+        late > 0 ? (
+          <span className="font-semibold text-destructive">{t("timeline.late", { count: late })}</span>
+        ) : left !== null ? (
+          t("timeline.detail.daysLeft", { count: left })
+        ) : null,
+    },
+    { label: t("timeline.detail.members"), value: p.member_user_ids?.length || null },
+    { label: t("timeline.detail.tasks"), value: stats?.count },
+    { label: t("timeline.detail.progress"), value: stats && `${stats.avgProgress}%` },
+    { label: t("timeline.detail.openProblems"), value: stats?.openProblems || null },
+  ];
 }

@@ -1354,7 +1354,7 @@ export type Database = {
         Returns: Json;
       };
       superadmin_seed_demo_data: {
-        Args: never;
+        Args: { p_holidays?: Json };
         Returns: Json;
       };
       get_users_with_email: {

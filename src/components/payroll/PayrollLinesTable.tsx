@@ -4,6 +4,14 @@ import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { DetailDialog, type DetailField } from "@/components/ui/DetailDialog";
 import { detailRowProps } from "@/components/ui/detail-row";
@@ -43,7 +51,7 @@ export function PayrollLinesTable({
   companyName,
 }: Props) {
   const { t } = useTranslation();
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editing, setEditing] = useState<PayrollLineWithName | null>(null);
   const [draft, setDraft] = useState({
     pph21: "",
     bpjs: "",
@@ -53,7 +61,7 @@ export function PayrollLinesTable({
   const [viewing, setViewing] = useState<PayrollLineWithName | null>(null);
 
   function startEdit(line: PayrollLineWithName) {
-    setEditingId(line.id);
+    setEditing(line);
     setDraft({
       pph21: String(line.pph21 || ""),
       bpjs: String(line.bpjs || ""),
@@ -70,8 +78,13 @@ export function PayrollLinesTable({
       other_deduction: Number(draft.other_deduction) || 0,
       deduction_note: draft.deduction_note.trim() || null,
     });
-    setEditingId(null);
+    setEditing(null);
   }
+
+  const draftTotal =
+    (Number(draft.pph21) || 0) +
+    (Number(draft.bpjs) || 0) +
+    (Number(draft.other_deduction) || 0);
 
   if (!lines.length) {
     return <EmptyState icon={Wallet} title={t("payroll.empty")} />;
@@ -114,7 +127,6 @@ export function PayrollLinesTable({
           {lines.map((line) => {
             const deductionTotal =
               line.pph21 + line.bpjs + line.other_deduction;
-            const isEditing = editingId === line.id;
             return (
               <tr
                 key={line.id}
@@ -151,85 +163,22 @@ export function PayrollLinesTable({
                   className="px-3 py-2.5 text-right"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {isEditing ? (
-                    <div className="flex flex-col gap-1 items-end">
-                      {(
-                        [
-                          ["pph21", t("payroll.deductions.pph21")],
-                          ["bpjs", t("payroll.deductions.bpjs")],
-                          ["other_deduction", t("payroll.deductions.other")],
-                        ] as const
-                      ).map(([key, label]) => (
-                        <label
-                          key={key}
-                          className="flex items-center gap-2 justify-end"
-                        >
-                          <span className="text-[10px] text-muted-foreground">
-                            {label}
-                          </span>
-                          <Input
-                            type="number"
-                            min={0}
-                            value={draft[key]}
-                            onChange={(e) =>
-                              setDraft((d) => ({ ...d, [key]: e.target.value }))
-                            }
-                            className="h-7 w-28 text-right tabular-nums"
-                          />
-                        </label>
-                      ))}
-                      <Input
-                        value={draft.deduction_note}
-                        placeholder={t("payroll.deductions.note")}
-                        onChange={(e) =>
-                          setDraft((d) => ({
-                            ...d,
-                            deduction_note: e.target.value,
-                          }))
-                        }
-                        className="h-7 w-44 mt-1"
-                      />
-                      <div className="flex gap-1 mt-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 px-2 text-[11px]"
-                          onClick={() => setEditingId(null)}
-                        >
-                          {t("common.cancel")}
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="h-6 px-2 text-[11px]"
-                          disabled={isSaving}
-                          onClick={() => save(line)}
-                        >
-                          {isSaving ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          ) : (
-                            t("common.save")
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={!isDraft || !canManage}
-                      onClick={() => startEdit(line)}
-                      className={cn(
-                        "tabular-nums",
-                        deductionTotal
-                          ? "text-amber-700 dark:text-amber-500"
-                          : "text-muted-foreground/60",
-                        isDraft &&
-                          canManage &&
-                          "hover:text-foreground cursor-pointer underline-offset-2 hover:underline",
-                      )}
-                    >
-                      {deductionTotal ? `- ${money(deductionTotal)}` : "-"}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    disabled={!isDraft || !canManage}
+                    onClick={() => startEdit(line)}
+                    className={cn(
+                      "tabular-nums",
+                      deductionTotal
+                        ? "text-amber-700 dark:text-amber-500"
+                        : "text-muted-foreground/60",
+                      isDraft &&
+                        canManage &&
+                        "hover:text-foreground cursor-pointer underline-offset-2 hover:underline",
+                    )}
+                  >
+                    {deductionTotal ? `- ${money(deductionTotal)}` : "-"}
+                  </button>
                 </td>
                 <td className="px-3 py-2.5 text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-500">
                   {money(line.net)}
@@ -278,6 +227,80 @@ export function PayrollLinesTable({
         </tbody>
       </table>
     </div>
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t("payroll.table.deductions")}</DialogTitle>
+            <DialogDescription>{editing?.name}</DialogDescription>
+          </DialogHeader>
+          <form
+            className="space-y-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (editing) save(editing);
+            }}
+          >
+            {(
+              [
+                ["pph21", t("payroll.deductions.pph21")],
+                ["bpjs", t("payroll.deductions.bpjs")],
+                ["other_deduction", t("payroll.deductions.other")],
+              ] as const
+            ).map(([key, label]) => (
+              <label key={key} className="grid gap-1.5 text-xs font-medium">
+                {label}
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  placeholder="0"
+                  value={draft[key]}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, [key]: e.target.value }))
+                  }
+                  className="text-right tabular-nums"
+                />
+              </label>
+            ))}
+            <label className="grid gap-1.5 text-xs font-medium">
+              {t("payroll.deductions.note")}
+              <Input
+                value={draft.deduction_note}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, deduction_note: e.target.value }))
+                }
+              />
+            </label>
+            {editing && (
+              <dl className="rounded-lg bg-secondary/40 px-3 py-2 text-xs space-y-1 tabular-nums">
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">{t("payroll.table.gross")}</dt>
+                  <dd>{money(editing.gross)}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">{t("payroll.table.deductions")}</dt>
+                  <dd className="text-amber-700 dark:text-amber-500">- {money(draftTotal)}</dd>
+                </div>
+                <div className="flex justify-between font-semibold">
+                  <dt>{t("payroll.table.net")}</dt>
+                  <dd className="text-emerald-600 dark:text-emerald-500">
+                    {money(editing.gross - draftTotal)}
+                  </dd>
+                </div>
+              </dl>
+            )}
+            <DialogFooter className="gap-2">
+              <Button type="button" variant="ghost" onClick={() => setEditing(null)}>
+                {t("common.cancel")}
+              </Button>
+              <Button type="submit" disabled={isSaving}>
+                {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                {t("common.save")}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
       <DetailDialog
         title={t("common.detail")}
         fields={viewing && detailFields(viewing, t)}

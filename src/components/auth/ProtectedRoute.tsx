@@ -1,20 +1,17 @@
 import { ReactNode } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { motion } from "framer-motion";
 import { LogoMark } from "@/components/brand/Logo";
 import { useAuth } from "@/context/auth";
 
 function LoadingScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <motion.div
-        animate={{ opacity: [0.4, 1, 0.4] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-        className="flex flex-col items-center gap-3"
-      >
-        <LogoMark className="h-8 w-auto text-primary" />
-        <p className="text-xs text-muted-foreground">Loading WorkDesk…</p>
-      </motion.div>
+      <div role="status" aria-label="Loading WorkDesk" className="flex flex-col items-center gap-3">
+        <LogoMark animated className="h-10 w-auto text-primary" />
+        <p className="logo-draw-text text-sm font-semibold text-foreground">
+          WorkDesk
+        </p>
+      </div>
     </div>
   );
 }

@@ -57,6 +57,20 @@
     "signOut": "Sign out"
   },
   "dashboard": {
+    "upcoming": {
+      "deadlines": "Project deadlines",
+      "leave": "Upcoming leave · 14 days",
+      "holidays": "Upcoming holidays",
+      "noDeadlines": "No deadlines in the next 30 days",
+      "noLeave": "Nobody is away soon",
+      "noHolidays": "No upcoming holidays",
+      "today": "Today",
+      "inDays_one": "in {{count}} day",
+      "inDays_other": "in {{count}} days",
+      "overdue_one": "{{count}} day late",
+      "overdue_other": "{{count}} days late",
+      "viewAll": "View all"
+    },
     "hris": {
       "presentToday": "Present today",
       "ofHeadcount": "of active employees",
@@ -191,6 +205,19 @@
     "deleteComment": "Delete comment"
   },
   "timeline": {
+    "activeOnly": "Active only",
+    "late_one": "{{count}}d late",
+    "late_other": "{{count}}d late",
+    "lateLegend": "Past deadline",
+    "detail": {
+      "deadline": "Deadline",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left",
+      "members": "Members",
+      "tasks": "Tasks logged",
+      "progress": "Avg progress",
+      "openProblems": "Open problems"
+    },
     "title": "Project Timeline",
     "subtitle": "Gantt view of all projects · {{count}} active",
     "monthly": "Monthly",

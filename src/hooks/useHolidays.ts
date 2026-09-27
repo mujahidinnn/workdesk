@@ -72,36 +72,48 @@ const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
 /** Marks computed rows as provisional until the official list replaces them. */
 const ESTIMATE_SUFFIX = " (perkiraan)";
 
+type HolidayRow = { date: string; name: string; is_national: boolean };
+
 /** The official dataset only reaches about a year ahead; later years are
  *  estimated and saved with ESTIMATE_SUFFIX. */
+export async function nationalHolidays(years: number[]) {
+  let all: HolidaysJson = {};
+  try {
+    const res = await fetch(HOLIDAYS_SOURCE_URL);
+    if (res.ok) all = (await res.json()) as HolidaysJson;
+  } catch {
+    // Offline or source down: the estimate below still works.
+  }
+
+  const rows: HolidayRow[] = [];
+  const estimatedYears: number[] = [];
+  for (const year of years) {
+    const prefix = `${year}-`;
+    let yearRows: HolidayRow[] = Object.entries(all)
+      .filter(([date]) => DATE_KEY.test(date) && date.startsWith(prefix))
+      .map(([date, { summary }]) => ({ date, name: summary, is_national: true }));
+    if (yearRows.length === 0) {
+      estimatedYears.push(year);
+      yearRows = estimateHolidays(year).map((h) => ({
+        date: h.date,
+        name: h.name + ESTIMATE_SUFFIX,
+        is_national: true,
+      }));
+      // Two holidays can fall on one day; the table keeps one row per date.
+      yearRows = yearRows.filter((r, i) => yearRows.findIndex((x) => x.date === r.date) === i);
+    }
+    rows.push(...yearRows);
+  }
+  return { rows, estimatedYears };
+}
+
 export function useSyncNationalHolidays() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (year: number) => {
-      const prefix = `${year}-`;
-      let rows: { date: string; name: string; is_national: boolean }[] = [];
-      try {
-        const res = await fetch(HOLIDAYS_SOURCE_URL);
-        if (res.ok) {
-          const all = (await res.json()) as HolidaysJson;
-          rows = Object.entries(all)
-            .filter(([date]) => DATE_KEY.test(date) && date.startsWith(prefix))
-            .map(([date, { summary }]) => ({ date, name: summary, is_national: true }));
-        }
-      } catch {
-        // Offline or source down: the estimate below still works.
-      }
-
-      const estimated = rows.length === 0;
-      if (estimated) {
-        rows = estimateHolidays(year).map((h) => ({
-          date: h.date,
-          name: h.name + ESTIMATE_SUFFIX,
-          is_national: true,
-        }));
-        // Two holidays can fall on one day; the table keeps one row per date.
-        rows = rows.filter((r, i) => rows.findIndex((x) => x.date === r.date) === i);
-      } else {
+      const { rows, estimatedYears } = await nationalHolidays([year]);
+      const estimated = estimatedYears.length > 0;
+      if (!estimated) {
         // Official list replaces any estimate, including one that landed a day off.
         const { error } = await supabase
           .from("m_holidays")

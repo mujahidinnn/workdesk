@@ -15,6 +15,7 @@ import { ProductivityGauge } from "@/components/dashboard/ProductivityGauge";
 import { TasksPerProjectChart } from "@/components/dashboard/TasksPerProjectChart";
 import { RecentProblemsCard } from "@/components/dashboard/RecentProblemsCard";
 import { WorkloadHeatmap } from "@/components/dashboard/WorkloadHeatmap";
+import { UpcomingCards } from "@/components/dashboard/UpcomingCards";
 import {
   useDashboardSummary,
   useTasksPerProject,
@@ -157,6 +158,8 @@ export default function DashboardPage() {
           <WorkloadHeatmap />
         </div>
       </div>
+
+      <UpcomingCards />
     </div>
   );
 }

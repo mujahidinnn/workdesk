@@ -120,7 +120,7 @@ export function MessageBubble({
     <div
       id={`chat-msg-${message.id}`}
       className={cn(
-        "group flex gap-2.5 px-1 py-1.5 hover:bg-secondary/40 rounded-lg -mx-1 scroll-mt-4",
+        "group relative flex gap-2.5 px-1 py-1.5 hover:bg-secondary/40 rounded-lg -mx-1 scroll-mt-4",
         isOwn && "flex-row-reverse text-right",
       )}
     >
@@ -351,7 +351,13 @@ export function MessageBubble({
         )}
       </div>
 
-      <div className="flex items-center gap-0.5 flex-shrink-0 self-start opacity-0 group-hover:opacity-100 transition-opacity">
+      <div
+        className={cn(
+          "flex items-center gap-0.5 flex-shrink-0 self-start opacity-0 group-hover:opacity-100 transition-opacity",
+          "absolute -top-2 z-10 rounded-md border bg-background shadow-sm sm:static sm:border-0 sm:bg-transparent sm:shadow-none",
+          isOwn ? "left-1" : "right-1",
+        )}
+      >
         <EmojiPicker
           align="center"
           tooltip={t("chat.react")}
