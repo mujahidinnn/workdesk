@@ -1,0 +1,63 @@
+<!--
+  Dashboard > Authentication > Emails > Reauthentication.
+
+  Unused today: ProfileSettingsPage re-authenticates with signInWithPassword,
+  not an emailed code. No ConfirmationURL is available here - a code is the
+  whole point, there is nothing to click.
+
+  Subject: Kode verifikasi WorkDesk
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #f4f5f7; font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6;">
+  <tr>
+    <td align="center" style="padding: 32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px;">
+        <tr>
+          <td align="center" style="padding: 0 0 24px; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #111827;">
+            Work<span style="color: #059669;">Desk</span>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px; background: #ffffff; border: 1px solid #e5e7eb; border-top: 4px solid #059669; color: #1f2937;">
+          <tr>
+            <td align="center" style="padding: 40px 40px 16px;">
+              <img src="https://workdesk.mujahidin.my.id/email/reauthentication.png" width="320" alt="" style="display: block; width: 100%; max-width: 320px; height: auto; border: 0;" />
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 16px 40px 0; font-size: 26px; font-weight: 600; color: #111827;">Halo,</td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 4px 40px 24px; font-size: 16px; font-weight: 600; color: #9ca3af;">Kode Verifikasi Anda</td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 0 40px 16px; font-size: 15px; color: #4b5563;">
+              Masukkan kode berikut untuk melanjutkan tindakan yang Anda minta di WorkDesk:
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 8px 40px 24px;">
+              <span style="display: inline-block; background: #ecfdf5; border: 1px dashed #059669; border-radius: 12px; padding: 14px 28px; font-size: 30px; font-weight: 700; letter-spacing: 6px; color: #059669;">{{ .Token }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 0 40px 24px; font-size: 12px; color: #9ca3af;">
+              Kode ini berlaku singkat dan hanya bisa dipakai sekali. Jangan berikan kode ini kepada siapa pun, termasuk yang mengaku admin WorkDesk.
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 8px 40px 40px; font-family: 'Brush Script MT', 'Segoe Script', cursive; font-size: 24px; color: #374151;">
+              Tim WorkDesk
+            </td>
+          </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px;">
+        <tr>
+          <td align="center" style="padding: 24px 24px 0; font-size: 12px; color: #9ca3af;">
+            Email ini dikirim otomatis oleh WorkDesk, aplikasi pelaporan harian dan HRIS
+            internal. Mohon tidak membalas email ini.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

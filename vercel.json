@@ -1,0 +1,49 @@
+{
+  "rewrites": [
+    {
+      "source": "/supabase-api/:path*",
+      "destination": "https://qihokegrcowojjllvfdw.supabase.co/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/keep-alive",
+      "schedule": "0 0 */3 * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'sha256-/iU2uGmpEOWomoexckOdBiCXb6vohPQ9Qnv/hmn31HE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https://qihokegrcowojjllvfdw.supabase.co; connect-src 'self' https://qihokegrcowojjllvfdw.supabase.co wss://qihokegrcowojjllvfdw.supabase.co; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        }
+      ]
+    }
+  ]
+}

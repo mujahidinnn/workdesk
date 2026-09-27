@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- maximum-scale stops iOS Safari auto-zooming into sub-16px fields;
+         iOS still allows pinch-zoom regardless. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+    <title>WorkDesk · Daily Reporting & HRIS Master Hub</title>
+    <meta
+      name="description"
+      content="WorkDesk is an internal reporting system: daily task reports, attendance, leave, overtime and business trips, work calendar, team chat and master data, with exports to Excel and PDF."
+    />
+    <link rel="canonical" href="https://workdesk.mujahidin.my.id/" />
+    <meta name="theme-color" content="#0a0a0b" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="WorkDesk" />
+    <meta property="og:url" content="https://workdesk.mujahidin.my.id/" />
+    <meta property="og:title" content="WorkDesk · Daily Reporting & HRIS Master Hub" />
+    <meta
+      property="og:description"
+      content="Daily task reports, attendance, leave, overtime, work calendar and master data for the whole team, in one place."
+    />
+    <meta property="og:image" content="https://workdesk.mujahidin.my.id/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="WorkDesk dashboard and sign-in screen: daily reporting &amp; HRIS, your workday all in one desk" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="id_ID" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WorkDesk · Daily Reporting & HRIS Master Hub" />
+    <meta
+      name="twitter:description"
+      content="Daily task reports, attendance, leave, overtime, work calendar and master data for the whole team, in one place."
+    />
+    <meta name="twitter:image" content="https://workdesk.mujahidin.my.id/og.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- No-flash theme script: apply saved theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (
+            t === "dark" ||
+            (t !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches)
+          ) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

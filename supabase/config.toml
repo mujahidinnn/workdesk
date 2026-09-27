@@ -1,0 +1,20 @@
+project_id = "qihokegrcowojjllvfdw"
+
+# Every function verifies the caller's JWT. seed-admin is the exception: it
+# bootstraps the first Admin before any account exists, so it is guarded by
+# the SEED_ADMIN_SECRET header instead and refuses outright when that secret
+# is not configured.
+[functions.create-user]
+verify_jwt = true
+
+[functions.delete-user]
+verify_jwt = true
+
+[functions.reactivate-user]
+verify_jwt = true
+
+[functions.link-preview]
+verify_jwt = true
+
+[functions.seed-admin]
+verify_jwt = false

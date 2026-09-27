@@ -1,0 +1,1573 @@
+{
+  "app": {
+    "name": "WorkDesk",
+    "tagline": "Produktivitas & Pertumbuhan",
+    "version": "v2.0.0 · 2026",
+    "footer": "Sistem Laporan Harian"
+  },
+  "nav": {
+    "groups": {
+      "navigation": "Navigasi",
+      "tools": "Alat",
+      "configuration": "Konfigurasi",
+      "help": "Bantuan"
+    },
+    "items": {
+      "dashboard": "Dasbor",
+      "dailyReport": "Laporan Harian",
+      "timeline": "Linimasa",
+      "calendar": "Kalender Kerja",
+      "attendance": "Presensi",
+      "leave": "Cuti & Izin",
+      "chat": "Chat",
+      "issueLog": "Log Masalah",
+      "export": "Ekspor",
+      "masterHub": "Master Hub",
+      "superadmin": "Superadmin",
+      "overtime": "Lembur",
+      "payroll": "Penggajian",
+      "guide": "Panduan"
+    },
+    "descriptions": {
+      "dashboard": "Ikhtisar & analitik",
+      "dailyReport": "Pencatatan tugas",
+      "timeline": "Tampilan Gantt proyek",
+      "calendar": "Hari libur & akhir pekan",
+      "attendance": "Absen harian & rekap",
+      "leave": "Pengajuan cuti & saldo",
+      "chat": "Obrolan tim & project",
+      "issueLog": "Pelacak masalah",
+      "export": "Laporan & ekspor data",
+      "masterHub": "Proyek & karyawan",
+      "superadmin": "Kontrol tenant & sistem",
+      "overtime": "Lembur & dinas luar",
+      "payroll": "Proses gaji & slip",
+      "guide": "Apa saja yang bisa dilakukan WorkDesk"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "Cari halaman dan aksi...",
+    "empty": "Tidak ada hasil",
+    "navigateGroup": "Buka",
+    "actionsGroup": "Aksi",
+    "logTask": "Catat tugas baru",
+    "newOvertimeRequest": "Ajukan lembur / dinas baru",
+    "toggleTheme": "Ganti tema terang / gelap",
+    "profileSettings": "Pengaturan profil",
+    "signOut": "Keluar"
+  },
+  "dashboard": {
+    "hris": {
+      "presentToday": "Hadir hari ini",
+      "ofHeadcount": "dari karyawan aktif",
+      "lateToday": "Terlambat hari ini",
+      "pastTolerance": "melewati toleransi",
+      "onLeaveToday": "Tidak masuk hari ini",
+      "leaveSickPermit": "cuti, sakit, atau izin",
+      "pendingApprovals": "Menunggu persetujuan",
+      "overtimeHoursMonth": "{{hours}} jam lembur bulan ini"
+    },
+    "greeting": "Selamat datang, {{name}}",
+    "subtitle": "Berikut ringkasan produktivitas Anda hari ini.",
+    "stats": {
+      "totalTasks": "Total Tugas",
+      "allTime": "Sepanjang waktu",
+      "avgProgress": "Rata-rata Progres",
+      "teamAverage": "Rata-rata tim",
+      "completed": "Selesai",
+      "fullProgress": "Progres 100%",
+      "activeProblems": "Masalah Aktif",
+      "needAttention": "Perlu perhatian"
+    },
+    "problems": {
+      "title": "Masalah Aktif",
+      "subtitle": "Kendala dari laporan harian",
+      "active": "{{count}} Aktif",
+      "allClear": "Semua beres!",
+      "noProblems": "Tidak ada masalah aktif",
+      "viewAll": "Lihat semua di Issue Log"
+    },
+    "workload": {
+      "title": "Beban Kerja Tim",
+      "weekOf": "Minggu {{date}}",
+      "noTasks": "Tidak ada tugas minggu ini",
+      "legend": {
+        "zero": "0",
+        "two": "2",
+        "heavy": "3+ padat"
+      },
+      "taskCount_one": "{{count}} tugas",
+      "taskCount_other": "{{count}} tugas",
+      "noTaskAbsent": "Tidak ada task: {{status}}",
+      "noTaskHoliday": "Tidak ada task: libur ({{name}})",
+      "noTaskDayOff": "Hari libur",
+      "noTaskNoAttendance": "Belum absen dan belum ada task",
+      "noTask": "Hadir, belum ada task yang dicatat"
+    },
+    "openInDailyReport": "Buka di Laporan Harian",
+    "openInIssueLog": "Buka di Log Masalah"
+  },
+  "dailyReport": {
+    "title": "Laporan Harian",
+    "taskLogged_one": "{{count}} tugas tercatat",
+    "taskLogged_other": "{{count}} tugas tercatat",
+    "columns": {
+      "date": "Tanggal",
+      "employee": "Karyawan",
+      "project": "Proyek",
+      "taskDescription": "Deskripsi Tugas",
+      "progress": "Progres",
+      "problem": "Keterangan / Masalah",
+      "actions": "Aksi"
+    },
+    "logTask": "Catat Tugas",
+    "search": "Cari tugas, karyawan, proyek...",
+    "allEmployees": "Semua Karyawan",
+    "allProjects": "Semua Proyek",
+    "noTasksFound": "Tidak ada tugas ditemukan",
+    "addFirstEntry": "Klik Catat Tugas untuk menambah entri pertama",
+    "adjustFilters": "Coba sesuaikan filter Anda",
+    "avgProgress": "Rata-rata progres",
+    "notes": "Keterangan"
+  },
+  "taskForm": {
+    "editTitle": "Edit Tugas",
+    "logTitle": "Catat Tugas Harian",
+    "deleteTitle": "Hapus Tugas",
+    "deleteDesc": "Apakah Anda yakin ingin menghapus tugas ini secara permanen? Tindakan ini tidak dapat dibatalkan.",
+    "deleteBulkTitle": "Hapus Tugas",
+    "deleteBulkDesc_one": "Apakah Anda yakin ingin menghapus {{count}} tugas secara permanen? Tindakan ini tidak dapat dibatalkan.",
+    "deleteBulkDesc_other": "Apakah Anda yakin ingin menghapus {{count}} tugas secara permanen? Tindakan ini tidak dapat dibatalkan.",
+    "selected_one": "{{count}} dipilih",
+    "selected_other": "{{count}} dipilih",
+    "deleteSelected": "Hapus yang dipilih",
+    "fields": {
+      "date": "Tanggal",
+      "progress": "Progres (%)",
+      "employee": "Karyawan",
+      "project": "Proyek",
+      "taskDesc": "Deskripsi Tugas",
+      "problem": "Keterangan / Masalah",
+      "problemOptional": "(opsional)"
+    },
+    "placeholders": {
+      "employee": "Pilih karyawan...",
+      "project": "Pilih proyek...",
+      "taskDesc": "Jelaskan apa yang dikerjakan hari ini...",
+      "problem": "Catatan, kendala, atau hambatan yang ditemui..."
+    },
+    "saving": "Menyimpan...",
+    "update": "Perbarui Tugas",
+    "log": "Catat Tugas",
+    "progressError": "0-100 saja",
+    "required": "Wajib diisi",
+    "attachments": {
+      "title": "Lampiran",
+      "add": "Tambah file",
+      "saveFirst": "Simpan tugas dulu, baru bisa tambah foto atau file.",
+      "uploading": "Mengunggah...",
+      "empty": "Belum ada file",
+      "delete": "Hapus file"
+    }
+  },
+  "issues": {
+    "title": "Log Masalah",
+    "subtitle": "Pelacak masalah terpusat di semua tugas",
+    "allIssues": "Semua Masalah",
+    "open": "Terbuka",
+    "resolved": "Terselesaikan",
+    "search": "Cari masalah, karyawan, proyek...",
+    "noIssuesYet": "Belum ada masalah tercatat",
+    "noMatchingIssues": "Tidak ada masalah yang cocok",
+    "issuesAppearHere": "Masalah muncul di sini ketika tugas memiliki Keterangan/Masalah yang diisi.",
+    "adjustFilters": "Coba sesuaikan filter Anda.",
+    "resolve": "Selesaikan",
+    "reopen": "Buka Kembali",
+    "comments_one": "{{count}} komentar",
+    "comments_other": "{{count}} komentar",
+    "commentPlaceholder": "Tulis komentar...",
+    "noComments": "Belum ada komentar",
+    "send": "Kirim",
+    "deleteComment": "Hapus komentar"
+  },
+  "timeline": {
+    "title": "Linimasa Proyek",
+    "subtitle": "Tampilan Gantt semua proyek · {{count}} aktif",
+    "monthly": "Bulanan",
+    "weekly": "Mingguan",
+    "noDates": "Belum Ada Tanggal ({{count}})",
+    "addDates": "Tambah tanggal di Master Hub",
+    "noProjects": "Tidak ada proyek dengan tanggal. Tambah tanggal di Master Hub.",
+    "noResults": "Tidak ada proyek yang cocok dengan filter",
+    "search": "Cari proyek...",
+    "allPriorities": "Semua",
+    "span": "Rentang linimasa",
+    "today": "Hari Ini",
+    "projectLabel": "Proyek",
+    "daysShort": "{{count}}h",
+    "spanLabel": "Rentang linimasa: {{from}} - {{to}} · {{days}} hari"
+  },
+  "master": {
+    "tabs": {
+      "projects": "Proyek",
+      "employees": "Karyawan",
+      "projectTypes": "Jenis Proyek",
+      "projectStatus": "Status Proyek",
+      "users": "Pengguna",
+      "auditLog": "Log Audit"
+    },
+    "projects": {
+      "title": "Proyek",
+      "subtitle": "Kelola semua data proyek",
+      "newProject": "Proyek Baru",
+      "search": "Cari kode, nama, atau klien...",
+      "columns": {
+        "code": "Kode",
+        "name": "Nama Proyek",
+        "client": "Klien",
+        "status": "Status",
+        "type": "Jenis",
+        "priority": "Prioritas",
+        "pic": "PIC",
+        "period": "Periode"
+      },
+      "empty": "Belum ada proyek",
+      "noResults": "Tidak ada proyek yang cocok",
+      "editTitle": "Edit Proyek",
+      "newTitle": "Proyek Baru",
+      "fields": {
+        "code": "Kode Proyek",
+        "codeHint": "contoh XX-PROJECT-2026",
+        "name": "Nama Proyek",
+        "client": "Klien",
+        "status": "Status",
+        "statusHint": "fase saat ini",
+        "noStatus": "Tanpa status",
+        "picName": "Nama PIC",
+        "picContact": "Kontak PIC",
+        "priority": "Prioritas",
+        "type": "Jenis Proyek",
+        "members": "Anggota Chat",
+        "membersHint": "yang bisa lihat chat project ini",
+        "startDate": "Mulai",
+        "endDate": "Selesai",
+        "clearDate": "Hapus tanggal",
+        "pickDate": "Pilih tanggal"
+      },
+      "saving": "Menyimpan...",
+      "update": "Perbarui Proyek",
+      "create": "Buat Proyek",
+      "deleteTitle": "Hapus Proyek",
+      "deleteDesc": "Apakah Anda yakin ingin menghapus {{name}}? Semua tugas terkait juga akan dihapus secara permanen."
+    },
+    "employees": {
+      "title": "Karyawan",
+      "active": "{{count}} aktif",
+      "inactive": "{{count}} nonaktif",
+      "addEmployee": "Tambah Karyawan",
+      "search": "Cari nama atau jabatan...",
+      "columns": {
+        "employee": "Karyawan",
+        "role": "Jabatan",
+        "status": "Status",
+        "joined": "Bergabung"
+      },
+      "empty": "Belum ada karyawan",
+      "noResults": "Tidak ada karyawan yang cocok",
+      "editTitle": "Edit Karyawan",
+      "addTitle": "Tambah Karyawan",
+      "fields": {
+        "fullName": "Nama Lengkap",
+        "fullNamePlaceholder": "contoh John Doe",
+        "roleTitle": "Jabatan / Peran",
+        "roleTitlePlaceholder": "contoh Frontend Developer",
+        "status": "Status",
+        "active": "Aktif",
+        "inactive": "Nonaktif",
+        "employeeNumber": "Nomor Karyawan",
+        "department": "Departemen",
+        "joinDate": "Tanggal Bergabung",
+        "resignDate": "Tanggal Resign",
+        "employmentType": "Jenis Kepegawaian",
+        "leaveQuota": "Kuota Cuti",
+        "departmentPlaceholder": "contoh Engineering"
+      },
+      "saving": "Menyimpan...",
+      "update": "Perbarui",
+      "add": "Tambah Karyawan",
+      "required": "Wajib diisi",
+      "deleteTitle": "Hapus Karyawan",
+      "deleteDesc": "Apakah Anda yakin ingin menghapus {{name}}? Semua tugas terkait juga akan dihapus secara permanen.",
+      "employmentTypes": {
+        "Permanent": "Tetap",
+        "Contract": "Kontrak",
+        "Probation": "Masa Percobaan",
+        "Intern": "Magang"
+      },
+      "leaveQuotaInvalid": "Masukkan bilangan bulat 0 sampai 365",
+      "resignBeforeJoin": "Tanggal resign tidak boleh sebelum tanggal bergabung"
+    },
+    "users": {
+      "title": "Pengguna",
+      "subtitle": "Kelola akun login, peran, dan izin fitur",
+      "search": "Cari nama atau email...",
+      "inviteUser": "Undang Pengguna",
+      "columns": {
+        "user": "Pengguna",
+        "role": "Peran",
+        "linkedEmployee": "Karyawan Terhubung",
+        "joined": "Bergabung",
+        "permissions": "Izin"
+      },
+      "notLinked": "Tidak terhubung",
+      "assignRole": "Tetapkan peran",
+      "cannotChangeSelf": "Anda tidak bisa mengubah role sendiri",
+      "cannotChangeRole": "Anda hanya bisa mengubah role orang di bawah role Anda",
+      "permissions": "Izin",
+      "revoke": "Cabut",
+      "revoked": "Dicabut",
+      "reactivate": "Aktifkan Lagi",
+      "noUsersSearch": "Tidak ada pengguna yang cocok",
+      "noUsers": "Belum ada pengguna - undang di atas",
+      "revokeTitle": "Cabut Akses",
+      "revokeDesc": "Cabut akses login untuk {{name}}? Data karyawan mereka TIDAK akan dihapus."
+    },
+    "auditLog": {
+      "title": "Log Audit",
+      "subtitle": "Siapa melakukan apa, dan kapan · 200 aktivitas terbaru",
+      "search": "Cari pelaku, aksi, atau entitas...",
+      "columns": {
+        "time": "Waktu",
+        "actor": "Pelaku",
+        "action": "Aksi",
+        "entity": "Entitas",
+        "detail": "Detail"
+      },
+      "empty": "Belum ada aktivitas tercatat",
+      "noResults": "Tidak ada aktivitas yang cocok",
+      "systemActor": "Sistem"
+    },
+    "import": {
+      "button": "Impor",
+      "title": "Impor dari Excel",
+      "desc": "Unggah file .xlsx dengan urutan kolom yang sama seperti hasil tombol Ekspor.",
+      "chooseFile": "Pilih file...",
+      "parsing": "Membaca file...",
+      "validRows_one": "{{count}} baris siap diimpor",
+      "validRows_other": "{{count}} baris siap diimpor",
+      "skippedRows_one": "{{count}} baris dilewati",
+      "skippedRows_other": "{{count}} baris dilewati",
+      "rowError": "Baris {{row}}: {{message}}",
+      "confirm": "Impor {{count}} baris",
+      "importing": "Mengimpor...",
+      "cancel": "Batal",
+      "success_one": "{{count}} baris berhasil diimpor",
+      "success_other": "{{count}} baris berhasil diimpor",
+      "noValidRows": "Tidak ada baris valid di file ini"
+    },
+    "masterList": {
+      "add": "Tambah",
+      "search": "Cari...",
+      "columnName": "Nama",
+      "columnActions": "Aksi",
+      "namePlaceholder": "Masukkan nama...",
+      "empty": "Belum ada data",
+      "emptyHint": "Klik Tambah untuk membuat entri pertama",
+      "noResults": "Tidak ada data yang cocok",
+      "projectTypes": {
+        "title": "Jenis Proyek",
+        "subtitle": "Kelola kategori jenis proyek (contoh Software, Hardware)",
+        "itemLabel": "Jenis Proyek"
+      },
+      "projectStatus": {
+        "title": "Status Proyek",
+        "subtitle": "Kelola status fase proyek (contoh Development, Done)",
+        "itemLabel": "Status"
+      },
+      "deleteTypeTitle": "Hapus Jenis Proyek",
+      "deleteTypeDesc": "Apakah Anda yakin ingin menghapus {{name}}? Tindakan ini tidak dapat dibatalkan.",
+      "deleteStatusTitle": "Hapus Status",
+      "deleteStatusDesc": "Apakah Anda yakin ingin menghapus {{name}}? Proyek yang menggunakan status ini akan kehilangannya.",
+      "addNew": "Tambah {{title}}",
+      "editItem": "Ubah {{title}}",
+      "save": "Simpan",
+      "saving": "Menyimpan...",
+      "required": "Wajib diisi"
+    },
+    "filters": {
+      "allStatuses": "Semua status",
+      "allTypes": "Semua tipe",
+      "allPriorities": "Semua prioritas",
+      "allEmploymentTypes": "Semua jenis kepegawaian",
+      "allRoles": "Semua role",
+      "allLinks": "Semua akun",
+      "linked": "Terhubung ke karyawan",
+      "unlinked": "Belum terhubung",
+      "allActions": "Semua aksi",
+      "allEntities": "Semua entitas",
+      "from": "Dari tanggal",
+      "to": "Sampai tanggal",
+      "dateRange": "Rentang tanggal"
+    }
+  },
+  "deleteModal": {
+    "cancel": "Batal",
+    "confirm": "Hapus",
+    "deleting": "Menghapus..."
+  },
+  "profile": {
+    "title": "Pengaturan Profil",
+    "subtitle": "Kelola akun & keamanan Anda",
+    "changePhoto": "Ganti Foto",
+    "uploading": "Mengunggah...",
+    "accountInfo": {
+      "title": "Informasi Akun",
+      "description": "Detail akun Anda saat ini. Peran hanya dapat diubah oleh Admin."
+    },
+    "personalInfo": {
+      "title": "Informasi Pribadi",
+      "description": "Perbarui nama tampilan Anda di seluruh dasbor."
+    },
+    "language": {
+      "title": "Bahasa",
+      "description": "Pilih bahasa tampilan yang Anda inginkan. Berlaku segera.",
+      "label": "Bahasa",
+      "english": "English",
+      "indonesian": "Indonesia"
+    },
+    "security": {
+      "title": "Ubah Kata Sandi",
+      "description": "Tetapkan kata sandi baru untuk akun Anda. Minimal 8 karakter.",
+      "currentPassword": "Kata Sandi Saat Ini",
+      "currentPasswordWrong": "Kata sandi saat ini salah",
+      "newPassword": "Kata Sandi Baru",
+      "confirmPassword": "Konfirmasi Kata Sandi",
+      "repeatPassword": "Ulangi kata sandi baru",
+      "passwordMismatch": "Kata sandi tidak cocok",
+      "updatePassword": "Perbarui Kata Sandi",
+      "updating": "Memperbarui..."
+    },
+    "fields": {
+      "email": "Email",
+      "role": "Peran",
+      "fullName": "Nama Lengkap",
+      "fullNamePlaceholder": "Nama lengkap Anda",
+      "phoneNumber": "Nomor Telepon",
+      "phoneNumberPlaceholder": "contoh: +62 812 3456 7890"
+    },
+    "actions": {
+      "saveChanges": "Simpan Perubahan",
+      "saving": "Menyimpan...",
+      "updated": "Profil berhasil diperbarui",
+      "avatarUpdated": "Avatar diperbarui",
+      "passwordUpdated": "Kata sandi berhasil diubah",
+      "languageUpdated": "Bahasa diperbarui"
+    },
+    "email": {
+      "title": "Alamat Email",
+      "description": "Perbarui email login Anda. Tautan konfirmasi akan dikirim ke kedua alamat sebelum perubahan berlaku.",
+      "newEmail": "Alamat Email Baru",
+      "newEmailPlaceholder": "anda@email.com",
+      "currentEmail": "Email saat ini",
+      "updateEmail": "Perbarui Email",
+      "updating": "Mengirim...",
+      "pendingTitle": "Perubahan Email Menunggu Konfirmasi",
+      "pendingDesc": "Tautan konfirmasi telah dikirim ke {{email}} dan alamat Anda saat ini. Periksa kedua kotak masuk.",
+      "cancelChange": "Batalkan",
+      "confirmationSent": "Tautan konfirmasi telah dikirim ke kedua alamat email.",
+      "invalidFormat": "Masukkan alamat email yang valid.",
+      "alreadyInUse": "Email ini sudah terdaftar di akun lain.",
+      "rateLimited": "Terlalu banyak permintaan. Silakan coba lagi nanti.",
+      "cancelSuccess": "Perubahan email dibatalkan."
+    },
+    "payslips": {
+      "title": "Slip Gaji",
+      "description": "Slip gaji bulan yang sudah difinalkan"
+    }
+  },
+  "shell": {
+    "profileSettings": "Pengaturan Profil",
+    "signOut": "Keluar",
+    "administrator": "Administrator",
+    "theme": "Tema",
+    "themeLight": "Terang",
+    "themeDark": "Gelap",
+    "themeSystem": "Sistem",
+    "signOutConfirm": {
+      "title": "Keluar dari akun?",
+      "desc": "Kamu perlu login lagi untuk mengakses WorkDesk."
+    }
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "markAllRead": "Tandai semua dibaca",
+    "soundOn": "Nyalakan suara",
+    "soundOff": "Matikan suara",
+    "empty": "Belum ada notifikasi",
+    "emptyHint": "Update akan muncul di sini kalau ada yang butuh perhatian Anda"
+  },
+  "login": {
+    "tagline": "Masuk untuk melanjutkan",
+    "continueWithGoogle": "Lanjutkan dengan Google",
+    "redirecting": "Mengalihkan...",
+    "orEmail": "atau lanjutkan dengan email",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "signIn": "Masuk",
+    "signingIn": "Masuk...",
+    "forgotPassword": "Lupa kata sandi?",
+    "sendingReset": "Mengirim...",
+    "resetSent": "Kami kirim tautan ke {{email}}. Cek inbox Anda, termasuk folder spam.",
+    "errors": {
+      "invalidCredentials": "Email atau kata sandi salah.",
+      "authServiceError": "Layanan autentikasi error. Coba lagi sebentar.",
+      "googleNotConfigured": "Login Google belum dikonfigurasi. Gunakan email & kata sandi.",
+      "emailFirst": "Isi alamat email yang valid terlebih dahulu."
+    },
+    "welcome": "Selamat datang!",
+    "heroTitle": "Hari kerjamu,\ndalam satu meja.",
+    "heroBody": "Catat laporan harian, pantau absensi, cuti dan lembur, serta ngobrol dengan tim dari satu tempat.",
+    "heroFoot": "Lanjutkan dari terakhir kali."
+  },
+  "resetPassword": {
+    "title": "Buat kata sandi baru",
+    "subtitle": "Pilih yang belum pernah Anda pakai",
+    "newPassword": "Kata sandi baru",
+    "confirmPassword": "Konfirmasi kata sandi",
+    "save": "Simpan kata sandi",
+    "saving": "Menyimpan...",
+    "success": "Kata sandi diperbarui. Mengarahkan...",
+    "mismatch": "Kedua kata sandi tidak sama",
+    "tooShort": "Kata sandi minimal {{count}} karakter",
+    "linkExpired": "Tautan reset ini sudah tidak berlaku. Minta tautan baru dari halaman login.",
+    "backToLogin": "Kembali ke login"
+  },
+  "payroll": {
+    "title": "Penggajian",
+    "subtitle": "Proses bulanan, slip gaji dan status pembayaran",
+    "period": "Periode",
+    "generate": "Proses gaji",
+    "finalize": "Finalkan",
+    "finalizedOn": "Difinalkan {{date}}",
+    "paidCount": "Dibayar",
+    "slip": "Slip gaji",
+    "empty": "Belum ada baris di periode ini",
+    "noRuns": "Belum ada proses gaji",
+    "noRunsHint": "Pilih bulan lalu proses. Angkanya diambil dari lembur dan dinas yang sudah disetujui, serta rate yang diatur di menu Lembur.",
+    "noRunsEmployee": "Slip gaji kamu muncul di sini setelah penggajian bulan tersebut difinalkan.",
+    "unknownEmployee": "Karyawan tidak dikenal",
+    "table": {
+      "employee": "Karyawan",
+      "base": "Gaji pokok",
+      "overtime": "Lembur",
+      "trips": "Dinas",
+      "gross": "Bruto",
+      "deductions": "Potongan",
+      "net": "Diterima",
+      "payment": "Pembayaran"
+    },
+    "deductions": {
+      "pph21": "PPh 21",
+      "bpjs": "BPJS",
+      "other": "Lainnya",
+      "note": "Catatan (opsional)"
+    },
+    "payment": {
+      "Unpaid": "Belum dibayar",
+      "Paid": "Dibayar"
+    },
+    "finalizeConfirm": {
+      "title": "Finalkan penggajian bulan ini?",
+      "body": "Setelah ini nominalnya dikunci. Hanya status pembayaran yang masih bisa berubah, dan proses ini tidak bisa dibuka lagi."
+    },
+    "deleteConfirm": {
+      "title": "Hapus draft penggajian ini?",
+      "body": "Baris dan potongan yang sudah diisi untuk bulan ini ikut terhapus. Data lembur dan dinas yang disetujui tidak tersentuh."
+    },
+    "slipAll": "Download semua slip",
+    "search": "Cari karyawan...",
+    "detail": {
+      "paidAt": "Dibayar pada",
+      "deductionNote": "Catatan potongan"
+    }
+  },
+  "common": {
+    "loading": "Memuat...",
+    "save": "Simpan",
+    "saving": "Menyimpan...",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "active": "Aktif",
+    "inactive": "Nonaktif",
+    "task_one": "tugas",
+    "task_other": "tugas",
+    "required": "Wajib diisi",
+    "export": "Ekspor",
+    "noResults": "Tidak ada hasil",
+    "pickDate": "Pilih tanggal",
+    "clearDate": "Hapus tanggal",
+    "pickTime": "Pilih jam",
+    "pagination": {
+      "range": "{{from}}–{{to}} dari {{total}}",
+      "page": "Halaman {{page}} dari {{pageCount}}"
+    },
+    "detail": "Detail",
+    "submittedAt": "Diajukan",
+    "jobTitle": "Jabatan"
+  },
+  "export": {
+    "title": "Pusat Ekspor",
+    "subtitle": "Buat laporan terfilter dalam format Excel atau PDF",
+    "filters": {
+      "title": "Filter Laporan",
+      "dateFrom": "Dari Tanggal",
+      "dateTo": "Sampai Tanggal",
+      "project": "Proyek",
+      "employee": "Karyawan",
+      "allProjects": "Semua Proyek",
+      "allEmployees": "Semua Karyawan"
+    },
+    "records": {
+      "loading": "Memuat data...",
+      "match_one": "{{count}} data sesuai filter",
+      "match_other": "{{count}} data sesuai filter"
+    },
+    "excel": {
+      "title": "Excel (.xlsx)",
+      "subtitle": "Spreadsheet dengan baris berformat",
+      "desc": "Ekspor data lengkap dengan header berwarna, baris selang-seling, dan format progres bersyarat.",
+      "button": "Ekspor Excel"
+    },
+    "csv": {
+      "title": "CSV (.csv)",
+      "subtitle": "Data spreadsheet polos dan portabel",
+      "desc": "Data mentah dipisah koma, mudah diimpor ke tool atau spreadsheet lain.",
+      "button": "Ekspor CSV"
+    },
+    "pdf": {
+      "title": "PDF (.pdf)",
+      "subtitle": "Landscape A4 dengan tata letak tabel",
+      "desc": "PDF bertema gelap profesional dengan judul laporan, stempel waktu pembuatan, dan tata letak tabel otomatis.",
+      "button": "Ekspor PDF"
+    },
+    "status": {
+      "generating": "Membuat...",
+      "downloaded": "Diunduh!"
+    },
+    "tips": {
+      "emptyDates": "Kosongkan salah satu tanggal untuk membuka batas di sisi itu. Kalau Dari lebih akhir dari Sampai, tidak ada data yang cocok.",
+      "currentData": "File yang diekspor menggunakan data yang saat ini dimuat di aplikasi."
+    },
+    "overtimeStatus": {
+      "label": "Status persetujuan",
+      "all": "Semua status"
+    },
+    "attendance": {
+      "title": "Absensi (.xlsx / .pdf)",
+      "subtitle": "Absensi dan rekap untuk payroll",
+      "desc": "Baris harian berisi jam masuk/keluar, jam kerja, penanda terlambat dan pulang cepat, plus rekap per karyawan: hari kerja, Hadir / Izin / Sakit / Cuti / Alpa, dan total jam. PDF berisi tabel yang sama, rekap di halaman sendiri.",
+      "button": "Excel",
+      "pdfButton": "PDF",
+      "period": "Periode",
+      "workingDays_one": "{{count}} hari kerja",
+      "workingDays_other": "{{count}} hari kerja"
+    },
+    "tasks": {
+      "title": "Laporan Harian (.xlsx / .csv / .pdf)",
+      "subtitle": "Tugas yang dicatat per proyek dan karyawan"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Halaman tidak ditemukan",
+      "message": "Halaman yang Anda cari tidak ada.",
+      "back": "Kembali ke Dasbor"
+    },
+    "forbidden": {
+      "badge": "403 Terlarang",
+      "title": "Akses Ditolak",
+      "message": "Anda tidak memiliki izin untuk melihat halaman ini. Hubungi administrator Anda untuk meminta akses.",
+      "goBack": "Kembali",
+      "dashboard": "Dasbor"
+    }
+  },
+  "overtime": {
+    "title": "Lembur & Dinas Luar",
+    "subtitle": "Pantau pengajuan lembur dan dinas luar",
+    "newRequest": "Ajukan Baru",
+    "tabs": {
+      "myRequests": "Pengajuan Saya",
+      "approval": "Persetujuan"
+    },
+    "type": {
+      "Overtime": "Lembur",
+      "BusinessTrip_Local": "Dinas (Dalam Kota)",
+      "BusinessTrip_OutOfTown": "Dinas (Luar Kota)"
+    },
+    "status": {
+      "Pending": "Menunggu",
+      "Approved": "Disetujui",
+      "Rejected": "Ditolak"
+    },
+    "stats": {
+      "overtimeHours": "Lembur Bulan Ini",
+      "businessTripLocalDays": "Dinas Dalam Kota Bulan Ini",
+      "businessTripOutOfTownDays": "Dinas Luar Kota Bulan Ini",
+      "pending": "Menunggu Persetujuan",
+      "hours": "jam",
+      "days": "hari"
+    },
+    "chart": {
+      "title": "Ringkasan Bulanan {{year}}",
+      "overtime": "Lembur (jam)",
+      "businessTripLocal": "Dinas Dalam Kota",
+      "businessTripOutOfTown": "Dinas Luar Kota"
+    },
+    "form": {
+      "title": "Ajukan Permintaan",
+      "editTitle": "Edit Permintaan",
+      "type": "Jenis",
+      "date": "Tanggal",
+      "startTime": "Jam Mulai",
+      "endTime": "Jam Selesai",
+      "overnight": "Shift berakhir keesokan harinya (melewati tengah malam)",
+      "duration": "Durasi",
+      "durationValue": "{{hours}} jam",
+      "project": "Proyek",
+      "projectOptional": "(opsional)",
+      "description": "Uraian Kegiatan",
+      "descPlaceholder": "Jelaskan pekerjaan yang dilakukan atau tujuan perjalanan...",
+      "submit": "Kirim",
+      "update": "Perbarui",
+      "saving": "Menyimpan...",
+      "dailyAllowance": "Uang Harian (IDR)",
+      "selectType": "Pilih jenis...",
+      "overtimePay": "Upah Lembur (IDR)",
+      "allowanceFromRate": "Dihitung dari tarif yang diatur admin.",
+      "noRateHint": "Tarif Anda belum diatur, jadi nilainya 0. Minta admin untuk mengatur tarif Anda.",
+      "serverConfirms": "Jam dan nominal di sini dipastikan ulang oleh server saat disimpan.",
+      "errFutureDate": "Tanggal tidak boleh melebihi hari ini.",
+      "errTimeOrder": "Jam selesai harus lebih besar dari jam mulai.",
+      "errMaxDuration": "Durasi tidak boleh lebih dari 24 jam.",
+      "resubmitNote": "Pengajuan ini ditolak. Menyimpannya akan mengirim ulang untuk persetujuan dan menghapus catatan penolakan."
+    },
+    "table": {
+      "type": "Jenis",
+      "date": "Tanggal",
+      "time": "Waktu",
+      "project": "Proyek",
+      "description": "Keterangan",
+      "duration": "Durasi",
+      "status": "Status",
+      "employee": "Karyawan",
+      "actions": "Aksi",
+      "empty": "Belum ada data",
+      "emptyHint": "Ajukan lembur atau dinas pertama Anda",
+      "allowance": "Uang Harian",
+      "noResults": "Tidak ada data yang cocok dengan filter",
+      "allTypes": "Semua Jenis"
+    },
+    "approval": {
+      "title": "Antrian Persetujuan",
+      "subtitle": "Tinjau dan proses pengajuan yang masuk",
+      "filterAll": "Semua",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "rejectTitle": "Tolak Permintaan",
+      "rejectDesc": "Berikan alasan penolakan untuk permintaan dari {{name}}.",
+      "rejectNote": "Catatan Penolakan",
+      "rejectNotePlaceholder": "Alasan (opsional)...",
+      "confirmReject": "Konfirmasi Penolakan",
+      "empty": "Tidak ada pengajuan untuk ditinjau",
+      "noResults": "Tidak ada pengajuan yang cocok dengan filter",
+      "search": "Cari karyawan atau keterangan...",
+      "selected_one": "{{count}} dipilih",
+      "selected_other": "{{count}} dipilih",
+      "approveSelected": "Setujui yang dipilih",
+      "allTypes": "Semua Jenis"
+    },
+    "delete": {
+      "title": "Hapus Permintaan",
+      "desc": "Apakah Anda yakin ingin menghapus permintaan ini? Tindakan ini tidak dapat dibatalkan."
+    },
+    "export": {
+      "title": "Lembur / Dinas Luar (.xlsx)",
+      "subtitle": "Laporan lembur & dinas luar bulanan",
+      "desc": "Ekspor dalam format PRESENSI JAM LEMBUR standar sesuai template Excel resmi.",
+      "button": "Ekspor Lembur / Dinas Luar",
+      "yearFilter": "Tahun",
+      "monthFilter": "Bulan",
+      "allMonths": "Semua Bulan"
+    },
+    "rates": {
+      "title": "Tarif Karyawan",
+      "subtitle": "Konfigurasi tarif lembur dan dinas per karyawan",
+      "overtimeRate": "Tarif Lembur (per jam)",
+      "localRate": "Tarif Dinas Dalam Kota (per hari)",
+      "outOfTownRate": "Tarif Dinas Luar Kota (per hari)",
+      "save": "Simpan Tarif",
+      "saving": "Menyimpan...",
+      "saved": "Tersimpan",
+      "selectEmployee": "Pilih karyawan...",
+      "currency": "IDR",
+      "tableTitle": "Tarif yang Dikonfigurasi",
+      "employee": "Karyawan",
+      "empty": "Belum ada konfigurasi tarif",
+      "baseSalary": "Gaji Pokok (per bulan)",
+      "search": "Cari karyawan...",
+      "notSet": "Belum diatur",
+      "editTitle": "Ubah Tarif",
+      "noResults": "Tidak ada karyawan yang cocok",
+      "col": {
+        "baseSalary": "Gaji pokok",
+        "overtime": "Lembur / jam",
+        "local": "Dinas dalam kota / hari",
+        "outOfTown": "Dinas luar kota / hari",
+        "updated": "Diperbarui"
+      }
+    },
+    "detail": {
+      "reviewedBy": "Direview oleh",
+      "submittedAt": "Diajukan pada",
+      "updatedAt": "Terakhir diubah",
+      "updatedBy": "Diubah oleh"
+    }
+  },
+  "calendar": {
+    "title": "Kalender Kerja",
+    "subtitle": "Akhir pekan dan hari libur · Admin mengatur, lainnya hanya melihat",
+    "sync": "Sinkron Libur Nasional",
+    "addHoliday": "Tambah Libur",
+    "listTitle": "Hari Libur",
+    "empty": "Belum ada hari libur",
+    "emptyHint": "Tambahkan libur khusus atau sinkronkan libur nasional untuk tahun tersebut",
+    "legend": {
+      "weekend": "Akhir Pekan",
+      "holiday": "Libur",
+      "national": "Nasional",
+      "clickHint": "Klik tanggal untuk tambah/hapus libur"
+    },
+    "dialog": {
+      "title": "Tambah Hari Libur",
+      "date": "Tanggal",
+      "name": "Nama",
+      "namePlaceholder": "cth. Hari Kemerdekaan"
+    },
+    "deleteTitle": "Hapus hari libur?",
+    "deleteDesc": "\"{{name}}\" akan dihapus dari kalender kerja."
+  },
+  "attendance": {
+    "title": "Presensi",
+    "subtitle": "Absen harian dan data kehadiran",
+    "addRecord": "Tambah Data",
+    "tabs": {
+      "myRecap": "Rekap Saya",
+      "all": "Semua Kehadiran",
+      "manage": "Kelola Presensi"
+    },
+    "period": {
+      "daily": "Harian",
+      "monthly": "Bulanan",
+      "yearly": "Tahunan"
+    },
+    "status": {
+      "Hadir": "Hadir",
+      "Izin": "Izin",
+      "Sakit": "Sakit",
+      "Alpa": "Alpa",
+      "late": "Terlambat",
+      "Cuti": "Cuti",
+      "earlyLeave": "Pulang cepat"
+    },
+    "table": {
+      "employee": "Karyawan",
+      "date": "Tanggal",
+      "status": "Status",
+      "clockInOut": "Jam Masuk / Pulang",
+      "note": "Catatan",
+      "empty": "Belum ada data kehadiran",
+      "hours": "Jam Kerja"
+    },
+    "recap": {
+      "historyTitle": "Riwayat",
+      "empty": "Belum ada kehadiran tercatat",
+      "workingDays": "Hari kerja",
+      "totalHours": "Total jam"
+    },
+    "dialog": {
+      "addTitle": "Tambah Data Kehadiran",
+      "editTitle": "Ubah Data Kehadiran",
+      "employee": "Karyawan",
+      "employeePlaceholder": "Pilih karyawan...",
+      "date": "Tanggal",
+      "status": "Status",
+      "clockIn": "Jam Masuk",
+      "clockOut": "Jam Pulang",
+      "note": "Catatan",
+      "notePlaceholder": "Catatan opsional...",
+      "noteRequiredPlaceholder": "Alasan (wajib)...",
+      "attachment": "Lampiran (opsional)",
+      "attachmentPick": "Pilih file",
+      "attachmentHint": "Surat, foto atau dokumen lain. JPG/PNG/WEBP/PDF/DOC, maks 10MB"
+    },
+    "schedule": {
+      "title": "Jam Kerja",
+      "subtitle": "Jam standar untuk menandai keterlambatan",
+      "tolerance": "Toleransi (menit)",
+      "timezone": "Zona waktu",
+      "workDays": "Hari kerja",
+      "lockedUntil": "Dikunci sampai",
+      "lockedUntilNone": "Tidak dikunci",
+      "days": {
+        "1": "Sen",
+        "2": "Sel",
+        "3": "Rab",
+        "4": "Kam",
+        "5": "Jum",
+        "6": "Sab",
+        "7": "Min"
+      },
+      "companyName": "Nama perusahaan"
+    },
+    "gate": {
+      "title": "Absensi hari ini",
+      "subtitle": "Anda belum mengisi kehadiran untuk {{date}}",
+      "scheduleHint": "Jam kerja: {{clockIn}}–{{clockOut}} (toleransi {{tolerance}} menit)",
+      "notePlaceholder": "Alasan (wajib)...",
+      "submit": "Kirim"
+    },
+    "delete": {
+      "title": "Hapus data kehadiran?",
+      "desc": "Data kehadiran ini akan dihapus permanen."
+    },
+    "today": {
+      "checkIn": "Absen masuk",
+      "checkOut": "Absen pulang",
+      "done": "Hari ini: {{status}}"
+    },
+    "toast": {
+      "checkedIn": "Kehadiran tercatat",
+      "checkedOut": "Absen pulang tercatat"
+    },
+    "errors": {
+      "duplicate": "Kehadiran karyawan ini pada tanggal tersebut sudah ada",
+      "locked": "Periode ini sudah ditutup dan tidak bisa diubah lagi",
+      "noOpenCheckIn": "Tidak ada absen masuk yang perlu ditutup hari ini",
+      "clockOrder": "Jam pulang harus lebih besar dari jam masuk",
+      "clockInRequired": "Jam masuk wajib diisi untuk status Hadir",
+      "noTimes": "Status ini tidak boleh punya jam masuk atau jam pulang",
+      "noteRequired": "Catatan wajib diisi untuk Izin/Sakit",
+      "fileTooLarge": "Ukuran file terlalu besar (maks 10MB)"
+    },
+    "detail": {
+      "title": "Detail Kehadiran",
+      "attachment": "Lampiran",
+      "attachmentUnavailable": "Lampiran gagal dimuat"
+    }
+  },
+  "guide": {
+    "defaultName": "Anda",
+    "welcomeTitle": "Selamat datang, {{name}}",
+    "welcomeSubtitle": "Ini yang bisa kamu lakukan di WorkDesk - pilih fitur untuk langsung menuju ke sana",
+    "open": "Buka",
+    "purposeLabel": "Fungsinya",
+    "flowLabel": "Cara kerjanya",
+    "stepsLabel": "Cara pakainya",
+    "noteLabel": "Catatan",
+    "extra": {
+      "profileLabel": "Pengaturan Profil",
+      "profileDesc": "Ubah info akun, bahasa, dan kata sandi",
+      "notificationsLabel": "Notifikasi",
+      "notificationsDesc": "Lihat pemberitahuan lembur/dinas yang disetujui atau ditolak",
+      "themeLabel": "Ganti Tema",
+      "themeDesc": "Beralih antara mode terang dan gelap",
+      "logoutLabel": "Menu Akun & Keluar",
+      "logoutDesc": "Buka pengaturan profil atau keluar dari akun"
+    },
+    "features": {
+      "dashboard": {
+        "purpose": "Menampilkan ringkasan kondisi tim dan proyek secara keseluruhan: total tugas, rata-rata progress, tugas selesai, dan masalah yang butuh perhatian.",
+        "flow": "Semua angka di sini dihitung otomatis dari data yang diinput lewat Daily Report - tidak ada yang perlu diisi di halaman ini.",
+        "steps": [
+          "Buka halaman ini pertama kali setelah login untuk melihat kondisi hari ini.",
+          "Lihat kartu statistik di atas untuk angka ringkas.",
+          "Cek \"Tasks per Project\" untuk tahu proyek mana yang paling banyak dikerjakan.",
+          "Perhatikan \"Active Problems\" untuk kendala yang belum selesai.",
+          "Lihat \"Team Workload\" untuk tahu siapa yang beban kerjanya berat minggu ini."
+        ],
+        "note": "Halaman ini murni pantauan (read-only), tidak ada yang perlu diisi."
+      },
+      "daily-report": {
+        "purpose": "Tempat setiap karyawan mencatat pekerjaan yang dikerjakan tiap hari, per proyek.",
+        "flow": "Tiap entri berisi tanggal, proyek, deskripsi tugas, persentase progress, dan kendala kalau ada. Data ini jadi sumber utama untuk Dashboard, Timeline, dan Issue Log.",
+        "steps": [
+          "Klik tombol \"Catat Tugas\".",
+          "Pilih tanggal dan proyek yang dikerjakan.",
+          "Isi deskripsi tugas dan persentase progress.",
+          "Kalau ada kendala, isi di kolom \"Kendala\" - ini otomatis muncul di Issue Log.",
+          "Lampirkan foto/dokumen bukti kerja kalau perlu, lalu simpan."
+        ],
+        "note": "Bisa diskusi lewat komentar di tiap tugas untuk koordinasi dengan tim lain."
+      },
+      "timeline": {
+        "purpose": "Menampilkan jadwal semua proyek dalam bentuk Gantt chart berdasarkan tanggal mulai dan selesai.",
+        "flow": "Data proyek diambil dari Master Hub, sedangkan progress bar-nya dihitung dari rata-rata progress di Daily Report.",
+        "steps": [
+          "Buka halaman ini untuk melihat proyek mana yang berjalan bersamaan.",
+          "Perhatikan proyek yang progress-nya rendah tapi tanggal selesainya sudah dekat.",
+          "Gunakan filter tanggal untuk fokus ke rentang waktu tertentu."
+        ],
+        "note": "Read-only - untuk mengubah tanggal proyek, edit di Master Hub > Projects."
+      },
+      "holidays": {
+        "purpose": "Kalender kerja bersama yang menandai akhir pekan dan hari libur, jadi acuan semua orang kapan hari kerja.",
+        "flow": "Sabtu/Minggu ditandai otomatis. Hari libur nasional bisa disinkronkan otomatis oleh Admin, atau ditambah manual untuk libur khusus perusahaan.",
+        "steps": [
+          "Admin: pilih tahun, klik \"Sync National Holidays\" untuk ambil data libur nasional resmi.",
+          "Admin: klik tanggal kosong untuk tambah libur khusus, atau klik tanggal libur untuk menghapusnya.",
+          "Karyawan lain: buka halaman ini untuk cek kapan hari libur/kerja - tidak bisa mengubah apa pun."
+        ],
+        "note": "Kalender ini juga menentukan kapan modal absen wajib di Presensi muncul (tidak muncul di akhir pekan/hari libur)."
+      },
+      "attendance": {
+        "purpose": "Presensi harian - mencatat kehadiran (Hadir/Izin/Sakit/Alpa) beserta jam masuk dan jam pulang.",
+        "flow": "Setiap hari kerja saat aplikasi dibuka, modal absen otomatis muncul kalau belum mengisi kehadiran hari itu. Admin bisa mengatur jam kerja standar dan mengoreksi data siapa saja.",
+        "steps": [
+          "Saat modal muncul, pilih status: Hadir (jam langsung tercatat), Izin, atau Sakit (isi alasan singkat).",
+          "Tab \"Rekap Saya\": lihat riwayat dan statistik kehadiran sendiri.",
+          "Tab \"Semua Kehadiran\": lihat kehadiran semua orang (read-only).",
+          "Tab \"Kelola Presensi\" (Admin): atur jam kerja standar & toleransi, koreksi jam masuk/pulang atau status siapa saja, tambah data manual.",
+          "Gunakan filter periode (Harian/Bulanan/Tahunan) di kanan atas untuk melihat rentang waktu tertentu."
+        ],
+        "note": "Status \"Terlambat\" muncul otomatis kalau jam masuk melewati jam kerja + toleransi yang diatur Admin."
+      },
+      "issues": {
+        "purpose": "Daftar kendala/masalah yang dilaporkan lewat Daily Report, supaya tidak hilang di tumpukan laporan harian.",
+        "flow": "Kendala yang diisi di kolom \"Kendala\" pada form Daily Report otomatis muncul di sini.",
+        "steps": [
+          "Buka halaman ini untuk lihat semua kendala yang masih terbuka.",
+          "Tandai selesai (resolved) kalau kendala sudah ditangani.",
+          "Gunakan filter untuk fokus ke kendala yang belum selesai."
+        ],
+        "note": "Kendala yang sudah ditandai selesai tetap tersimpan sebagai riwayat."
+      },
+      "overtime-business-trip": {
+        "purpose": "Pengajuan lembur dan dinas (dalam kota/luar kota), lengkap dengan alur persetujuan atasan.",
+        "flow": "Karyawan mengajukan, Admin/Manager approve atau reject. Ada rekap bulanan dan pengaturan tarif per karyawan untuk perhitungan kompensasi.",
+        "steps": [
+          "Klik \"Pengajuan Baru\", pilih jenis (Lembur/Dinas Dalam Kota/Dinas Luar Kota).",
+          "Untuk Lembur: isi jam mulai-selesai. Untuk Dinas: isi uang saku.",
+          "Tunggu persetujuan dari Admin/Manager di tab \"Persetujuan\".",
+          "Admin: atur tarif lembur/dinas per karyawan di tab \"Tarif\"."
+        ],
+        "note": "Tarif diatur oleh Admin/Manager dan dipakai untuk menghitung kompensasi."
+      },
+      "export": {
+        "purpose": "Mengunduh laporan Excel/PDF dari data Daily Report dan Overtime untuk kebutuhan offline (rapat, arsip, klien).",
+        "flow": "Pilih rentang tanggal dan jenis laporan, lalu sistem membuat file dari data yang sedang dimuat di aplikasi.",
+        "steps": [
+          "Pilih tanggal awal dan akhir (kosongkan untuk semua data).",
+          "Pilih format (Excel/PDF).",
+          "Klik \"Generate\" lalu unduh filenya."
+        ],
+        "note": "File yang diunduh berisi data pada saat itu, bukan data yang terus diperbarui otomatis."
+      },
+      "master": {
+        "purpose": "Kelola data referensi yang dipakai fitur lain: daftar proyek, karyawan, jenis proyek, status proyek, akun login, dan riwayat audit.",
+        "flow": "Data di sini (misalnya daftar proyek) muncul sebagai pilihan di Daily Report, Timeline, Overtime, dan fitur lainnya.",
+        "steps": [
+          "Pilih tab sesuai data yang mau dikelola: Project Types, Project Status, Projects, Employees.",
+          "Tab \"Users\" (Admin): buat akun login baru, atur role, hubungkan ke data karyawan.",
+          "Tab \"Audit Log\" (Admin): lihat riwayat perubahan penting di seluruh aplikasi."
+        ],
+        "note": "Mengubah role seseorang cuma bisa dilakukan oleh yang rank-nya lebih tinggi, dan tidak bisa mengubah role diri sendiri."
+      },
+      "profile": {
+        "purpose": "Kelola info akun Anda sendiri: nama, foto, email, bahasa aplikasi, dan kata sandi.",
+        "flow": "Semua perubahan di sini cuma berlaku untuk akun Anda sendiri, tidak mempengaruhi pengguna lain.",
+        "steps": [
+          "Buka lewat menu profil di pojok kanan atas (klik nama/avatar Anda).",
+          "Ubah nama atau foto profil di bagian \"Info Personal\".",
+          "Ganti bahasa aplikasi (Indonesia/English) di bagian \"Bahasa\".",
+          "Update kata sandi di bagian \"Keamanan\" kalau perlu."
+        ],
+        "note": "Role/jabatan cuma bisa diubah oleh Admin, bukan oleh diri sendiri."
+      },
+      "notifications": {
+        "purpose": "Pemberitahuan real-time untuk hal yang perlu Anda ketahui, misalnya status persetujuan lembur/dinas.",
+        "flow": "Ikon lonceng menampilkan angka merah kalau ada notifikasi yang belum dibaca.",
+        "steps": [
+          "Klik ikon lonceng untuk melihat daftar notifikasi.",
+          "Klik salah satu notifikasi untuk langsung menuju halaman terkait.",
+          "Tandai semua sudah dibaca kalau daftarnya sudah penuh."
+        ],
+        "note": "Notifikasi otomatis muncul saat pengajuan lembur/dinas Anda disetujui atau ditolak."
+      },
+      "chat": {
+        "purpose": "Pesan tim: ngobrol dengan rekan kerja lewat thread dan kirim file atau gambar.",
+        "flow": "Buka percakapan, ketik pesan lalu kirim. Anda bisa membalas di thread, memberi reaksi, meneruskan, dan menyebut orang.",
+        "steps": [
+          "Pilih percakapan dari daftar.",
+          "Ketik pesan lalu tekan Enter untuk mengirim.",
+          "Lampirkan file atau gambar jika perlu.",
+          "Gunakan @ untuk menyebut rekan kerja."
+        ],
+        "note": "Chat terbuka untuk semua pengguna yang sudah masuk."
+      },
+      "theme": {
+        "purpose": "Mengganti tampilan aplikasi antara mode terang dan gelap sesuai preferensi Anda.",
+        "flow": "Pilihan tema tersimpan di browser, jadi tetap sama setiap kali Anda membuka aplikasi lagi.",
+        "steps": [
+          "Buka menu pengguna (avatar di pojok kanan atas) lalu pilih Terang, Gelap, atau Sistem."
+        ],
+        "note": "Pengaturan ini cuma berlaku di perangkat/browser yang sedang dipakai."
+      },
+      "logout": {
+        "purpose": "Menu untuk membuka pengaturan profil atau keluar dari akun.",
+        "flow": "Klik nama/avatar Anda di pojok kanan atas untuk membuka menu ini.",
+        "steps": [
+          "Klik nama/avatar di pojok kanan atas.",
+          "Pilih \"Profile Settings\" untuk ubah info akun.",
+          "Pilih \"Sign Out\" untuk keluar - akan ada konfirmasi sebelum benar-benar keluar."
+        ],
+        "note": "Anda perlu login ulang setelah keluar untuk memakai aplikasi lagi."
+      },
+      "leave": {
+        "purpose": "Pengajuan cuti tahunan, izin dan sakit, dengan persetujuan atasan dan sisa kuota cuti per tahun.",
+        "flow": "Karyawan mengajukan, Admin/Manager menyetujui atau menolak. Pengajuan yang disetujui otomatis tercatat di presensi untuk setiap hari kerja di rentang tanggalnya.",
+        "steps": [
+          "Klik \"Pengajuan Baru\", pilih jenis (Cuti/Izin/Sakit), tanggal dan alasan.",
+          "Pantau pengajuan dan sisa cuti kamu di tab \"Pengajuan Saya\".",
+          "Pengajuan yang ditolak bisa diubah lalu diajukan ulang.",
+          "Admin/Manager: setujui atau tolak pengajuan tim di tab \"Persetujuan\" (penolakan wajib diberi catatan).",
+          "Klik baris mana saja untuk melihat detail lengkapnya."
+        ],
+        "note": "Tidak ada yang bisa menyetujui pengajuannya sendiri. Hanya jenis Cuti yang memotong kuota cuti."
+      },
+      "payroll": {
+        "purpose": "Proses gaji bulanan: gaji pokok, lembur dan uang dinas, potongan, status pembayaran dan slip gaji.",
+        "flow": "Admin memproses gaji untuk satu periode, mengisi potongan, memfinalkan, lalu menandai tiap karyawan sudah dibayar. Karyawan bisa mengunduh slip gajinya sendiri setelah bulan itu difinalkan.",
+        "steps": [
+          "Pilih periode lalu klik \"Proses gaji\" - gaji pokok, lembur dan dinas diambil dari tarif dan klaim yang sudah disetujui.",
+          "Isi potongan PPh 21, BPJS dan lainnya per karyawan selama masih draft.",
+          "Klik \"Finalkan\" untuk mengunci bulan tersebut.",
+          "Tandai tiap baris sudah dibayar, lalu unduh slip satu per satu atau semua sekaligus (PDF).",
+          "Karyawan: slip gaji yang sudah difinalkan muncul di sini untuk diunduh."
+        ],
+        "note": "Periode yang sudah difinalkan tidak bisa diubah lagi; hanya status pembayaran yang masih bisa diperbarui."
+      }
+    },
+    "tour": {
+      "next": "Selanjutnya",
+      "prev": "Sebelumnya",
+      "done": "Selesai"
+    },
+    "tours": {
+      "dashboard": [
+        {
+          "title": "Total Tugas",
+          "desc": "Jumlah semua tugas yang pernah dicatat tim."
+        },
+        {
+          "title": "Rata-rata Progress",
+          "desc": "Persentase progress rata-rata dari seluruh tugas."
+        },
+        {
+          "title": "Tugas Selesai",
+          "desc": "Jumlah tugas dengan progress 100%."
+        },
+        {
+          "title": "Jumlah Masalah Aktif",
+          "desc": "Berapa banyak kendala yang masih terbuka dan butuh perhatian."
+        },
+        {
+          "title": "Distribusi Tugas",
+          "desc": "Grafik ini menunjukkan proyek mana yang paling banyak dikerjakan."
+        },
+        {
+          "title": "Produktivitas Tim",
+          "desc": "Gauge ini merangkum rata-rata progress seluruh tim."
+        },
+        {
+          "title": "Daftar Masalah Aktif",
+          "desc": "Kendala yang dilaporkan lewat Daily Report muncul di sini."
+        },
+        {
+          "title": "Beban Kerja Tim",
+          "desc": "Lihat siapa yang beban kerjanya berat minggu ini."
+        }
+      ],
+      "daily-report": [
+        {
+          "title": "Cari Tugas",
+          "desc": "Ketik kata kunci untuk mencari tugas tertentu."
+        },
+        {
+          "title": "Filter",
+          "desc": "Saring daftar tugas berdasarkan karyawan atau proyek."
+        },
+        {
+          "title": "Catat Tugas Baru",
+          "desc": "Klik di sini untuk mencatat pekerjaan hari ini."
+        },
+        {
+          "title": "Daftar Tugas",
+          "desc": "Semua tugas yang tercatat tampil di sini, bisa diganti tampilan tabel atau kanban."
+        }
+      ],
+      "timeline": [
+        {
+          "title": "Ganti Tampilan",
+          "desc": "Pilih tampilan bulanan atau mingguan."
+        },
+        {
+          "title": "Cari & Filter",
+          "desc": "Cari proyek tertentu atau saring berdasarkan prioritas."
+        },
+        {
+          "title": "Gantt Chart",
+          "desc": "Lihat jadwal semua proyek dan progressnya di sini."
+        }
+      ],
+      "holidays": [
+        {
+          "title": "Sinkron Libur Nasional",
+          "desc": "Admin bisa mengambil data hari libur nasional resmi secara otomatis per tahun."
+        },
+        {
+          "title": "Kalender",
+          "desc": "Akhir pekan dan hari libur ditandai otomatis. Admin bisa klik tanggal untuk menambah atau menghapus libur."
+        },
+        {
+          "title": "Tambah Hari Libur",
+          "desc": "Atau klik di sini untuk menambah hari libur tanpa pilih tanggal di kalender dulu."
+        },
+        {
+          "title": "Daftar Hari Libur",
+          "desc": "Semua hari libur yang tercatat tampil di panel ini."
+        }
+      ],
+      "attendance": [
+        {
+          "title": "Tab Presensi",
+          "desc": "Pindah antara rekap pribadi, semua kehadiran, dan kelola presensi (khusus admin)."
+        },
+        {
+          "title": "Filter Periode",
+          "desc": "Lihat data kehadiran harian, bulanan, atau tahunan."
+        },
+        {
+          "title": "Rekap Saya",
+          "desc": "Ringkasan dan riwayat kehadiran Anda untuk periode yang dipilih."
+        },
+        {
+          "title": "Semua Kehadiran",
+          "desc": "Tampilan read-only kehadiran seluruh karyawan untuk periode yang dipilih."
+        },
+        {
+          "title": "Tambah Data",
+          "desc": "Admin bisa menambahkan data kehadiran karyawan secara manual."
+        },
+        {
+          "title": "Jadwal Kerja",
+          "desc": "Admin mengatur jam masuk/keluar standar dan toleransi keterlambatan di sini."
+        },
+        {
+          "title": "Kelola Presensi",
+          "desc": "Admin bisa mengubah atau menghapus data kehadiran karyawan mana pun di sini."
+        }
+      ],
+      "issues": [
+        {
+          "title": "Filter Status",
+          "desc": "Klik untuk melihat semua kendala, yang masih terbuka, atau yang sudah selesai."
+        },
+        {
+          "title": "Cari & Filter",
+          "desc": "Cari kendala tertentu atau saring berdasarkan karyawan/proyek."
+        },
+        {
+          "title": "Daftar Kendala",
+          "desc": "Kendala dari Daily Report muncul di sini - tandai selesai kalau sudah ditangani."
+        }
+      ],
+      "overtime-business-trip": [
+        {
+          "title": "Ajukan Baru",
+          "desc": "Klik untuk mengajukan lembur atau dinas dalam/luar kota."
+        },
+        {
+          "title": "Statistik Bulan Ini",
+          "desc": "Jam lembur, hari dinas, dan pengajuan yang masih pending bulan ini."
+        },
+        {
+          "title": "Grafik Bulanan",
+          "desc": "Grafik total jam lembur dan hari dinas sepanjang tahun."
+        },
+        {
+          "title": "Tab",
+          "desc": "Pindah antara pengajuan Anda, persetujuan, dan pengaturan tarif (khusus Admin/Manager)."
+        },
+        {
+          "title": "Pengajuan Saya",
+          "desc": "Daftar pengajuan lembur/dinas milik Anda sendiri beserta statusnya."
+        },
+        {
+          "title": "Persetujuan",
+          "desc": "Admin/Manager menyetujui atau menolak pengajuan di sini."
+        },
+        {
+          "title": "Tarif Karyawan",
+          "desc": "Admin/Manager mengatur tarif lembur dan dinas per karyawan di sini."
+        }
+      ],
+      "export": [
+        {
+          "title": "Rentang Tanggal",
+          "desc": "Pilih tanggal awal dan akhir laporan Daily Report yang mau diunduh."
+        },
+        {
+          "title": "Proyek & Karyawan",
+          "desc": "Saring laporan berdasarkan proyek atau karyawan tertentu."
+        },
+        {
+          "title": "Jumlah Data",
+          "desc": "Menunjukkan berapa banyak data yang cocok dengan filter sebelum diunduh."
+        },
+        {
+          "title": "Unduh Laporan",
+          "desc": "Pilih format Excel, CSV, atau PDF untuk mengunduh data Daily Report."
+        },
+        {
+          "title": "Export Lembur/Dinas",
+          "desc": "Bagian terpisah untuk mengunduh laporan lembur dan dinas per bulan."
+        }
+      ],
+      "master": [
+        {
+          "title": "Jenis Proyek",
+          "desc": "Kelola daftar kategori/jenis proyek yang tersedia."
+        },
+        {
+          "title": "Tambah Jenis Proyek",
+          "desc": "Klik untuk menambah kategori proyek baru."
+        },
+        {
+          "title": "Cari Jenis Proyek",
+          "desc": "Saring daftar berdasarkan nama."
+        },
+        {
+          "title": "Status Proyek",
+          "desc": "Kelola daftar status yang bisa dipakai proyek (MOU, Development, Done, dst)."
+        },
+        {
+          "title": "Tambah Status Proyek",
+          "desc": "Klik untuk menambah status proyek baru."
+        },
+        {
+          "title": "Cari Status Proyek",
+          "desc": "Saring daftar berdasarkan nama."
+        },
+        {
+          "title": "Proyek",
+          "desc": "Kelola daftar proyek: kode, nama, klien, prioritas, dan jadwalnya."
+        },
+        {
+          "title": "Alat Proyek",
+          "desc": "Cari, ekspor ke Excel, impor dari Excel, atau tambah proyek baru."
+        },
+        {
+          "title": "Karyawan",
+          "desc": "Kelola daftar karyawan dan jabatannya."
+        },
+        {
+          "title": "Alat Karyawan",
+          "desc": "Cari, ekspor ke Excel, impor dari Excel, atau tambah karyawan baru."
+        },
+        {
+          "title": "Pengguna",
+          "desc": "Kelola akun login, role, dan tautan ke data karyawan (khusus Admin)."
+        },
+        {
+          "title": "Alat Pengguna",
+          "desc": "Cari pengguna atau undang pengguna baru ke aplikasi."
+        },
+        {
+          "title": "Log Audit",
+          "desc": "Riwayat perubahan penting di seluruh aplikasi (khusus Admin)."
+        },
+        {
+          "title": "Cari Log Audit",
+          "desc": "Saring log berdasarkan pelaku, aksi, atau entitas."
+        }
+      ],
+      "profile": [
+        {
+          "title": "Foto Profil",
+          "desc": "Klik foto Anda untuk mengunggah foto baru."
+        },
+        {
+          "title": "Info Akun",
+          "desc": "Role dan status akun Anda (read-only)."
+        },
+        {
+          "title": "Email",
+          "desc": "Alamat email login Anda, bisa diganti di sini."
+        },
+        {
+          "title": "Info Personal",
+          "desc": "Ubah nama dan detail personal lainnya."
+        },
+        {
+          "title": "Bahasa",
+          "desc": "Pilih bahasa aplikasi: Indonesia atau English."
+        },
+        {
+          "title": "Keamanan",
+          "desc": "Ganti kata sandi akun Anda di sini."
+        }
+      ],
+      "notifications": [
+        {
+          "title": "Notifikasi",
+          "desc": "Klik untuk lihat pemberitahuan terbaru, seperti status persetujuan lembur."
+        }
+      ],
+      "theme": [
+        {
+          "title": "Ganti Tema",
+          "desc": "Buka menu ini untuk memilih mode terang, gelap, atau ikuti sistem."
+        }
+      ],
+      "logout": [
+        {
+          "title": "Menu Akun",
+          "desc": "Klik untuk membuka pengaturan profil atau keluar dari akun."
+        }
+      ]
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "projects": "Project",
+    "directMessages": "Pesan Pribadi",
+    "noDms": "Belum ada percakapan",
+    "findPerson": "Cari orang...",
+    "members": "Anggota",
+    "empty": "Belum ada pesan",
+    "emptyHint": "Mulai percakapan dengan menyapa",
+    "messagePlaceholder": "Tulis pesan... (@ untuk tag)",
+    "replyingTo": "Membalas",
+    "newThread": "Thread baru",
+    "threadNamePlaceholder": "Nama thread...",
+    "add": "Tambah",
+    "generalThread": "General",
+    "forwardTo": "Teruskan ke...",
+    "forwarded": "Pesan diteruskan",
+    "forwardedFrom": "Diteruskan dari {{name}}",
+    "fileTooLarge": "{{name}} terlalu besar (maks 50MB)",
+    "reply": "Balas",
+    "forward": "Teruskan",
+    "copy": "Salin pesan",
+    "copied": "Disalin ke clipboard",
+    "copyFailed": "Gagal menyalin ke clipboard",
+    "download": "Unduh",
+    "openOriginal": "Buka di tab baru",
+    "downloadFailed": "Gagal mengunduh gambar",
+    "zoomIn": "Perbesar",
+    "zoomOut": "Perkecil",
+    "copyMedia": "Salin gambar",
+    "mediaCopied": "Gambar disalin ke clipboard",
+    "mediaCopyFailed": "Gagal menyalin gambar",
+    "message": "Pesan",
+    "notifyAll": "Beritahu semua",
+    "about": "Tentang",
+    "react": "Tambah reaksi",
+    "pin": "Sematkan pesan",
+    "unpin": "Lepas sematan",
+    "edited": "(diedit)",
+    "pinnedCount_one": "{{count}} pesan disematkan",
+    "pinnedCount_other": "{{count}} pesan disematkan",
+    "deleteConfirm": {
+      "title": "Hapus pesan ini?",
+      "body": "Pesan dihapus untuk semua orang di chat ini, beserta reaksi dan lampirannya."
+    },
+    "searchChannels": "Cari chat",
+    "searchMessages": "Cari pesan",
+    "jumpToPresent": "Lompat ke terbaru",
+    "filter": {
+      "all": "Semua",
+      "unread": "Belum dibaca",
+      "dm": "DM",
+      "attachments": "Lampiran",
+      "pinned": "Disematkan",
+      "mine": "Dari saya"
+    },
+    "recordVoice": "Rekam pesan suara",
+    "recording": "Merekam…",
+    "stopRecording": "Berhenti merekam",
+    "micDenied": "Akses mikrofon ditolak",
+    "attachmentOnly": "Lampiran",
+    "you": "Anda",
+    "yesterday": "Kemarin"
+  },
+  "leave": {
+    "title": "Cuti & Izin",
+    "subtitle": "Ajukan cuti, izin dan sakit",
+    "newRequest": "Pengajuan Baru",
+    "tabs": {
+      "myRequests": "Pengajuan Saya",
+      "approval": "Persetujuan"
+    },
+    "type": {
+      "Cuti": "Cuti",
+      "Izin": "Izin",
+      "Sakit": "Sakit"
+    },
+    "balance": {
+      "title": "Sisa Cuti {{year}}",
+      "used": "{{used}} dari {{quota}} hari terpakai",
+      "days": "hari tersisa"
+    },
+    "form": {
+      "title": "Ajukan Cuti / Izin",
+      "editTitle": "Ubah Pengajuan",
+      "type": "Jenis",
+      "startDate": "Tanggal Mulai",
+      "endDate": "Tanggal Selesai",
+      "reason": "Alasan",
+      "reasonPlaceholder": "Alasan pengajuan ini...",
+      "rangeError": "Tanggal selesai tidak boleh sebelum tanggal mulai",
+      "resubmitNote": "Pengajuan ini ditolak. Menyimpannya berarti mengajukan ulang untuk disetujui.",
+      "submit": "Ajukan",
+      "update": "Simpan",
+      "saving": "Menyimpan..."
+    },
+    "table": {
+      "type": "Jenis",
+      "period": "Periode",
+      "reason": "Alasan",
+      "status": "Status",
+      "employee": "Karyawan",
+      "actions": "Aksi",
+      "empty": "Belum ada pengajuan",
+      "emptyHint": "Ajukan cuti, izin atau sakit pertama kamu"
+    },
+    "approval": {
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "rejectTitle": "Tolak Pengajuan",
+      "rejectDesc": "Tulis alasan penolakan pengajuan dari {{name}}.",
+      "rejectNote": "Catatan Penolakan",
+      "rejectNotePlaceholder": "Jelaskan alasan penolakan...",
+      "confirmReject": "Tolak Pengajuan",
+      "empty": "Tidak ada yang menunggu persetujuan",
+      "emptyHint": "Pengajuan tim yang masih pending muncul di sini"
+    },
+    "delete": {
+      "title": "Hapus Pengajuan",
+      "desc": "Pengajuan ini akan dihapus permanen dan tidak bisa dikembalikan."
+    }
+  }
+}

@@ -1,0 +1,1573 @@
+{
+  "app": {
+    "name": "WorkDesk",
+    "tagline": "Daily Productivity & Growth",
+    "version": "v2.0.0 · 2026",
+    "footer": "Daily Reporting System"
+  },
+  "nav": {
+    "groups": {
+      "navigation": "Navigation",
+      "tools": "Tools",
+      "configuration": "Configuration",
+      "help": "Help"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "dailyReport": "Daily Report",
+      "timeline": "Timeline",
+      "calendar": "Work Calendar",
+      "attendance": "Attendance",
+      "leave": "Leave",
+      "chat": "Chat",
+      "issueLog": "Issue Log",
+      "export": "Export",
+      "masterHub": "Master Hub",
+      "superadmin": "Superadmin",
+      "overtime": "Overtime",
+      "payroll": "Payroll",
+      "guide": "Guide"
+    },
+    "descriptions": {
+      "dashboard": "Overview & analytics",
+      "dailyReport": "Task logging",
+      "timeline": "Gantt project view",
+      "calendar": "Holidays & weekends",
+      "attendance": "Daily check-in & recap",
+      "leave": "Leave requests & balance",
+      "chat": "Team & project messaging",
+      "issueLog": "Problem tracker",
+      "export": "Reports & data export",
+      "masterHub": "Projects & employees",
+      "superadmin": "Tenant & system control",
+      "overtime": "Overtime & Business Trip",
+      "payroll": "Monthly run & payslips",
+      "guide": "What WorkDesk can do"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "Search pages and actions...",
+    "empty": "No results found",
+    "navigateGroup": "Go to",
+    "actionsGroup": "Actions",
+    "logTask": "Log a new task",
+    "newOvertimeRequest": "New overtime / business trip request",
+    "toggleTheme": "Toggle light / dark theme",
+    "profileSettings": "Profile settings",
+    "signOut": "Sign out"
+  },
+  "dashboard": {
+    "hris": {
+      "presentToday": "Present today",
+      "ofHeadcount": "of active employees",
+      "lateToday": "Late today",
+      "pastTolerance": "past the tolerance",
+      "onLeaveToday": "Away today",
+      "leaveSickPermit": "leave, sick or permit",
+      "pendingApprovals": "Waiting approval",
+      "overtimeHoursMonth": "{{hours}} overtime hours this month"
+    },
+    "greeting": "Good day, {{name}}",
+    "subtitle": "Here's your productivity overview for today.",
+    "stats": {
+      "totalTasks": "Total Tasks",
+      "allTime": "All time",
+      "avgProgress": "Avg Progress",
+      "teamAverage": "Team average",
+      "completed": "Completed",
+      "fullProgress": "100% progress",
+      "activeProblems": "Active Problems",
+      "needAttention": "Need attention"
+    },
+    "problems": {
+      "title": "Active Problems",
+      "subtitle": "Constraints from daily reports",
+      "active": "{{count}} Active",
+      "allClear": "All clear!",
+      "noProblems": "No active problems reported",
+      "viewAll": "View all in Issue Log"
+    },
+    "workload": {
+      "title": "Team Workload",
+      "weekOf": "Week of {{date}}",
+      "noTasks": "No tasks logged this week",
+      "legend": {
+        "zero": "0",
+        "two": "2",
+        "heavy": "3+ heavy"
+      },
+      "taskCount_one": "{{count}} task",
+      "taskCount_other": "{{count}} tasks",
+      "noTaskAbsent": "No tasks: {{status}}",
+      "noTaskHoliday": "No tasks: holiday ({{name}})",
+      "noTaskDayOff": "Day off",
+      "noTaskNoAttendance": "No attendance and no tasks yet",
+      "noTask": "Present, no tasks logged yet"
+    },
+    "openInDailyReport": "Open in Daily Report",
+    "openInIssueLog": "Open in Issue Log"
+  },
+  "dailyReport": {
+    "title": "Daily Report",
+    "taskLogged_one": "{{count}} task logged",
+    "taskLogged_other": "{{count}} tasks logged",
+    "columns": {
+      "date": "Date",
+      "employee": "Employee",
+      "project": "Project",
+      "taskDescription": "Task Description",
+      "progress": "Progress",
+      "problem": "Description / Problem",
+      "actions": "Actions"
+    },
+    "logTask": "Log Task",
+    "search": "Search tasks, employees, projects...",
+    "allEmployees": "All Employees",
+    "allProjects": "All Projects",
+    "noTasksFound": "No tasks found",
+    "addFirstEntry": "Click Log Task to add your first entry",
+    "adjustFilters": "Try adjusting your filters",
+    "avgProgress": "Avg progress",
+    "notes": "Description"
+  },
+  "taskForm": {
+    "editTitle": "Edit Task",
+    "logTitle": "Log Daily Task",
+    "deleteTitle": "Delete Task",
+    "deleteDesc": "Are you sure you want to permanently delete this task? This action cannot be undone.",
+    "deleteBulkTitle": "Delete Tasks",
+    "deleteBulkDesc_one": "Are you sure you want to permanently delete {{count}} task? This action cannot be undone.",
+    "deleteBulkDesc_other": "Are you sure you want to permanently delete {{count}} tasks? This action cannot be undone.",
+    "selected_one": "{{count}} selected",
+    "selected_other": "{{count}} selected",
+    "deleteSelected": "Delete selected",
+    "fields": {
+      "date": "Date",
+      "progress": "Progress (%)",
+      "employee": "Employee",
+      "project": "Project",
+      "taskDesc": "Task Description",
+      "problem": "Description / Problem",
+      "problemOptional": "(optional)"
+    },
+    "placeholders": {
+      "employee": "Select employee...",
+      "project": "Select project...",
+      "taskDesc": "Describe what was done today...",
+      "problem": "Any notes, blockers, or constraints encountered..."
+    },
+    "saving": "Saving...",
+    "update": "Update Task",
+    "log": "Log Task",
+    "progressError": "0-100 only",
+    "required": "Required",
+    "attachments": {
+      "title": "Attachments",
+      "add": "Add file",
+      "saveFirst": "Save the task first, then add photos or files.",
+      "uploading": "Uploading...",
+      "empty": "No files attached",
+      "delete": "Remove file"
+    }
+  },
+  "issues": {
+    "title": "Issue Log",
+    "subtitle": "Centralized problem tracker across all tasks",
+    "allIssues": "All Issues",
+    "open": "Open",
+    "resolved": "Resolved",
+    "search": "Search issues, employees, projects...",
+    "noIssuesYet": "No issues logged yet",
+    "noMatchingIssues": "No matching issues",
+    "issuesAppearHere": "Issues appear here when tasks have a Keterangan/Problem filled in.",
+    "adjustFilters": "Try adjusting your filters.",
+    "resolve": "Resolve",
+    "reopen": "Reopen",
+    "comments_one": "{{count}} comment",
+    "comments_other": "{{count}} comments",
+    "commentPlaceholder": "Write a comment...",
+    "noComments": "No comments yet",
+    "send": "Send",
+    "deleteComment": "Delete comment"
+  },
+  "timeline": {
+    "title": "Project Timeline",
+    "subtitle": "Gantt view of all projects · {{count}} active",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "noDates": "No Dates Set ({{count}})",
+    "addDates": "Add dates in Master Hub",
+    "noProjects": "No projects with dates. Add start/end dates in Master Hub.",
+    "noResults": "No projects match your filter",
+    "search": "Search projects...",
+    "allPriorities": "All",
+    "span": "Timeline span",
+    "today": "Today",
+    "projectLabel": "Project",
+    "daysShort": "{{count}}d",
+    "spanLabel": "Timeline span: {{from}} - {{to}} · {{days}} days"
+  },
+  "master": {
+    "tabs": {
+      "projects": "Projects",
+      "employees": "Employees",
+      "projectTypes": "Project Types",
+      "projectStatus": "Project Status",
+      "users": "Users",
+      "auditLog": "Audit Log"
+    },
+    "projects": {
+      "title": "Projects",
+      "subtitle": "Manage all project records",
+      "newProject": "New Project",
+      "search": "Search by code, name, or client...",
+      "columns": {
+        "code": "Code",
+        "name": "Project Name",
+        "client": "Client",
+        "status": "Status",
+        "type": "Type",
+        "priority": "Priority",
+        "pic": "PIC",
+        "period": "Period"
+      },
+      "empty": "No projects yet",
+      "noResults": "No projects match your search",
+      "editTitle": "Edit Project",
+      "newTitle": "New Project",
+      "fields": {
+        "code": "Project Code",
+        "codeHint": "e.g. XX-PROJECT-2026",
+        "name": "Project Name",
+        "client": "Client",
+        "status": "Status",
+        "statusHint": "current phase",
+        "noStatus": "No status",
+        "picName": "PIC Name",
+        "picContact": "PIC Contact",
+        "priority": "Priority",
+        "type": "Project Type",
+        "members": "Chat Members",
+        "membersHint": "who can see this project's chat",
+        "startDate": "Start",
+        "endDate": "End",
+        "clearDate": "Clear date",
+        "pickDate": "Pick a date"
+      },
+      "saving": "Saving...",
+      "update": "Update Project",
+      "create": "Create Project",
+      "deleteTitle": "Delete Project",
+      "deleteDesc": "Are you sure you want to delete {{name}}? All related tasks will be permanently removed."
+    },
+    "employees": {
+      "title": "Employees",
+      "active": "{{count}} active",
+      "inactive": "{{count}} inactive",
+      "addEmployee": "Add Employee",
+      "search": "Search by name or role...",
+      "columns": {
+        "employee": "Employee",
+        "role": "Role",
+        "status": "Status",
+        "joined": "Joined"
+      },
+      "empty": "No employees yet",
+      "noResults": "No employees match your search",
+      "editTitle": "Edit Employee",
+      "addTitle": "Add Employee",
+      "fields": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "e.g. John Doe",
+        "roleTitle": "Role / Title",
+        "roleTitlePlaceholder": "e.g. Frontend Developer",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "employeeNumber": "Employee Number",
+        "department": "Department",
+        "joinDate": "Join Date",
+        "resignDate": "Resign Date",
+        "employmentType": "Employment Type",
+        "leaveQuota": "Leave Quota",
+        "departmentPlaceholder": "e.g. Engineering"
+      },
+      "saving": "Saving...",
+      "update": "Update",
+      "add": "Add Employee",
+      "required": "Required",
+      "deleteTitle": "Remove Employee",
+      "deleteDesc": "Are you sure you want to remove {{name}}? All related tasks will be permanently removed.",
+      "employmentTypes": {
+        "Permanent": "Permanent",
+        "Contract": "Contract",
+        "Probation": "Probation",
+        "Intern": "Intern"
+      },
+      "leaveQuotaInvalid": "Enter a whole number between 0 and 365",
+      "resignBeforeJoin": "Resign date can't be before join date"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage login accounts, roles, and feature permissions",
+      "search": "Search name or email...",
+      "inviteUser": "Invite User",
+      "columns": {
+        "user": "User",
+        "role": "Role",
+        "linkedEmployee": "Linked Employee",
+        "joined": "Joined",
+        "permissions": "Permissions"
+      },
+      "notLinked": "Not linked",
+      "assignRole": "Assign role",
+      "cannotChangeSelf": "You cannot change your own role",
+      "cannotChangeRole": "You can only change the role of someone below your own role",
+      "permissions": "Permissions",
+      "revoke": "Revoke",
+      "revoked": "Revoked",
+      "reactivate": "Reactivate",
+      "noUsersSearch": "No users match your search",
+      "noUsers": "No users yet - invite one above",
+      "revokeTitle": "Revoke Access",
+      "revokeDesc": "Revoke login access for {{name}}? Their employee record will NOT be deleted."
+    },
+    "auditLog": {
+      "title": "Audit Log",
+      "subtitle": "Who did what, and when · the most recent 200 actions",
+      "search": "Search actor, action, or entity...",
+      "columns": {
+        "time": "Time",
+        "actor": "Actor",
+        "action": "Action",
+        "entity": "Entity",
+        "detail": "Detail"
+      },
+      "empty": "No activity logged yet",
+      "noResults": "No activity matches your search",
+      "systemActor": "System"
+    },
+    "import": {
+      "button": "Import",
+      "title": "Import from Excel",
+      "desc": "Upload an .xlsx file in the same column layout as the Export button produces.",
+      "chooseFile": "Choose file...",
+      "parsing": "Reading file...",
+      "validRows_one": "{{count}} row ready to import",
+      "validRows_other": "{{count}} rows ready to import",
+      "skippedRows_one": "{{count}} row skipped",
+      "skippedRows_other": "{{count}} rows skipped",
+      "rowError": "Row {{row}}: {{message}}",
+      "confirm": "Import {{count}} rows",
+      "importing": "Importing...",
+      "cancel": "Cancel",
+      "success_one": "{{count}} row imported",
+      "success_other": "{{count}} rows imported",
+      "noValidRows": "No valid rows found in this file"
+    },
+    "masterList": {
+      "add": "Add",
+      "search": "Search...",
+      "columnName": "Name",
+      "columnActions": "Actions",
+      "namePlaceholder": "Enter name...",
+      "empty": "No items yet",
+      "emptyHint": "Click Add to create the first entry",
+      "noResults": "No items match your search",
+      "projectTypes": {
+        "title": "Project Types",
+        "subtitle": "Manage project category types (e.g. Software, Hardware)",
+        "itemLabel": "Project Type"
+      },
+      "projectStatus": {
+        "title": "Project Status",
+        "subtitle": "Manage project phase statuses (e.g. Development, Done)",
+        "itemLabel": "Status"
+      },
+      "deleteTypeTitle": "Delete Project Type",
+      "deleteTypeDesc": "Are you sure you want to delete {{name}}? This cannot be undone.",
+      "deleteStatusTitle": "Delete Status",
+      "deleteStatusDesc": "Are you sure you want to delete {{name}}? Projects using this status will lose it.",
+      "addNew": "Add {{title}}",
+      "editItem": "Edit {{title}}",
+      "save": "Save",
+      "saving": "Saving...",
+      "required": "Required"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "allPriorities": "All priorities",
+      "allEmploymentTypes": "All employment types",
+      "allRoles": "All roles",
+      "allLinks": "All accounts",
+      "linked": "Linked to employee",
+      "unlinked": "Not linked",
+      "allActions": "All actions",
+      "allEntities": "All entities",
+      "from": "From date",
+      "to": "To date",
+      "dateRange": "Date range"
+    }
+  },
+  "deleteModal": {
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting..."
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account & security",
+    "changePhoto": "Change Photo",
+    "uploading": "Uploading...",
+    "accountInfo": {
+      "title": "Account Information",
+      "description": "Your current account details. Role can only be changed by an Admin."
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "description": "Update your display name shown across the dashboard."
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred display language. Takes effect immediately.",
+      "label": "Language",
+      "english": "English",
+      "indonesian": "Indonesia"
+    },
+    "security": {
+      "title": "Change Password",
+      "description": "Set a new password for your account. Must be at least 8 characters.",
+      "currentPassword": "Current Password",
+      "currentPasswordWrong": "That current password is not right",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "repeatPassword": "Repeat new password",
+      "passwordMismatch": "Passwords do not match",
+      "updatePassword": "Update Password",
+      "updating": "Updating..."
+    },
+    "fields": {
+      "email": "Email",
+      "role": "Role",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Your full name",
+      "phoneNumber": "Phone Number",
+      "phoneNumberPlaceholder": "e.g. +62 812 3456 7890"
+    },
+    "actions": {
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "updated": "Profile updated successfully",
+      "avatarUpdated": "Avatar updated",
+      "passwordUpdated": "Password changed successfully",
+      "languageUpdated": "Language updated"
+    },
+    "email": {
+      "title": "Email Address",
+      "description": "Update your login email. Confirmation links will be sent to both addresses before the change takes effect.",
+      "newEmail": "New Email Address",
+      "newEmailPlaceholder": "your@email.com",
+      "currentEmail": "Current email",
+      "updateEmail": "Update Email",
+      "updating": "Sending...",
+      "pendingTitle": "Email Change Pending",
+      "pendingDesc": "Confirmation links were sent to {{email}} and your current address. Check both inboxes.",
+      "cancelChange": "Cancel",
+      "confirmationSent": "Confirmation links sent to both email addresses.",
+      "invalidFormat": "Please enter a valid email address.",
+      "alreadyInUse": "This email is already associated with another account.",
+      "rateLimited": "Too many requests. Please try again later.",
+      "cancelSuccess": "Email change cancelled."
+    },
+    "payslips": {
+      "title": "Payslips",
+      "description": "Payslips for finalized months"
+    }
+  },
+  "shell": {
+    "profileSettings": "Profile Settings",
+    "signOut": "Sign Out",
+    "administrator": "Administrator",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "signOutConfirm": {
+      "title": "Sign out?",
+      "desc": "You'll need to sign in again to access WorkDesk."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "soundOn": "Unmute sound",
+    "soundOff": "Mute sound",
+    "empty": "No notifications yet",
+    "emptyHint": "You'll see updates here when something needs your attention"
+  },
+  "login": {
+    "tagline": "Sign in to continue",
+    "continueWithGoogle": "Continue with Google",
+    "redirecting": "Redirecting...",
+    "orEmail": "or continue with email",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "forgotPassword": "Forgot password?",
+    "sendingReset": "Sending...",
+    "resetSent": "We sent a link to {{email}}. Check your inbox, including spam.",
+    "errors": {
+      "invalidCredentials": "Invalid email or password.",
+      "authServiceError": "Authentication service error. Please try again in a moment.",
+      "googleNotConfigured": "Google sign-in is not yet configured. Please use email & password.",
+      "emailFirst": "Enter a valid email address first."
+    },
+    "welcome": "Welcome back!",
+    "heroTitle": "Your workday,\nall in one desk.",
+    "heroBody": "Log your daily reports, track attendance, leave and overtime, and chat with your team from one place.",
+    "heroFoot": "Pick up where you left off."
+  },
+  "resetPassword": {
+    "title": "Set a new password",
+    "subtitle": "Pick something you have not used before",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "save": "Save password",
+    "saving": "Saving...",
+    "success": "Password updated. Taking you in...",
+    "mismatch": "The two passwords do not match",
+    "tooShort": "Password must be at least {{count}} characters",
+    "linkExpired": "This reset link is no longer valid. Request a new one from the login page.",
+    "backToLogin": "Back to login"
+  },
+  "payroll": {
+    "title": "Payroll",
+    "subtitle": "Monthly run, payslips and payment status",
+    "period": "Period",
+    "generate": "Generate run",
+    "finalize": "Finalize",
+    "finalizedOn": "Finalized {{date}}",
+    "paidCount": "Paid",
+    "slip": "Payslip",
+    "empty": "No lines in this run",
+    "noRuns": "No payroll run yet",
+    "noRunsHint": "Pick a month and generate the run. It reads approved overtime and business trips, and the rates set in Overtime.",
+    "noRunsEmployee": "Your payslip appears here once payroll for the month is finalized.",
+    "unknownEmployee": "Unknown employee",
+    "table": {
+      "employee": "Employee",
+      "base": "Base salary",
+      "overtime": "Overtime",
+      "trips": "Business trips",
+      "gross": "Gross",
+      "deductions": "Deductions",
+      "net": "Take home",
+      "payment": "Payment"
+    },
+    "deductions": {
+      "pph21": "PPh 21",
+      "bpjs": "BPJS",
+      "other": "Other",
+      "note": "Note (optional)"
+    },
+    "payment": {
+      "Unpaid": "Unpaid",
+      "Paid": "Paid"
+    },
+    "finalizeConfirm": {
+      "title": "Finalize this payroll run?",
+      "body": "The amounts are frozen after this. Only the payment status can still change, and the run cannot be reopened."
+    },
+    "deleteConfirm": {
+      "title": "Delete this draft run?",
+      "body": "The lines and any deductions entered for this month are removed. The approved overtime rows they were built from are untouched."
+    },
+    "slipAll": "Download all payslips",
+    "search": "Search employee...",
+    "detail": {
+      "paidAt": "Paid on",
+      "deductionNote": "Deduction note"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "active": "Active",
+    "inactive": "Inactive",
+    "task_one": "task",
+    "task_other": "tasks",
+    "required": "Required",
+    "export": "Export",
+    "noResults": "No results found",
+    "pickDate": "Pick a date",
+    "clearDate": "Clear date",
+    "pickTime": "Pick a time",
+    "pagination": {
+      "range": "{{from}}–{{to}} of {{total}}",
+      "page": "Page {{page}} of {{pageCount}}"
+    },
+    "detail": "Detail",
+    "submittedAt": "Submitted",
+    "jobTitle": "Job title"
+  },
+  "export": {
+    "title": "Export Center",
+    "subtitle": "Generate filtered reports in Excel or PDF format",
+    "filters": {
+      "title": "Report Filters",
+      "dateFrom": "From Date",
+      "dateTo": "To Date",
+      "project": "Project",
+      "employee": "Employee",
+      "allProjects": "All Projects",
+      "allEmployees": "All Employees"
+    },
+    "records": {
+      "loading": "Loading records...",
+      "match_one": "{{count}} record matches your filters",
+      "match_other": "{{count}} records match your filters"
+    },
+    "excel": {
+      "title": "Excel (.xlsx)",
+      "subtitle": "Spreadsheet with styled rows",
+      "desc": "Full data export with colored headers, alternating rows, and conditional progress formatting.",
+      "button": "Export Excel"
+    },
+    "csv": {
+      "title": "CSV (.csv)",
+      "subtitle": "Plain, portable spreadsheet data",
+      "desc": "Raw comma-separated data, easy to import into other tools or spreadsheets.",
+      "button": "Export CSV"
+    },
+    "pdf": {
+      "title": "PDF (.pdf)",
+      "subtitle": "Landscape A4 with table layout",
+      "desc": "Professional dark-themed PDF with report title, generation timestamp, and auto-table layout.",
+      "button": "Export PDF"
+    },
+    "status": {
+      "generating": "Generating...",
+      "downloaded": "Downloaded!"
+    },
+    "tips": {
+      "emptyDates": "Leave a date field empty to leave that side of the range open. If From is later than To, nothing matches.",
+      "currentData": "Exported files use the same data currently loaded in the application."
+    },
+    "overtimeStatus": {
+      "label": "Approval status",
+      "all": "All statuses"
+    },
+    "attendance": {
+      "title": "Attendance (.xlsx / .pdf)",
+      "subtitle": "Payroll attendance and recap",
+      "desc": "Daily rows with clock in/out, hours, late and early leave flags, plus a per employee recap of working days, Hadir / Izin / Sakit / Cuti / Alpa and total hours. The PDF carries the same tables, recap on its own page.",
+      "button": "Excel",
+      "pdfButton": "PDF",
+      "period": "Period",
+      "workingDays_one": "{{count}} working day",
+      "workingDays_other": "{{count}} working days"
+    },
+    "tasks": {
+      "title": "Daily Report (.xlsx / .csv / .pdf)",
+      "subtitle": "Logged tasks per project and employee"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page not found",
+      "message": "The page you're looking for doesn't exist.",
+      "back": "Back to Dashboard"
+    },
+    "forbidden": {
+      "badge": "403 Forbidden",
+      "title": "Access Denied",
+      "message": "You don't have permission to view this page. Contact your administrator to request access.",
+      "goBack": "Go Back",
+      "dashboard": "Dashboard"
+    }
+  },
+  "overtime": {
+    "title": "Overtime & Business Trip",
+    "subtitle": "Track overtime and business trip submissions",
+    "newRequest": "New Request",
+    "tabs": {
+      "myRequests": "My Requests",
+      "approval": "Approval"
+    },
+    "type": {
+      "Overtime": "Overtime",
+      "BusinessTrip_Local": "Local Business Trip",
+      "BusinessTrip_OutOfTown": "Out-of-Town Business Trip"
+    },
+    "status": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "stats": {
+      "overtimeHours": "Overtime This Month",
+      "businessTripLocalDays": "Local Trips This Month",
+      "businessTripOutOfTownDays": "Out-of-Town Trips This Month",
+      "pending": "Pending Approval",
+      "hours": "hrs",
+      "days": "days"
+    },
+    "chart": {
+      "title": "Monthly Summary {{year}}",
+      "overtime": "Overtime (hrs)",
+      "businessTripLocal": "Local Trips",
+      "businessTripOutOfTown": "Out-of-Town Trips"
+    },
+    "form": {
+      "title": "Submit Request",
+      "editTitle": "Edit Request",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "overnight": "Shift ends the next day (crosses midnight)",
+      "duration": "Duration",
+      "durationValue": "{{hours}} hours",
+      "project": "Project",
+      "projectOptional": "(optional)",
+      "description": "Activity Description",
+      "descPlaceholder": "Describe the work done or trip purpose...",
+      "submit": "Submit",
+      "update": "Update",
+      "saving": "Saving...",
+      "dailyAllowance": "Daily Allowance (IDR)",
+      "selectType": "Select type...",
+      "overtimePay": "Overtime Pay (IDR)",
+      "allowanceFromRate": "Calculated from the rate set by the admin.",
+      "noRateHint": "No rate has been set for you yet, so this stays at 0. Ask an admin to set your rate.",
+      "serverConfirms": "Hours and pay shown here are confirmed by the server when you save.",
+      "errFutureDate": "The date cannot be in the future.",
+      "errTimeOrder": "End time must be later than start time.",
+      "errMaxDuration": "Duration cannot be more than 24 hours.",
+      "resubmitNote": "This request was rejected. Saving it sends it back for approval and clears the rejection note."
+    },
+    "table": {
+      "type": "Type",
+      "date": "Date",
+      "time": "Time",
+      "project": "Project",
+      "description": "Description",
+      "duration": "Duration",
+      "status": "Status",
+      "employee": "Employee",
+      "actions": "Actions",
+      "empty": "No records yet",
+      "emptyHint": "Submit your first overtime or business trip request",
+      "allowance": "Allowance",
+      "noResults": "No records match your filter",
+      "allTypes": "All Types"
+    },
+    "approval": {
+      "title": "Approval Queue",
+      "subtitle": "Review and act on pending submissions",
+      "filterAll": "All",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectTitle": "Reject Request",
+      "rejectDesc": "Provide a reason for rejecting this request from {{name}}.",
+      "rejectNote": "Rejection Note",
+      "rejectNotePlaceholder": "Optional reason...",
+      "confirmReject": "Confirm Reject",
+      "empty": "No submissions to review",
+      "noResults": "No submissions match your filter",
+      "search": "Search employee or description...",
+      "selected_one": "{{count}} selected",
+      "selected_other": "{{count}} selected",
+      "approveSelected": "Approve selected",
+      "allTypes": "All Types"
+    },
+    "delete": {
+      "title": "Delete Request",
+      "desc": "Are you sure you want to delete this request? This cannot be undone."
+    },
+    "export": {
+      "title": "Overtime / Business Trip (.xlsx)",
+      "subtitle": "Monthly overtime & business trip report",
+      "desc": "Exports in the standard PRESENSI JAM LEMBUR format matching the official Excel template.",
+      "button": "Export Overtime / Business Trip",
+      "yearFilter": "Year",
+      "monthFilter": "Month",
+      "allMonths": "All Months"
+    },
+    "rates": {
+      "title": "Employee Rates",
+      "subtitle": "Configure per-employee overtime and trip rate settings",
+      "overtimeRate": "Overtime Rate (per hour)",
+      "localRate": "Local Trip Rate (per day)",
+      "outOfTownRate": "Out-of-Town Trip Rate (per day)",
+      "save": "Save Rates",
+      "saving": "Saving...",
+      "saved": "Saved",
+      "selectEmployee": "Select employee...",
+      "currency": "IDR",
+      "tableTitle": "Configured Rates",
+      "employee": "Employee",
+      "empty": "No rate configurations yet",
+      "baseSalary": "Base Salary (per month)",
+      "search": "Search employee...",
+      "notSet": "Not set",
+      "editTitle": "Edit Rates",
+      "noResults": "No employees match your search",
+      "col": {
+        "baseSalary": "Base salary",
+        "overtime": "Overtime / hr",
+        "local": "Local trip / day",
+        "outOfTown": "Out-of-town / day",
+        "updated": "Updated"
+      }
+    },
+    "detail": {
+      "reviewedBy": "Reviewed by",
+      "submittedAt": "Submitted at",
+      "updatedAt": "Last updated",
+      "updatedBy": "Updated by"
+    }
+  },
+  "calendar": {
+    "title": "Work Calendar",
+    "subtitle": "Weekends and holidays · Admin manages, everyone else views",
+    "sync": "Sync National Holidays",
+    "addHoliday": "Add Holiday",
+    "listTitle": "Holidays",
+    "empty": "No holidays yet",
+    "emptyHint": "Add a custom holiday or sync national holidays for the year",
+    "legend": {
+      "weekend": "Weekend",
+      "holiday": "Holiday",
+      "national": "National",
+      "clickHint": "Click a day to add or remove a holiday"
+    },
+    "dialog": {
+      "title": "Add Holiday",
+      "date": "Date",
+      "name": "Name",
+      "namePlaceholder": "e.g. Independence Day"
+    },
+    "deleteTitle": "Delete holiday?",
+    "deleteDesc": "\"{{name}}\" will be removed from the work calendar."
+  },
+  "attendance": {
+    "title": "Attendance",
+    "subtitle": "Daily check-in and attendance records",
+    "addRecord": "Add Record",
+    "tabs": {
+      "myRecap": "My Recap",
+      "all": "All Attendance",
+      "manage": "Manage Attendance"
+    },
+    "period": {
+      "daily": "Daily",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "status": {
+      "Hadir": "Present",
+      "Izin": "Leave",
+      "Sakit": "Sick",
+      "Alpa": "Absent",
+      "late": "Late",
+      "Cuti": "Annual Leave",
+      "earlyLeave": "Early leave"
+    },
+    "table": {
+      "employee": "Employee",
+      "date": "Date",
+      "status": "Status",
+      "clockInOut": "Clock In / Out",
+      "note": "Note",
+      "empty": "No attendance records yet",
+      "hours": "Hours"
+    },
+    "recap": {
+      "historyTitle": "History",
+      "empty": "No attendance recorded yet",
+      "workingDays": "Working days",
+      "totalHours": "Total hours"
+    },
+    "dialog": {
+      "addTitle": "Add Attendance Record",
+      "editTitle": "Edit Attendance Record",
+      "employee": "Employee",
+      "employeePlaceholder": "Select employee...",
+      "date": "Date",
+      "status": "Status",
+      "clockIn": "Clock In",
+      "clockOut": "Clock Out",
+      "note": "Note",
+      "notePlaceholder": "Optional note...",
+      "noteRequiredPlaceholder": "Reason (required)...",
+      "attachment": "Attachment (optional)",
+      "attachmentPick": "Choose file",
+      "attachmentHint": "Letter, photo or other document. JPG/PNG/WEBP/PDF/DOC, max 10MB"
+    },
+    "schedule": {
+      "title": "Work Schedule",
+      "subtitle": "Standard hours used to flag late check-ins",
+      "tolerance": "Tolerance (min)",
+      "timezone": "Timezone",
+      "workDays": "Work days",
+      "lockedUntil": "Locked until",
+      "lockedUntilNone": "Not locked",
+      "days": {
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat",
+        "7": "Sun"
+      },
+      "companyName": "Company name"
+    },
+    "gate": {
+      "title": "Attendance check-in",
+      "subtitle": "You haven't recorded attendance for {{date}} yet",
+      "scheduleHint": "Work hours: {{clockIn}}–{{clockOut}} (tolerance {{tolerance}} min)",
+      "notePlaceholder": "Reason (required)...",
+      "submit": "Submit"
+    },
+    "delete": {
+      "title": "Delete attendance record?",
+      "desc": "This attendance record will be permanently removed."
+    },
+    "today": {
+      "checkIn": "Check in",
+      "checkOut": "Check out",
+      "done": "Today: {{status}}"
+    },
+    "toast": {
+      "checkedIn": "Attendance recorded",
+      "checkedOut": "Checked out"
+    },
+    "errors": {
+      "duplicate": "Attendance for this employee on this date already exists",
+      "locked": "That period is closed and can no longer be changed",
+      "noOpenCheckIn": "There is no open check-in to close today",
+      "clockOrder": "Clock out must be later than clock in",
+      "clockInRequired": "Clock in is required for a present day",
+      "noTimes": "This status cannot have clock in or clock out times",
+      "noteRequired": "A note is required for Leave/Sick",
+      "fileTooLarge": "File is too large (max 10MB)"
+    },
+    "detail": {
+      "title": "Attendance Detail",
+      "attachment": "Attachment",
+      "attachmentUnavailable": "Attachment could not be loaded"
+    }
+  },
+  "guide": {
+    "defaultName": "there",
+    "welcomeTitle": "Welcome, {{name}}",
+    "welcomeSubtitle": "Here's what you can do in WorkDesk - pick a feature to jump straight to it",
+    "open": "Open",
+    "purposeLabel": "What it's for",
+    "flowLabel": "How it works",
+    "stepsLabel": "How to use it",
+    "noteLabel": "Note",
+    "extra": {
+      "profileLabel": "Profile Settings",
+      "profileDesc": "Update account info, language, and password",
+      "notificationsLabel": "Notifications",
+      "notificationsDesc": "See alerts for approved/rejected overtime and trip requests",
+      "themeLabel": "Switch Theme",
+      "themeDesc": "Toggle between light and dark mode",
+      "logoutLabel": "Account Menu & Sign Out",
+      "logoutDesc": "Open profile settings or sign out of your account"
+    },
+    "features": {
+      "dashboard": {
+        "purpose": "Shows the team and project situation at a glance: total tasks, average progress, completed tasks, and problems needing attention.",
+        "flow": "Every number here is computed automatically from what's logged in Daily Report - there's nothing to fill in on this page.",
+        "steps": [
+          "Open this page first after logging in to see today's overall status.",
+          "Check the stat cards at the top for the quick numbers.",
+          "Look at \"Tasks per Project\" to see which project has the most activity.",
+          "Watch \"Active Problems\" for unresolved issues.",
+          "Check \"Team Workload\" to see who's carrying a heavy load this week."
+        ],
+        "note": "This page is read-only monitoring - there's nothing to submit here."
+      },
+      "daily-report": {
+        "purpose": "Where each employee logs the work done every day, per project.",
+        "flow": "Each entry has a date, project, task description, progress percentage, and a problem field if there is one. This data feeds Dashboard, Timeline, and Issue Log.",
+        "steps": [
+          "Click \"Log Task\".",
+          "Pick the date and the project the work was for.",
+          "Fill in the task description and progress percentage.",
+          "If there's a blocker, describe it in the \"Problem\" field - it will automatically show up in Issue Log.",
+          "Attach a photo or file as proof of work if needed, then save."
+        ],
+        "note": "You can discuss a task with teammates through comments on that entry."
+      },
+      "timeline": {
+        "purpose": "Shows every project's schedule as a Gantt chart based on start and end dates.",
+        "flow": "Project dates come from Master Hub, while each bar's progress is averaged from Daily Report entries.",
+        "steps": [
+          "Open this page to see which projects overlap in time.",
+          "Watch for projects with low progress but a near end date.",
+          "Use the date filter to focus on a specific range."
+        ],
+        "note": "Read-only - to change a project's dates, edit it in Master Hub > Projects."
+      },
+      "holidays": {
+        "purpose": "A shared work calendar marking weekends and holidays, so everyone has the same reference for which days are working days.",
+        "flow": "Saturdays/Sundays are marked automatically. National holidays can be synced automatically by an Admin, or added manually for company-specific days off.",
+        "steps": [
+          "Admin: pick a year and click \"Sync National Holidays\" to pull the official national calendar.",
+          "Admin: click an empty date to add a custom holiday, or click an existing holiday to remove it.",
+          "Everyone else: open this page to check which days are holidays or working days - nothing here can be changed."
+        ],
+        "note": "This calendar also decides when the Attendance check-in modal should appear (it stays hidden on weekends and holidays)."
+      },
+      "attendance": {
+        "purpose": "Daily attendance - records presence (Present/Leave/Sick/Absent) along with clock-in and clock-out times.",
+        "flow": "On every working day, a check-in modal appears automatically the first time the app is opened if that day hasn't been recorded yet. An Admin can set the standard work schedule and correct anyone's records.",
+        "steps": [
+          "When the modal appears, pick a status: Present (clock-in is stamped immediately), Leave, or Sick (with a short reason).",
+          "\"My Recap\" tab: see your own attendance history and stats.",
+          "\"All Attendance\" tab: view everyone's attendance (read-only).",
+          "\"Manage Attendance\" tab (Admin): set the standard work hours and tolerance, correct anyone's clock-in/out or status, add manual records.",
+          "Use the period filter (Daily/Monthly/Yearly) in the top right to look at a specific range."
+        ],
+        "note": "A \"Late\" badge appears automatically when a clock-in is past the work schedule plus the tolerance the Admin set."
+      },
+      "issues": {
+        "purpose": "A list of problems reported through Daily Report, so they don't get buried in the day-to-day logs.",
+        "flow": "Whatever gets written in a task's \"Problem\" field automatically shows up here.",
+        "steps": [
+          "Open this page to see every open problem.",
+          "Mark a problem resolved once it's been handled.",
+          "Use the filter to focus on what's still unresolved."
+        ],
+        "note": "Resolved problems stay on record as history."
+      },
+      "overtime-business-trip": {
+        "purpose": "Requests for overtime and business trips (local/out-of-town), with a manager approval flow.",
+        "flow": "An employee submits a request, and an Admin or Manager approves or rejects it. There's a monthly summary and a per-employee rate setting for compensation.",
+        "steps": [
+          "Click \"New Request\" and pick a type (Overtime / Local Trip / Out-of-Town Trip).",
+          "For Overtime: fill in the start and end time. For a trip: fill in the daily allowance.",
+          "Wait for approval from an Admin/Manager under the \"Approval\" tab.",
+          "Admin: set overtime/trip rates per employee under the \"Rates\" tab."
+        ],
+        "note": "Rates are set by Admin/Manager and are used to calculate compensation."
+      },
+      "export": {
+        "purpose": "Downloads Excel/PDF reports from Daily Report and Overtime data for offline use (meetings, archives, clients).",
+        "flow": "Pick a date range and a report type, and the file is generated from whatever data is currently loaded in the app.",
+        "steps": [
+          "Pick a start and end date (leave them empty to export everything).",
+          "Pick a format (Excel/PDF).",
+          "Click \"Generate\" and download the file."
+        ],
+        "note": "The downloaded file reflects the data as of that moment, not a live feed."
+      },
+      "master": {
+        "purpose": "Manages the reference data other features rely on: projects, employees, project types, project statuses, login accounts, and the audit trail.",
+        "flow": "Data set up here (like the project list) shows up as options in Daily Report, Timeline, Overtime, and elsewhere.",
+        "steps": [
+          "Pick the tab for what you want to manage: Project Types, Project Status, Projects, Employees.",
+          "\"Users\" tab (Admin): create login accounts, assign roles, link them to an employee record.",
+          "\"Audit Log\" tab (Admin): review a history of important changes across the app."
+        ],
+        "note": "Changing someone's role can only be done by someone who outranks them, and no one can change their own role."
+      },
+      "profile": {
+        "purpose": "Manage your own account info: name, photo, email, app language, and password.",
+        "flow": "Everything here only affects your own account, never anyone else's.",
+        "steps": [
+          "Open it from the profile menu in the top-right corner (click your name/avatar).",
+          "Update your name or profile photo under \"Personal Info\".",
+          "Switch the app language (Indonesian/English) under \"Language\".",
+          "Update your password under \"Security\" if needed."
+        ],
+        "note": "Your role can only be changed by an Admin, never by yourself."
+      },
+      "notifications": {
+        "purpose": "Real-time alerts for things you need to know, like the status of an overtime/trip request.",
+        "flow": "The bell icon shows a red count when there are unread notifications.",
+        "steps": [
+          "Click the bell icon to see the notification list.",
+          "Click a notification to jump straight to the related page.",
+          "Mark everything read once the list gets full."
+        ],
+        "note": "Notifications appear automatically when your overtime/trip request is approved or rejected."
+      },
+      "chat": {
+        "purpose": "Team messaging: talk with colleagues in threads and share files or images.",
+        "flow": "Open a conversation, type your message and send. You can reply in threads, react, forward, and mention people.",
+        "steps": [
+          "Pick a conversation from the list.",
+          "Type your message and press Enter to send.",
+          "Attach a file or image if needed.",
+          "Use @ to mention a colleague."
+        ],
+        "note": "Chat is open to every signed-in user."
+      },
+      "theme": {
+        "purpose": "Switches the app's appearance between light, dark, or your system setting.",
+        "flow": "Your theme choice is saved in the browser, so it stays the same next time you open the app.",
+        "steps": [
+          "Open the user menu (your avatar, top-right) and pick Light, Dark, or System."
+        ],
+        "note": "This setting only applies to the device/browser you're currently using."
+      },
+      "logout": {
+        "purpose": "The menu for opening profile settings or signing out of your account.",
+        "flow": "Click your name/avatar in the top-right corner to open it.",
+        "steps": [
+          "Click your name/avatar in the top-right corner.",
+          "Pick \"Profile Settings\" to update your account info.",
+          "Pick \"Sign Out\" to log out - you'll get a confirmation before it actually signs you out."
+        ],
+        "note": "You'll need to log in again after signing out to use the app."
+      },
+      "leave": {
+        "purpose": "Requests for annual leave, permission (Izin) and sick days, with manager approval and a yearly leave balance.",
+        "flow": "An employee submits a request, an Admin or Manager approves or rejects it. Approved requests are written into attendance automatically for every working day in the range.",
+        "steps": [
+          "Click \"New Request\", pick a type (Leave / Permission / Sick), the dates and a reason.",
+          "Track your requests and your remaining leave balance under \"My Requests\".",
+          "A rejected request can be edited and submitted again.",
+          "Admin/Manager: approve or reject team requests under the \"Approval\" tab (a rejection needs a note).",
+          "Click any row to see the full detail."
+        ],
+        "note": "Nobody can approve their own request. Only annual leave (Cuti) uses the leave balance."
+      },
+      "payroll": {
+        "purpose": "Monthly payroll run: salary, overtime and trip allowances, deductions, payment status and payslips.",
+        "flow": "Admin generates the run for a period, fills in deductions, finalizes it, then marks each employee as paid. Employees download their own payslip once the month is finalized.",
+        "steps": [
+          "Pick the period and click \"Generate payroll\" - base salary, overtime and trips are pulled in from rates and approved claims.",
+          "Fill in PPh 21, BPJS and other deductions per employee while the run is still a draft.",
+          "Click \"Finalize\" to lock the month.",
+          "Mark each row as paid, and download a single payslip or all payslips as PDF.",
+          "Employees: your finalized payslips appear here for download."
+        ],
+        "note": "A finalized period can no longer be changed; only the payment status can still be updated."
+      }
+    },
+    "tour": {
+      "next": "Next",
+      "prev": "Previous",
+      "done": "Done"
+    },
+    "tours": {
+      "dashboard": [
+        {
+          "title": "Total Tasks",
+          "desc": "The total number of tasks the team has ever logged."
+        },
+        {
+          "title": "Average Progress",
+          "desc": "The average progress percentage across every task."
+        },
+        {
+          "title": "Completed Tasks",
+          "desc": "The number of tasks at 100% progress."
+        },
+        {
+          "title": "Active Problem Count",
+          "desc": "How many blockers are still open and need attention."
+        },
+        {
+          "title": "Task Distribution",
+          "desc": "This chart shows which project has the most activity."
+        },
+        {
+          "title": "Team Productivity",
+          "desc": "This gauge summarizes the whole team's average progress."
+        },
+        {
+          "title": "Active Problem List",
+          "desc": "Blockers reported through Daily Report show up here."
+        },
+        {
+          "title": "Team Workload",
+          "desc": "See who's carrying a heavy load this week."
+        }
+      ],
+      "daily-report": [
+        {
+          "title": "Search Tasks",
+          "desc": "Type a keyword to find a specific task."
+        },
+        {
+          "title": "Filter",
+          "desc": "Narrow the list down by employee or project."
+        },
+        {
+          "title": "Log a New Task",
+          "desc": "Click here to record today's work."
+        },
+        {
+          "title": "Task List",
+          "desc": "Every logged task shows up here - switch between table and kanban view."
+        }
+      ],
+      "timeline": [
+        {
+          "title": "Switch View",
+          "desc": "Choose a monthly or weekly view."
+        },
+        {
+          "title": "Search & Filter",
+          "desc": "Search for a project or filter by priority."
+        },
+        {
+          "title": "Gantt Chart",
+          "desc": "See every project's schedule and progress here."
+        }
+      ],
+      "holidays": [
+        {
+          "title": "Sync National Holidays",
+          "desc": "Admins can pull the official national holiday calendar automatically for a chosen year."
+        },
+        {
+          "title": "Calendar",
+          "desc": "Weekends and holidays are marked automatically. Admins can click a date to add or remove a holiday."
+        },
+        {
+          "title": "Add Holiday",
+          "desc": "Or click here to add a holiday without picking a date on the calendar first."
+        },
+        {
+          "title": "Holiday List",
+          "desc": "Every recorded holiday shows up in this panel."
+        }
+      ],
+      "attendance": [
+        {
+          "title": "Attendance Tabs",
+          "desc": "Switch between your own recap, everyone's attendance, and managing attendance (Admin only)."
+        },
+        {
+          "title": "Period Filter",
+          "desc": "View attendance daily, monthly, or yearly."
+        },
+        {
+          "title": "My Recap",
+          "desc": "Your attendance summary and history for the selected period."
+        },
+        {
+          "title": "Everyone's Attendance",
+          "desc": "A read-only view of every employee's attendance for the selected period."
+        },
+        {
+          "title": "Add Record",
+          "desc": "Admins can manually add an attendance record for an employee."
+        },
+        {
+          "title": "Work Schedule",
+          "desc": "Admins set the standard clock-in/out time and late tolerance here."
+        },
+        {
+          "title": "Manage Attendance",
+          "desc": "Admins can edit or remove any employee's attendance record here."
+        }
+      ],
+      "issues": [
+        {
+          "title": "Status Filter",
+          "desc": "Click to see all problems, only open ones, or only resolved ones."
+        },
+        {
+          "title": "Search & Filter",
+          "desc": "Search for a specific problem or filter by employee/project."
+        },
+        {
+          "title": "Problem List",
+          "desc": "Problems from Daily Report show up here - mark one resolved once it's handled."
+        }
+      ],
+      "overtime-business-trip": [
+        {
+          "title": "New Request",
+          "desc": "Click to submit an overtime or business trip request."
+        },
+        {
+          "title": "This Month's Stats",
+          "desc": "Overtime hours, trip days, and pending requests for the current month."
+        },
+        {
+          "title": "Monthly Chart",
+          "desc": "A chart of total overtime hours and trip days across the year."
+        },
+        {
+          "title": "Tabs",
+          "desc": "Switch between your own requests, approvals, and rate settings (Admin/Manager only)."
+        },
+        {
+          "title": "My Requests",
+          "desc": "Your own overtime/trip requests and their status."
+        },
+        {
+          "title": "Approval",
+          "desc": "Admin/Manager approves or rejects requests here."
+        },
+        {
+          "title": "Employee Rates",
+          "desc": "Admin/Manager sets overtime and trip rates per employee here."
+        }
+      ],
+      "export": [
+        {
+          "title": "Date Range",
+          "desc": "Pick the start and end date for the Daily Report data you want."
+        },
+        {
+          "title": "Project & Employee",
+          "desc": "Narrow the report down to a specific project or employee."
+        },
+        {
+          "title": "Record Count",
+          "desc": "Shows how many records match your filters before downloading."
+        },
+        {
+          "title": "Download Report",
+          "desc": "Choose Excel, CSV, or PDF to download the Daily Report data."
+        },
+        {
+          "title": "Overtime/Trip Export",
+          "desc": "A separate section for downloading monthly overtime and trip reports."
+        }
+      ],
+      "master": [
+        {
+          "title": "Project Types",
+          "desc": "Manage the list of available project categories."
+        },
+        {
+          "title": "Add Project Type",
+          "desc": "Click to add a new project category."
+        },
+        {
+          "title": "Search Project Types",
+          "desc": "Filter the list by name."
+        },
+        {
+          "title": "Project Status",
+          "desc": "Manage the statuses a project can have (MOU, Development, Done, etc)."
+        },
+        {
+          "title": "Add Project Status",
+          "desc": "Click to add a new project status."
+        },
+        {
+          "title": "Search Project Status",
+          "desc": "Filter the list by name."
+        },
+        {
+          "title": "Projects",
+          "desc": "Manage the project list: code, name, client, priority, and schedule."
+        },
+        {
+          "title": "Project Tools",
+          "desc": "Search, export to Excel, import from Excel, or add a new project."
+        },
+        {
+          "title": "Employees",
+          "desc": "Manage the employee list and their titles."
+        },
+        {
+          "title": "Employee Tools",
+          "desc": "Search, export to Excel, import from Excel, or add a new employee."
+        },
+        {
+          "title": "Users",
+          "desc": "Manage login accounts, roles, and their linked employee record (Admin only)."
+        },
+        {
+          "title": "User Tools",
+          "desc": "Search users or invite a new user to the app."
+        },
+        {
+          "title": "Audit Log",
+          "desc": "A history of important changes across the app (Admin only)."
+        },
+        {
+          "title": "Search Audit Log",
+          "desc": "Filter the log by actor, action, or entity."
+        }
+      ],
+      "profile": [
+        {
+          "title": "Profile Photo",
+          "desc": "Click your photo to upload a new one."
+        },
+        {
+          "title": "Account Info",
+          "desc": "Your role and account status (read-only)."
+        },
+        {
+          "title": "Email",
+          "desc": "Your login email address - can be changed here."
+        },
+        {
+          "title": "Personal Info",
+          "desc": "Update your name and other personal details."
+        },
+        {
+          "title": "Language",
+          "desc": "Choose the app language: Indonesian or English."
+        },
+        {
+          "title": "Security",
+          "desc": "Change your account password here."
+        }
+      ],
+      "notifications": [
+        {
+          "title": "Notifications",
+          "desc": "Click to see recent alerts, like overtime approval status."
+        }
+      ],
+      "theme": [
+        {
+          "title": "Switch Theme",
+          "desc": "Open this menu to choose light, dark, or follow your system."
+        }
+      ],
+      "logout": [
+        {
+          "title": "Account Menu",
+          "desc": "Click to open profile settings or sign out."
+        }
+      ]
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "projects": "Projects",
+    "directMessages": "Direct Messages",
+    "noDms": "No conversations yet",
+    "findPerson": "Find a person...",
+    "members": "Members",
+    "empty": "No messages yet",
+    "emptyHint": "Say hello to get the conversation going",
+    "messagePlaceholder": "Message... (@ to mention)",
+    "replyingTo": "Replying to",
+    "newThread": "New thread",
+    "threadNamePlaceholder": "Thread name...",
+    "add": "Add",
+    "generalThread": "General",
+    "forwardTo": "Forward to...",
+    "forwarded": "Message forwarded",
+    "forwardedFrom": "Forwarded from {{name}}",
+    "fileTooLarge": "{{name}} is too large (max 50MB)",
+    "reply": "Reply",
+    "forward": "Forward",
+    "copy": "Copy message",
+    "copied": "Copied to clipboard",
+    "copyFailed": "Couldn't copy to clipboard",
+    "download": "Download",
+    "openOriginal": "Open in new tab",
+    "downloadFailed": "Couldn't download image",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "copyMedia": "Copy image",
+    "mediaCopied": "Image copied to clipboard",
+    "mediaCopyFailed": "Couldn't copy image",
+    "message": "Message",
+    "notifyAll": "Notify everyone",
+    "about": "About",
+    "react": "Add reaction",
+    "pin": "Pin message",
+    "unpin": "Unpin",
+    "edited": "(edited)",
+    "pinnedCount_one": "{{count}} pinned message",
+    "pinnedCount_other": "{{count}} pinned messages",
+    "deleteConfirm": {
+      "title": "Delete this message?",
+      "body": "It is removed for everyone in this chat, along with its reactions and attachments."
+    },
+    "searchChannels": "Search chats",
+    "searchMessages": "Search messages",
+    "jumpToPresent": "Jump to present",
+    "filter": {
+      "all": "All",
+      "unread": "Unread",
+      "dm": "DMs",
+      "attachments": "Attachments",
+      "pinned": "Pinned",
+      "mine": "From me"
+    },
+    "recordVoice": "Record voice note",
+    "recording": "Recording…",
+    "stopRecording": "Stop recording",
+    "micDenied": "Microphone access was denied",
+    "attachmentOnly": "Attachment",
+    "you": "You",
+    "yesterday": "Yesterday"
+  },
+  "leave": {
+    "title": "Leave",
+    "subtitle": "Submit leave, permission and sick requests",
+    "newRequest": "New Request",
+    "tabs": {
+      "myRequests": "My Requests",
+      "approval": "Approvals"
+    },
+    "type": {
+      "Cuti": "Annual Leave",
+      "Izin": "Permission",
+      "Sakit": "Sick"
+    },
+    "balance": {
+      "title": "Annual Leave Balance {{year}}",
+      "used": "{{used}} of {{quota}} days used",
+      "days": "days left"
+    },
+    "form": {
+      "title": "Submit Leave Request",
+      "editTitle": "Edit Leave Request",
+      "type": "Type",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "reason": "Reason",
+      "reasonPlaceholder": "Why do you need this leave?",
+      "rangeError": "End date cannot be earlier than the start date",
+      "resubmitNote": "This request was rejected. Saving it sends it back for approval.",
+      "submit": "Submit",
+      "update": "Update",
+      "saving": "Saving..."
+    },
+    "table": {
+      "type": "Type",
+      "period": "Period",
+      "reason": "Reason",
+      "status": "Status",
+      "employee": "Employee",
+      "actions": "Actions",
+      "empty": "No leave requests yet",
+      "emptyHint": "Submit your first leave, permission or sick request"
+    },
+    "approval": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectTitle": "Reject Request",
+      "rejectDesc": "Provide a reason for rejecting this request from {{name}}.",
+      "rejectNote": "Rejection Note",
+      "rejectNotePlaceholder": "Tell them why this is rejected...",
+      "confirmReject": "Confirm Reject",
+      "empty": "Nothing waiting for approval",
+      "emptyHint": "Pending requests from your team show up here"
+    },
+    "delete": {
+      "title": "Delete Leave Request",
+      "desc": "This request will be removed permanently. This cannot be undone."
+    }
+  }
+}
