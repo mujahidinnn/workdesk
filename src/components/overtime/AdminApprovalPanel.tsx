@@ -261,7 +261,7 @@ export function AdminApprovalPanel({
             <Button
               size="sm"
               onClick={handleBulkApprove}
-              disabled={approve.isPending}
+              loading={approve.isPending}
               className="h-7 text-xs gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white"
             >
               <Check className="w-3 h-3" />
@@ -426,6 +426,7 @@ export function AdminApprovalPanel({
                             className="h-7 px-2.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs gap-1"
                             onClick={() => handleApprove(r)}
                             disabled={approve.isPending}
+                            loading={approve.isPending && approve.variables?.id === r.id}
                           >
                             <Check className="w-3 h-3" />
                             {t("overtime.approval.approve")}
@@ -529,7 +530,7 @@ export function AdminApprovalPanel({
             <Button
               className="flex-1 bg-rose-600 hover:bg-rose-700 text-white"
               onClick={handleRejectConfirm}
-              disabled={reject.isPending}
+              loading={reject.isPending}
             >
               {t("overtime.approval.confirmReject")}
             </Button>

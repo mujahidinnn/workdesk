@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { Loader2, LogIn, LogOut, Plus } from "lucide-react";
+import { LogIn, LogOut, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { AttendanceTable } from "@/components/attendance/AttendanceTable";
@@ -198,14 +198,10 @@ export default function AttendancePage() {
               size="sm"
               variant="outline"
               className="gap-1.5 border-border"
-              disabled={checkOut.isPending}
+              loading={checkOut.isPending}
               onClick={() => checkOut.mutate()}
             >
-              {checkOut.isPending ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <LogOut className="w-3.5 h-3.5" />
-              )}
+              <LogOut className="w-3.5 h-3.5" />
               {t("attendance.today.checkOut")}
             </Button>
           )}

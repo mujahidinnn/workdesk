@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -178,13 +177,11 @@ export function LeaveFormDialog({
             <Button
               type="submit"
               className="flex-1"
-              disabled={isSaving || !canSubmit}
+              disabled={!canSubmit}
+              loading={isSaving}
             >
               {isSaving ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("leave.form.saving")}
-                </>
+                t("leave.form.saving")
               ) : request ? (
                 t("leave.form.update")
               ) : (

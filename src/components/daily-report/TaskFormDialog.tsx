@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -254,14 +253,11 @@ export function TaskFormDialog({
             <Button
               type="submit"
               size="sm"
-              disabled={loading}
+              loading={loading}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("taskForm.saving")}
-                </>
+                t("taskForm.saving")
               ) : task ? (
                 t("taskForm.update")
               ) : (

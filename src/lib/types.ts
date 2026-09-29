@@ -263,6 +263,26 @@ export interface ChatReaction {
   user_id: string;
 }
 
+export type ChatPayload =
+  | { type: "location"; lat: number; lng: number }
+  | {
+      type: "event";
+      title: string;
+      starts_at: string;
+      location?: string;
+      description?: string;
+      /** Absent on older events, which always asked for RSVP. */
+      rsvp?: boolean;
+    }
+  | { type: "poll"; question: string; options: string[]; multi: boolean };
+
+/** Poll vote or event RSVP (0 = going, 1 = not going). */
+export interface ChatPollVote {
+  user_id: string;
+  option_idx: number;
+  voter?: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
+}
+
 export interface ChatMessage {
   id: number;
   channel_id: number;
@@ -277,8 +297,10 @@ export interface ChatMessage {
   pinned_at: string | null;
   pinned_by: string | null;
   created_at: string;
+  payload: ChatPayload | null;
   attachments?: ChatAttachment[];
   reactions?: ChatReaction[];
+  poll_votes?: ChatPollVote[];
   sender?: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
 }
 

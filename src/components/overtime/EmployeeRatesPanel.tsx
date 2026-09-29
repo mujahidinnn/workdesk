@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { Pencil, Eye, Loader2, Wallet } from "lucide-react";
+import { Pencil, Eye, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -309,18 +309,11 @@ export function EmployeeRatesPanel({ profiles, currentUserId }: Props) {
             <Button
               type="button"
               size="sm"
-              disabled={upsert.isPending}
+              loading={upsert.isPending}
               onClick={handleSave}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              {upsert.isPending ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("overtime.rates.saving")}
-                </>
-              ) : (
-                t("overtime.rates.save")
-              )}
+              {upsert.isPending ? t("overtime.rates.saving") : t("overtime.rates.save")}
             </Button>
           </DialogFooter>
         </DialogContent>

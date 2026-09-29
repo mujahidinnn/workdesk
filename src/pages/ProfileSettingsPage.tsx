@@ -525,24 +525,15 @@ export default function ProfileSettingsPage() {
           <Button
             size="sm"
             onClick={handleEmailUpdate}
+            loading={emailSaving}
             disabled={
-              emailSaving ||
               !newEmail.trim() ||
               newEmail === user?.email ||
               !EMAIL_RE.test(newEmail)
             }
           >
-            {emailSaving ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                {t("profile.email.updating")}
-              </>
-            ) : (
-              <>
-                <Mail className="w-3.5 h-3.5 mr-1.5" />
-                {t("profile.email.updateEmail")}
-              </>
-            )}
+            <Mail className="w-3.5 h-3.5 mr-1.5" />
+            {emailSaving ? t("profile.email.updating") : t("profile.email.updateEmail")}
           </Button>
         </div>
       </SettingsCard>
@@ -594,24 +585,15 @@ export default function ProfileSettingsPage() {
             <Button
               size="sm"
               onClick={handleProfileSave}
+              loading={profileSaving}
               disabled={
-                profileSaving ||
                 (fullName.trim() === (profile?.full_name ?? "") &&
                   phoneNumber.trim() === (profile?.phone_number ?? "")) ||
                 !fullName.trim()
               }
             >
-              {profileSaving ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("profile.actions.saving")}
-                </>
-              ) : (
-                <>
-                  <Save className="w-3.5 h-3.5 mr-1.5" />
-                  {t("profile.actions.saveChanges")}
-                </>
-              )}
+              <Save className="w-3.5 h-3.5 mr-1.5" />
+              {profileSaving ? t("profile.actions.saving") : t("profile.actions.saveChanges")}
             </Button>
           </div>
         </div>
@@ -769,24 +751,15 @@ export default function ProfileSettingsPage() {
             <Button
               type="submit"
               size="sm"
+              loading={passwordSaving}
               disabled={
-                passwordSaving ||
                 !newPassword ||
                 !confirmPassword ||
                 newPassword !== confirmPassword
               }
             >
-              {passwordSaving ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("profile.security.updating")}
-                </>
-              ) : (
-                <>
-                  <KeyRound className="w-3.5 h-3.5 mr-1.5" />
-                  {t("profile.security.updatePassword")}
-                </>
-              )}
+              <KeyRound className="w-3.5 h-3.5 mr-1.5" />
+              {passwordSaving ? t("profile.security.updating") : t("profile.security.updatePassword")}
             </Button>
           </div>
         </form>

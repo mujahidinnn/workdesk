@@ -25,6 +25,7 @@ import { ForwardPicker } from "./ForwardPicker";
 import { EmojiPicker } from "./EmojiPicker";
 import { ImageLightbox } from "./ImageLightbox";
 import { LinkPreviewCard } from "./LinkPreviewCard";
+import { RichMessageCard } from "./RichMessageCard";
 import { useAuth } from "@/context/auth";
 import {
   useDeleteChatMessage,
@@ -70,7 +71,9 @@ export function MessageBubble({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const senderName = message.sender?.full_name ?? "Unknown";
   const parts = messageParts(message.body, memberNames);
-  const firstLink = parts.find((p) => p.kind === "link")?.href;
+  const firstLink = message.payload
+    ? undefined
+    : parts.find((p) => p.kind === "link")?.href;
   const attachments = message.attachments ?? [];
   const imageAttachments = attachments.filter(isImageAttachment);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -126,7 +129,7 @@ export function MessageBubble({
     >
       <button
         onClick={() => onClickSender(message.sender_id)}
-        className="flex-shrink-0"
+        className="flex-shrink-0 self-start"
       >
         <UserAvatar
           name={senderName}
@@ -208,7 +211,7 @@ export function MessageBubble({
                 variant="ghost"
                 className="h-6 text-[11px] px-2 text-primary hover:text-primary"
                 onClick={saveEdit}
-                disabled={editMessage.isPending}
+                loading={editMessage.isPending}
               >
                 {t("common.save")}
               </Button>
@@ -222,6 +225,11 @@ export function MessageBubble({
               </Button>
             </div>
           </div>
+        ) : message.payload ? (
+          <RichMessageCard
+            message={{ ...message, payload: message.payload }}
+            channelId={channelId}
+          />
         ) : message.body ? (
           <p className="text-xs text-foreground mt-0.5 whitespace-pre-wrap break-words">
             {parts.map((p, i) => {
@@ -416,7 +424,7 @@ export function MessageBubble({
             </TooltipContent>
           </Tooltip>
         )}
-        {isOwn && message.body && (
+        {isOwn && message.body && !message.payload && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import {
   CheckCircle2,
   Circle,
   AlertTriangle,
   MessageSquare,
   ChevronDown,
+  Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FilterSelect } from "@/components/master-hub/FilterSelect";
@@ -15,16 +16,16 @@ import {
   useProblemsLog,
   useToggleResolved,
   type ProblemsLogFilters,
+  type ProblemTask,
 } from "@/hooks/useDailyTasks";
-import { useTaskComments } from "@/hooks/useTaskComments";
 import { useEmployees } from "@/hooks/useEmployees";
 import { useProjects } from "@/hooks/useProjects";
 import { useEmployeeAvatarMap } from "@/hooks/useEmployeeAvatars";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { TaskComments } from "@/components/daily-report/TaskComments";
-import type { DailyTaskWithRelations } from "@/lib/types";
 import { PROJECT_BADGE_COLORS as projectBadgeColors } from "@/lib/colorPalettes";
 import { cn } from "@/lib/utils";
+import { useDateFnsLocale } from "@/lib/dateLocale";
 
 function ProblemCard({
   task,
@@ -33,7 +34,7 @@ function ProblemCard({
   isToggling,
   avatarUrl,
 }: {
-  task: DailyTaskWithRelations;
+  task: ProblemTask;
   projectIdx: number;
   onToggle: () => void;
   isToggling: boolean;
@@ -41,8 +42,9 @@ function ProblemCard({
 }) {
   const { t } = useTranslation();
   const empName = task.employee?.full_name || "?";
+  const dateLocale = useDateFnsLocale();
   const [showComments, setShowComments] = useState(false);
-  const { data: comments = [] } = useTaskComments(task.id);
+  const commentCount = task.comments[0]?.count ?? 0;
   return (
     <motion.div
       layout
@@ -69,14 +71,18 @@ function ProblemCard({
       <div className="flex-1 min-w-0 space-y-2">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span
-              className={cn(
-                "inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold border",
-                projectBadgeColors[projectIdx % projectBadgeColors.length],
-              )}
-            >
-              {task.project?.project_code?.split("-").slice(0, 2).join("-")}
-            </span>
+            {task.project && (
+              <span
+                className={cn(
+                  "inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold border",
+                  projectBadgeColors[
+                    Math.max(projectIdx, 0) % projectBadgeColors.length
+                  ],
+                )}
+              >
+                {task.project.project_code}
+              </span>
+            )}
             <span className="text-xs font-medium text-foreground">
               {empName}
             </span>
@@ -87,12 +93,12 @@ function ProblemCard({
             )}
           </div>
           <span className="text-[10px] text-muted-foreground whitespace-nowrap flex-shrink-0">
-            {format(new Date(task.date), "dd MMM yyyy")}
+            {format(parseISO(task.date), "dd MMM yyyy", { locale: dateLocale })}
           </span>
         </div>
 
         <p className="text-[11px] text-muted-foreground leading-snug line-clamp-1">
-          Task: {task.task_desc}
+          {t("issues.task")}: {task.task_desc}
         </p>
 
         <div
@@ -142,14 +148,19 @@ function ProblemCard({
                 : "text-emerald-700 hover:bg-emerald-100 bg-emerald-50 border border-emerald-300 dark:text-emerald-400 dark:hover:bg-emerald-950/50 dark:bg-emerald-950/30 dark:border-emerald-900/40",
             )}
           >
+            {isToggling ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : task.is_resolved ? (
+              <Circle className="w-3.5 h-3.5" />
+            ) : (
+              <CheckCircle2 className="w-3.5 h-3.5" />
+            )}
             {task.is_resolved ? (
               <>
-                <Circle className="w-3.5 h-3.5" />
                 {t("issues.reopen")}
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-3.5 h-3.5" />
                 {t("issues.resolve")}
               </>
             )}
@@ -161,7 +172,7 @@ function ProblemCard({
           className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1"
         >
           <MessageSquare className="w-3 h-3" />
-          {t("issues.comments", { count: comments.length })}
+          {t("issues.comments", { count: commentCount })}
           <ChevronDown
             className={cn(
               "w-3 h-3 transition-transform",
@@ -259,7 +270,7 @@ export default function IssuesPage() {
         </p>
       </motion.div>
 
-      <div data-tour="issues-chips" className="flex items-center gap-3">
+      <div data-tour="issues-chips" className="flex flex-wrap items-center gap-2 sm:gap-3">
         {statusChips.map(({ label, count, filter, color }) => (
           <button
             key={filter}
@@ -353,7 +364,10 @@ export default function IssuesPage() {
                       is_resolved: !task.is_resolved,
                     })
                   }
-                  isToggling={toggleResolved.isPending}
+                  isToggling={
+                    toggleResolved.isPending &&
+                    toggleResolved.variables?.id === task.id
+                  }
                 />
               );
             })}

@@ -194,8 +194,12 @@ export type ProblemsLogFilters = Pick<
   "employeeId" | "projectId"
 >;
 
+export type ProblemTask = DailyTaskWithRelations & {
+  comments: { count: number }[];
+};
+
 export function useProblemsLog(filters: ProblemsLogFilters = {}) {
-  return useQuery<DailyTaskWithRelations[]>({
+  return useQuery<ProblemTask[]>({
     queryKey: ["problems-log", filters],
     placeholderData: keepPreviousData,
     queryFn: async () => {
@@ -205,7 +209,8 @@ export function useProblemsLog(filters: ProblemsLogFilters = {}) {
           `
           *,
           employee:m_employees(*),
-          project:m_projects(*, project_type_assignment(type:m_project_types(id, type_name)), status:m_work_status(id, status_name))
+          project:m_projects(*, project_type_assignment(type:m_project_types(id, type_name)), status:m_work_status(id, status_name)),
+          comments:t_task_comments(count)
         `,
         )
         .not("problem_desc", "is", null)
@@ -218,7 +223,7 @@ export function useProblemsLog(filters: ProblemsLogFilters = {}) {
         .order("is_resolved", { ascending: true })
         .order("date", { ascending: false });
       if (error) throw error;
-      return data as DailyTaskWithRelations[];
+      return data as ProblemTask[];
     },
   });
 }

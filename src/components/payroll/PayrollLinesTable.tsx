@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileDown, Loader2, Wallet } from "lucide-react";
+import { FileDown, Pencil, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -160,25 +160,14 @@ export function PayrollLinesTable({
                   {money(line.gross)}
                 </td>
                 <td
-                  className="px-3 py-2.5 text-right"
-                  onClick={(e) => e.stopPropagation()}
+                  className={cn(
+                    "px-3 py-2.5 text-right tabular-nums",
+                    deductionTotal
+                      ? "text-amber-700 dark:text-amber-500"
+                      : "text-muted-foreground/60",
+                  )}
                 >
-                  <button
-                    type="button"
-                    disabled={!isDraft || !canManage}
-                    onClick={() => startEdit(line)}
-                    className={cn(
-                      "tabular-nums",
-                      deductionTotal
-                        ? "text-amber-700 dark:text-amber-500"
-                        : "text-muted-foreground/60",
-                      isDraft &&
-                        canManage &&
-                        "hover:text-foreground cursor-pointer underline-offset-2 hover:underline",
-                    )}
-                  >
-                    {deductionTotal ? `- ${money(deductionTotal)}` : "-"}
-                  </button>
+                  {deductionTotal ? `- ${money(deductionTotal)}` : "-"}
                 </td>
                 <td className="px-3 py-2.5 text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-500">
                   {money(line.net)}
@@ -211,6 +200,18 @@ export function PayrollLinesTable({
                   className="px-3 py-2.5 text-right"
                   onClick={(e) => e.stopPropagation()}
                 >
+                  {isDraft && canManage && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 w-7 p-0"
+                      title={t("payroll.table.deductions")}
+                      aria-label={t("payroll.table.deductions")}
+                      onClick={() => startEdit(line)}
+                    >
+                      <Pencil className="w-3 h-3" />
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -293,8 +294,7 @@ export function PayrollLinesTable({
               <Button type="button" variant="ghost" onClick={() => setEditing(null)}>
                 {t("common.cancel")}
               </Button>
-              <Button type="submit" disabled={isSaving}>
-                {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+              <Button type="submit" loading={isSaving}>
                 {t("common.save")}
               </Button>
             </DialogFooter>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -79,14 +78,12 @@ export function MasterListFormDialog({
             <Button
               type="submit"
               size="sm"
-              disabled={loading || !value.trim()}
+              disabled={!value.trim()}
+              loading={loading}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("master.masterList.saving")}
-                </>
+                t("master.masterList.saving")
               ) : initialValue != null ? (
                 t("master.masterList.save")
               ) : (

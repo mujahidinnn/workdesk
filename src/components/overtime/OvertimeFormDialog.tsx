@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { addDays, format, parseISO } from "date-fns";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -373,13 +372,11 @@ export function OvertimeFormDialog({
             <Button
               type="submit"
               className="flex-1"
-              disabled={isSaving || !canSubmit}
+              disabled={!canSubmit}
+              loading={isSaving}
             >
               {isSaving ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("overtime.form.saving")}
-                </>
+                t("overtime.form.saving")
               ) : record ? (
                 t("overtime.form.update")
               ) : (

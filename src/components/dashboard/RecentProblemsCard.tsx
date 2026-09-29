@@ -66,7 +66,10 @@ export function RecentProblemsCard({ tasks }: RecentProblemsCardProps) {
     null,
   );
   const problemTasks = tasks.filter(
-    (task) => task.problem_desc && task.problem_desc.trim().length > 0,
+    (task) =>
+      !task.is_resolved &&
+      task.problem_desc &&
+      task.problem_desc.trim().length > 0,
   );
 
   return (

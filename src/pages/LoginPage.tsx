@@ -1,7 +1,7 @@
-import { useRef, useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -45,8 +45,6 @@ export default function LoginPage() {
   const { user, signIn, signInWithGoogle, isLoading } = useAuth();
   const { t } = useTranslation();
 
-  const emailRef = useRef<HTMLInputElement>(null);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -55,6 +53,7 @@ export default function LoginPage() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [resetBusy, setResetBusy] = useState(false);
+  const [mode, setMode] = useState<"signin" | "forgot">("signin");
 
   if (!isLoading && user) return <Navigate to="/" replace />;
 
@@ -88,15 +87,10 @@ export default function LoginPage() {
 
   // Recovery link targets the app root (always an allowed redirect); the auth listener
   // forwards to /reset-password, so no extra URL needs allow-listing in Supabase.
-  const handleForgotPassword = async () => {
+  const handleForgotPassword = async (e: FormEvent) => {
+    e.preventDefault();
     setError(null);
     setSentTo(null);
-    // type="button" skips form validation, so check the input directly or a typo looks like a sent link.
-    if (!emailRef.current?.checkValidity()) {
-      setError(t("login.errors.emailFirst"));
-      emailRef.current?.focus();
-      return;
-    }
     setResetBusy(true);
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
@@ -127,6 +121,80 @@ export default function LoginPage() {
     }
   };
 
+  const switchMode = (next: typeof mode) => {
+    setError(null);
+    setSentTo(null);
+    setMode(next);
+  };
+
+  const errorBox = error && (
+    <motion.p
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-xs text-rose-700 bg-rose-100 border border-rose-300 px-3 py-2 rounded-lg"
+    >
+      {error}
+    </motion.p>
+  );
+
+  if (mode === "forgot") {
+    return (
+      <AuthLayout>
+        <button
+          type="button"
+          onClick={() => switchMode("signin")}
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          {t("login.backToSignIn")}
+        </button>
+        <div className="mb-8">
+          <h1 className="text-2xl font-extrabold uppercase tracking-tight text-foreground">
+            {t("login.forgotTitle")}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {t("login.forgotSubtitle")}
+          </p>
+        </div>
+
+        <form onSubmit={handleForgotPassword} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="reset-email" className="text-xs font-medium">
+              {t("login.email")}
+            </Label>
+            <Input
+              id="reset-email"
+              type="email"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+              className="h-10"
+            />
+          </div>
+
+          {sentTo && (
+            <p className="text-xs text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-2 rounded-lg">
+              {t("login.resetSent", { email: sentTo })}
+            </p>
+          )}
+
+          {errorBox}
+
+          <Button
+            type="submit"
+            disabled={!email}
+            loading={resetBusy}
+            className="w-full h-10 font-semibold"
+          >
+            {resetBusy ? t("login.sendingReset") : t("login.sendResetLink")}
+          </Button>
+        </form>
+      </AuthLayout>
+    );
+  }
+
   return (
     <AuthLayout>
       <div className="mb-8">
@@ -145,7 +213,6 @@ export default function LoginPage() {
           </Label>
           <Input
             id="email"
-            ref={emailRef}
             type="email"
             placeholder="you@company.com"
             value={email}
@@ -188,63 +255,34 @@ export default function LoginPage() {
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={handleForgotPassword}
-            disabled={resetBusy}
-            className="text-xs font-semibold text-primary hover:underline disabled:opacity-50"
+            onClick={() => switchMode("forgot")}
+            className="text-xs font-semibold text-primary hover:underline"
           >
-            {resetBusy ? t("login.sendingReset") : t("login.forgotPassword")}
+            {t("login.forgotPassword")}
           </button>
         </div>
 
-        {sentTo && (
-          <p className="text-xs text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-2 rounded-lg">
-            {t("login.resetSent", { email: sentTo })}
-          </p>
-        )}
-
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-rose-700 bg-rose-100 border border-rose-300 px-3 py-2 rounded-lg"
-          >
-            {error}
-          </motion.p>
-        )}
+        {errorBox}
 
         <Button
           type="submit"
-          disabled={submitting || googleBusy || !email || !password}
+          disabled={googleBusy || !email || !password}
+          loading={submitting}
           className="w-full h-10 font-semibold"
         >
-          {submitting ? (
-            <>
-              <span className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              {t("login.signingIn")}
-            </>
-          ) : (
-            t("login.signIn")
-          )}
+          {submitting ? t("login.signingIn") : t("login.signIn")}
         </Button>
 
         <Button
           type="button"
           onClick={handleGoogle}
-          disabled={googleBusy || submitting}
+          disabled={submitting}
+          loading={googleBusy}
           variant="outline"
           className="w-full h-10 gap-2.5 font-medium"
         >
-          {googleBusy ? (
-            <>
-              <span className="w-4 h-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
-              {t("login.redirecting")}
-            </>
-          ) : (
-            <>
-              <GoogleIcon className="w-4 h-4" />
-              {t("login.continueWithGoogle")}
-            </>
-          )}
+          <GoogleIcon className="w-4 h-4" />
+          {googleBusy ? t("login.redirecting") : t("login.continueWithGoogle")}
         </Button>
       </form>
 

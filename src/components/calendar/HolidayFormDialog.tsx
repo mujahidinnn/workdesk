@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -83,18 +82,12 @@ export function HolidayFormDialog({
           <Button
             type="button"
             size="sm"
-            disabled={!canSave || loading}
+            disabled={!canSave}
+            loading={loading}
             onClick={() => date && onSubmit({ date, name: name.trim() })}
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {loading ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                {t("common.saving")}
-              </>
-            ) : (
-              t("common.save")
-            )}
+            {loading ? t("common.saving") : t("common.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

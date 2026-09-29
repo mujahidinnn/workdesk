@@ -50,15 +50,26 @@ export function AuthLayout({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 sm:p-8"
+      className="min-h-screen flex flex-col md:items-center md:justify-center md:p-8"
       style={pageBg}
     >
+      {/* Mobile: brand hero on the page, form panel docks below as a sheet. */}
+      <header className="md:hidden px-6 pt-10 pb-8 text-white space-y-6">
+        <div className="flex items-center gap-2">
+          <LogoMark className="h-7 w-auto" />
+          <span className="font-bold tracking-tight">{t("app.name")}</span>
+        </div>
+        <h2 className="text-3xl font-extrabold uppercase leading-tight whitespace-pre-line">
+          {t("login.heroTitle")}
+        </h2>
+        <p className="text-sm text-white/80 -mt-3">{t("login.heroBody")}</p>
+      </header>
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         style={lightCard}
-        className="w-full max-w-5xl grid md:grid-cols-2 gap-2 p-2 rounded-3xl bg-card text-foreground shadow-2xl"
+        className="w-full max-w-5xl flex-1 md:flex-none grid md:grid-cols-2 gap-2 p-2 rounded-t-3xl md:rounded-3xl bg-card text-foreground shadow-2xl"
       >
         <aside
           className="hidden md:flex flex-col justify-between rounded-2xl p-10 min-h-[560px] text-white"
@@ -79,7 +90,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        <section className="relative flex items-center justify-center px-6 py-10 sm:px-12">
+        <section className="relative flex items-start md:items-center justify-center px-6 pt-8 pb-14 sm:px-12 md:py-10">
           <div className="w-full max-w-sm">{children}</div>
         </section>
       </motion.div>

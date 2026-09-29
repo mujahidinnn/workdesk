@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -321,14 +320,11 @@ export function EmployeeFormDialog({
             <Button
               type="submit"
               size="sm"
-              disabled={loading}
+              loading={loading}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  {t("master.employees.saving")}
-                </>
+                t("master.employees.saving")
               ) : employee ? (
                 t("master.employees.update")
               ) : (

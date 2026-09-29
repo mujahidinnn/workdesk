@@ -1,4 +1,4 @@
-import { AlertTriangle, Loader2, Trash2 } from "lucide-react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -59,19 +59,10 @@ export function DeleteConfirmationModal({
             variant="destructive"
             className="flex-1 bg-rose-600 hover:bg-rose-700 text-white border-rose-600"
             onClick={onConfirm}
-            disabled={isPending}
+            loading={isPending}
           >
-            {isPending ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                {t("deleteModal.deleting")}
-              </>
-            ) : (
-              <>
-                <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                {t("deleteModal.confirm")}
-              </>
-            )}
+            <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+            {isPending ? t("deleteModal.deleting") : t("deleteModal.confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

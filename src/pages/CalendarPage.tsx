@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { CalendarDays, Plus, RefreshCw, Trash2, Loader2 } from "lucide-react";
+import { CalendarDays, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -127,14 +127,10 @@ export default function CalendarPage() {
                 size="sm"
                 variant="outline"
                 className="gap-1.5 border-border"
-                disabled={syncHolidays.isPending}
+                loading={syncHolidays.isPending}
                 onClick={() => syncHolidays.mutate(effectiveSyncYear)}
               >
-                {syncHolidays.isPending ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <RefreshCw className="w-3.5 h-3.5" />
-                )}
+                <RefreshCw className="w-3.5 h-3.5" />
                 {t("calendar.sync")}
               </Button>
             </div>

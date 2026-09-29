@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, UserPlus, Loader2 } from "lucide-react";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -269,21 +269,11 @@ export function InviteUserDialog({
             <Button
               type="submit"
               size="sm"
-              disabled={
-                createUser.isPending || !email || !password || !fullName
-              }
+              disabled={!email || !password || !fullName}
+              loading={createUser.isPending}
             >
-              {createUser.isPending ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  Creating…
-                </>
-              ) : (
-                <>
-                  <UserPlus className="w-3.5 h-3.5 mr-1.5" />
-                  Create Account
-                </>
-              )}
+              <UserPlus className="w-3.5 h-3.5 mr-1.5" />
+              {createUser.isPending ? "Creating…" : "Create Account"}
             </Button>
           </div>
         </form>

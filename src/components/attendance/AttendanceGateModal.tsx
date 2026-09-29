@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { CheckCircle2, FileText, Loader2, Stethoscope } from "lucide-react";
+import { CheckCircle2, FileText, Stethoscope } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -167,13 +167,11 @@ export function AttendanceGateModal({
           <Button
             type="button"
             size="sm"
-            disabled={!selected || (needsNote && !note.trim()) || checkIn.isPending}
+            disabled={!selected || (needsNote && !note.trim())}
+            loading={checkIn.isPending}
             onClick={submit}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {checkIn.isPending && (
-              <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-            )}
             {t("attendance.gate.submit")}
           </Button>
         </DialogFooter>

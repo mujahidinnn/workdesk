@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, Loader2, Pencil } from "lucide-react";
+import { Clock, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -199,18 +199,12 @@ export function WorkScheduleSettings() {
       </Button>
       <Button
         size="sm"
-        disabled={!dirty || updateSchedule.isPending}
+        disabled={!dirty}
+        loading={updateSchedule.isPending}
         onClick={handleSave}
         className="bg-primary text-primary-foreground hover:bg-primary/90"
       >
-        {updateSchedule.isPending ? (
-          <>
-            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-            {t("common.saving")}
-          </>
-        ) : (
-          t("common.save")
-        )}
+        {updateSchedule.isPending ? t("common.saving") : t("common.save")}
       </Button>
       </>
       )}

@@ -11,6 +11,7 @@ import type {
   Project,
   Profile,
   UserWithEmail,
+  ChatPayload,
 } from "@/lib/types";
 
 export interface ChatChannelRow extends ChatChannel {
@@ -68,7 +69,7 @@ export function useChatChannels() {
 // profiles, so a bare "profiles" embed is ambiguous (PGRST201). "!inner" on
 // attachments keeps only messages that have at least one.
 function messageSelect(attachmentsOnly = false) {
-  return `*, sender:profiles!t_chat_messages_sender_id_fkey(id, full_name, avatar_url), attachments:t_chat_attachments${attachmentsOnly ? "!inner" : ""}(id, file_path, file_name, file_type, file_size), reactions:t_chat_message_reactions(id, emoji, user_id)`;
+  return `*, sender:profiles!t_chat_messages_sender_id_fkey(id, full_name, avatar_url), attachments:t_chat_attachments${attachmentsOnly ? "!inner" : ""}(id, file_path, file_name, file_type, file_size), reactions:t_chat_message_reactions(id, emoji, user_id), poll_votes:t_chat_poll_votes(user_id, option_idx, voter:profiles(id, full_name, avatar_url))`;
 }
 
 function messagesKey(channelId: number | null) {
@@ -147,6 +148,11 @@ export function useChatMessages(channelId: number | null) {
           // Anyone can react, so listen to both events. Also unfilterable.
           "postgres_changes",
           { event: "*", schema: "public", table: "t_chat_message_reactions" },
+          () => qc.invalidateQueries({ queryKey: messagesKey(channelId) }),
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "t_chat_poll_votes" },
           () => qc.invalidateQueries({ queryKey: messagesKey(channelId) }),
         );
     });
@@ -231,6 +237,7 @@ export function useSendChatMessage() {
       mentions,
       mentionsEveryone,
       files,
+      payload = null,
     }: {
       channelId: number;
       body: string;
@@ -238,6 +245,7 @@ export function useSendChatMessage() {
       mentions: string[];
       mentionsEveryone: boolean;
       files: File[];
+      payload?: ChatPayload | null;
     }) => {
       if (!user) throw new Error("Not signed in");
       const { data: inserted, error } = await supabase
@@ -249,6 +257,7 @@ export function useSendChatMessage() {
           reply_to_id: replyToId,
           mentions,
           mentions_everyone: mentionsEveryone,
+          payload,
         })
         .select()
         .single();
@@ -284,6 +293,7 @@ export function useForwardMessage() {
           body: message.body,
           mentions: [],
           forwarded_from_sender_name: message.sender?.full_name ?? "Unknown",
+          payload: message.payload,
         })
         .select()
         .single();
@@ -458,6 +468,30 @@ export function useToggleReaction() {
           .insert({ message_id: messageId, user_id: user.id, emoji });
         if (error) throw error;
       }
+    },
+    onSuccess: (_data, { channelId }) => {
+      qc.invalidateQueries({ queryKey: messagesKey(channelId) });
+    },
+  });
+}
+
+/** Server enforces single choice and option bounds; this just toggles. */
+export function useToggleVote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      messageId,
+      option,
+    }: {
+      messageId: number;
+      channelId: number;
+      option: number;
+    }) => {
+      const { error } = await supabase.rpc("chat_toggle_vote", {
+        p_message_id: messageId,
+        p_option: option,
+      });
+      if (error) throw error;
     },
     onSuccess: (_data, { channelId }) => {
       qc.invalidateQueries({ queryKey: messagesKey(channelId) });

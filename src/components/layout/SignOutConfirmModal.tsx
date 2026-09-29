@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -57,7 +57,7 @@ export function SignOutConfirmModal({
           <Button
             variant="destructive"
             className="flex-1 gap-1.5 bg-rose-600 hover:bg-rose-700 text-white border-rose-600"
-            disabled={busy}
+            loading={busy}
             onClick={async () => {
               setBusy(true);
               try {
@@ -68,11 +68,7 @@ export function SignOutConfirmModal({
               }
             }}
           >
-            {busy ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <LogOut className="w-3.5 h-3.5" />
-            )}
+            <LogOut className="w-3.5 h-3.5" />
             {t("shell.signOut")}
           </Button>
         </DialogFooter>

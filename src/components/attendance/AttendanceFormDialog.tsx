@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -245,7 +244,8 @@ export function AttendanceFormDialog({
           <Button
             type="button"
             size="sm"
-            disabled={!canSave || loading}
+            disabled={!canSave}
+            loading={loading}
             onClick={() =>
               date &&
               onSubmit({
@@ -260,14 +260,7 @@ export function AttendanceFormDialog({
             }
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {loading ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                {t("common.saving")}
-              </>
-            ) : (
-              t("common.save")
-            )}
+            {loading ? t("common.saving") : t("common.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

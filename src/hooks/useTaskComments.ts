@@ -43,6 +43,7 @@ export function useAddTaskComment() {
     },
     onSuccess: (_data, { taskId }) => {
       qc.invalidateQueries({ queryKey: ["task-comments", taskId] });
+      qc.invalidateQueries({ queryKey: ["problems-log"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -60,6 +61,7 @@ export function useDeleteTaskComment() {
     },
     onSuccess: (_data, { taskId }) => {
       qc.invalidateQueries({ queryKey: ["task-comments", taskId] });
+      qc.invalidateQueries({ queryKey: ["problems-log"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });

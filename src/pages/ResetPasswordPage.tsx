@@ -170,7 +170,8 @@ export default function ResetPasswordPage() {
 
             <Button
               type="submit"
-              disabled={saving || ready === null}
+              disabled={ready === null}
+              loading={saving}
               className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
             >
               {saving ? t("resetPassword.saving") : t("resetPassword.save")}

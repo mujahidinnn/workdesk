@@ -129,6 +129,7 @@ export function LeaveApprovalPanel({ requests }: Props) {
                       className="h-7 px-2.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs gap-1"
                       onClick={() => approve.mutate({ id: r.id })}
                       disabled={approve.isPending}
+                      loading={approve.isPending && approve.variables?.id === r.id}
                     >
                       <Check className="w-3 h-3" />
                       {t("leave.approval.approve")}
@@ -214,7 +215,8 @@ export function LeaveApprovalPanel({ requests }: Props) {
             <Button
               className="flex-1 bg-rose-600 hover:bg-rose-700 text-white"
               onClick={handleRejectConfirm}
-              disabled={reject.isPending || !rejectTarget?.note.trim()}
+              disabled={!rejectTarget?.note.trim()}
+              loading={reject.isPending}
             >
               {t("leave.approval.confirmReject")}
             </Button>

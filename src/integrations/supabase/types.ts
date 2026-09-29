@@ -450,6 +450,7 @@ export type Database = {
           id: number;
           mentions: string[];
           mentions_everyone: boolean;
+          payload: Json | null;
           pinned_at: string | null;
           pinned_by: string | null;
           reply_to_id: number | null;
@@ -464,6 +465,7 @@ export type Database = {
           id?: number;
           mentions?: string[];
           mentions_everyone?: boolean;
+          payload?: Json | null;
           pinned_at?: string | null;
           pinned_by?: string | null;
           reply_to_id?: number | null;
@@ -478,6 +480,7 @@ export type Database = {
           id?: number;
           mentions?: string[];
           mentions_everyone?: boolean;
+          payload?: Json | null;
           pinned_at?: string | null;
           pinned_by?: string | null;
           reply_to_id?: number | null;
@@ -581,6 +584,42 @@ export type Database = {
             columns: ["message_id"];
             isOneToOne: false;
             referencedRelation: "t_chat_messages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      t_chat_poll_votes: {
+        Row: {
+          created_at: string;
+          message_id: number;
+          option_idx: number;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          message_id: number;
+          option_idx: number;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          message_id?: number;
+          option_idx?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "t_chat_poll_votes_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "t_chat_messages";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "t_chat_poll_votes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -1318,6 +1357,10 @@ export type Database = {
       get_or_create_dm_channel: {
         Args: { p_other_user: string };
         Returns: number;
+      };
+      chat_toggle_vote: {
+        Args: { p_message_id: number; p_option: number };
+        Returns: undefined;
       };
       get_chat_last_messages: {
         Args: never;

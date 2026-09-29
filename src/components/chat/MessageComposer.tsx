@@ -1,27 +1,47 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   X,
   SendHorizontal,
   Paperclip,
   FileText,
-  Loader2,
   Mic,
   Square,
+  Smile,
+  Camera,
+  Image as ImageIcon,
+  MapPin,
+  CalendarDays,
+  BarChart3,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { EmojiPicker } from "./EmojiPicker";
+import { CameraDialog } from "./CameraDialog";
+import { RichMessageDialog, type RichKind } from "./RichMessageDialog";
 import { useSendChatMessage } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
-import type { ChatMessage, UserWithEmail } from "@/lib/types";
+import type { ChatMessage, ChatPayload, UserWithEmail } from "@/lib/types";
 
 // Matches the chat-attachments bucket's file_size_limit / allowed_mime_types.
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
-const ACCEPT_TYPES =
-  "image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip";
+const ACCEPT_DOCS =
+  "audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip";
+const ACCEPT_MEDIA = "image/*,video/*";
 
 interface PendingFile {
   file: File;
@@ -50,6 +70,10 @@ export function MessageComposer({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [hasCamera, setHasCamera] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [richKind, setRichKind] = useState<RichKind | null>(null);
+  const closeRich = useCallback(() => setRichKind(null), []);
   const sendMessage = useSendChatMessage();
   const recorderRef = useRef<MediaRecorder | null>(null);
   const [recording, setRecording] = useState(false);
@@ -63,6 +87,22 @@ export function MessageComposer({
   }, [recording]);
 
   useEffect(() => () => recorderRef.current?.stop(), []);
+
+  // Device kinds are listed even before permission, so no prompt here.
+  useEffect(() => {
+    navigator.mediaDevices
+      ?.enumerateDevices()
+      .then((d) => setHasCamera(d.some((x) => x.kind === "videoinput")))
+      .catch(() => {});
+  }, []);
+
+  // Grow with content like WhatsApp; max-h on the textarea caps it and scrolls.
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [text, recording]);
 
   async function toggleRecording() {
     if (recorderRef.current) return recorderRef.current.stop();
@@ -115,6 +155,13 @@ export function MessageComposer({
       if (removed?.previewUrl) URL.revokeObjectURL(removed.previewUrl);
       return prev.filter((_, i) => i !== index);
     });
+  }
+
+  function pickFiles(accept: string) {
+    const input = fileInputRef.current;
+    if (!input) return;
+    input.accept = accept;
+    input.click();
   }
 
   function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -211,6 +258,27 @@ export function MessageComposer({
             (p) => p.previewUrl && URL.revokeObjectURL(p.previewUrl),
           );
           setPendingFiles([]);
+          onCancelReply();
+        },
+        onError: (e: Error) => toast.error(e.message),
+      },
+    );
+  }
+
+  function sendRich(payload: ChatPayload, body: string) {
+    sendMessage.mutate(
+      {
+        channelId,
+        body,
+        replyToId: replyTo?.id ?? null,
+        mentions: [],
+        mentionsEveryone: false,
+        files: [],
+        payload,
+      },
+      {
+        onSuccess: () => {
+          setRichKind(null);
           onCancelReply();
         },
         onError: (e: Error) => toast.error(e.message),
@@ -351,48 +419,26 @@ export function MessageComposer({
         )}
 
         <div className="flex items-end gap-2">
-          <EmojiPicker onPick={insertEmoji} />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => fileInputRef.current?.click()}
-            className="text-muted-foreground hover:text-foreground flex-shrink-0"
-          >
-            <Paperclip className="w-4 h-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={toggleRecording}
-            aria-label={
-              recording ? t("chat.stopRecording") : t("chat.recordVoice")
-            }
-            title={recording ? t("chat.stopRecording") : t("chat.recordVoice")}
-            className={cn(
-              "flex-shrink-0",
-              recording
-                ? "rounded-full bg-destructive text-white hover:bg-destructive/90 hover:text-white"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {recording ? (
-              <Square className="w-3.5 h-3.5 fill-current" />
-            ) : (
-              <Mic className="w-4 h-4" />
-            )}
-          </Button>
           <input
             ref={fileInputRef}
             type="file"
             multiple
-            accept={ACCEPT_TYPES}
             className="hidden"
             onChange={handleFileInputChange}
           />
-          {recording && (
-            <div className="flex-1 h-9 flex items-center gap-2.5 px-3 rounded-md border border-destructive/30 bg-destructive/10 text-sm">
+          <CameraDialog
+            open={cameraOpen}
+            onOpenChange={setCameraOpen}
+            onCapture={(file) => addFiles([file])}
+          />
+          <RichMessageDialog
+            kind={richKind}
+            onClose={closeRich}
+            onSend={sendRich}
+            sending={sendMessage.isPending}
+          />
+          {recording ? (
+            <div className="flex-1 h-10 flex items-center gap-2.5 px-4 rounded-3xl border border-destructive/30 bg-destructive/10 text-sm">
               <span className="relative flex w-2.5 h-2.5">
                 <span className="absolute inset-0 rounded-full bg-destructive animate-ping opacity-75" />
                 <span className="relative w-2.5 h-2.5 rounded-full bg-destructive" />
@@ -405,35 +451,120 @@ export function MessageComposer({
                 {String(elapsed % 60).padStart(2, "0")}
               </span>
             </div>
+          ) : (
+            <div className="flex-1 min-w-0 flex items-end rounded-3xl border border-border bg-secondary transition-shadow focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/20">
+              <EmojiPicker
+                onPick={insertEmoji}
+                trigger={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 rounded-full text-muted-foreground hover:text-foreground flex-shrink-0"
+                  >
+                    <Smile className="w-5 h-5" />
+                  </Button>
+                }
+              />
+              <Textarea
+                ref={textareaRef}
+                value={text}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                onPaste={handlePaste}
+                placeholder={t("chat.messagePlaceholder")}
+                rows={1}
+                className="flex-1 min-w-0 min-h-10 max-h-32 overflow-y-auto border-0 bg-transparent px-0 py-2.5 text-sm text-foreground resize-none shadow-none placeholder:truncate focus-visible:ring-0 focus-visible:border-transparent"
+              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("chat.attach")}
+                    className="h-10 w-10 rounded-full text-muted-foreground hover:text-foreground flex-shrink-0"
+                  >
+                    <Paperclip className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" align="end" className="w-48">
+                  <DropdownMenuItem onSelect={() => pickFiles(ACCEPT_DOCS)}>
+                    <FileText className="w-4 h-4 mr-2 text-violet-500" />
+                    {t("chat.attachDocument")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => pickFiles(ACCEPT_MEDIA)}>
+                    <ImageIcon className="w-4 h-4 mr-2 text-sky-500" />
+                    {t("chat.attachMedia")}
+                  </DropdownMenuItem>
+                  {hasCamera && (
+                    <DropdownMenuItem onSelect={() => setCameraOpen(true)}>
+                      <Camera className="w-4 h-4 mr-2 text-rose-500" />
+                      {t("chat.takePhoto")}
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onSelect={() => setRichKind("location")}>
+                    <MapPin className="w-4 h-4 mr-2 text-emerald-500" />
+                    {t("chat.rich.location")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setRichKind("event")}>
+                    <CalendarDays className="w-4 h-4 mr-2 text-orange-500" />
+                    {t("chat.rich.event")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setRichKind("poll")}>
+                    <BarChart3 className="w-4 h-4 mr-2 text-amber-500" />
+                    {t("chat.rich.poll")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {hasCamera && !text && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setCameraOpen(true)}
+                  aria-label={t("chat.takePhoto")}
+                  className="h-10 w-10 -ml-2 rounded-full text-muted-foreground hover:text-foreground flex-shrink-0"
+                >
+                  <Camera className="w-5 h-5" />
+                </Button>
+              )}
+            </div>
           )}
-          <Textarea
-            ref={textareaRef}
-            value={text}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            placeholder={t("chat.messagePlaceholder")}
-            rows={1}
-            className={cn(
-              "bg-secondary border-border text-foreground text-sm resize-none min-h-9 max-h-32 placeholder:truncate",
-              recording && "hidden",
-            )}
-          />
-          <Button
-            size="icon"
-            onClick={send}
-            disabled={
-              (!text.trim() && pendingFiles.length === 0) ||
-              sendMessage.isPending
-            }
-            className="bg-primary text-primary-foreground hover:bg-primary/90 flex-shrink-0"
-          >
-            {sendMessage.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
+          {!recording && (text.trim() || pendingFiles.length > 0) ? (
+            <Button
+              size="icon"
+              onClick={send}
+              loading={sendMessage.isPending}
+              className="h-10 w-10 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 flex-shrink-0"
+            >
               <SendHorizontal className="w-4 h-4" />
-            )}
-          </Button>
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="icon"
+              onClick={toggleRecording}
+              aria-label={
+                recording ? t("chat.stopRecording") : t("chat.recordVoice")
+              }
+              title={
+                recording ? t("chat.stopRecording") : t("chat.recordVoice")
+              }
+              className={cn(
+                "h-10 w-10 rounded-full flex-shrink-0",
+                recording
+                  ? "bg-destructive text-white hover:bg-destructive/90"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90",
+              )}
+            >
+              {recording ? (
+                <Square className="w-3.5 h-3.5 fill-current" />
+              ) : (
+                <Mic className="w-4 h-4" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>

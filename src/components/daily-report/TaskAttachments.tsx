@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Paperclip, X, FileText, Loader2 } from "lucide-react";
+import { Paperclip, X, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -51,13 +51,9 @@ export function TaskAttachments({ taskId }: TaskAttachmentsProps) {
           variant="outline"
           className="h-7 text-[11px] gap-1.5 border-border"
           onClick={() => fileInputRef.current?.click()}
-          disabled={upload.isPending}
+          loading={upload.isPending}
         >
-          {upload.isPending ? (
-            <Loader2 className="w-3 h-3 animate-spin" />
-          ) : (
-            <Paperclip className="w-3 h-3" />
-          )}
+          <Paperclip className="w-3 h-3" />
           {t("taskForm.attachments.add")}
         </Button>
         <input

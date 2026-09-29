@@ -242,7 +242,8 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
         <Button
           size="sm"
           onClick={handleSend}
-          disabled={!value.trim() || addComment.isPending}
+          disabled={!value.trim()}
+          loading={addComment.isPending}
           className="h-8 w-8 p-0 flex-shrink-0"
         >
           <Send className="w-3.5 h-3.5" />

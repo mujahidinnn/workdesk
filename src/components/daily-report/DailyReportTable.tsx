@@ -112,7 +112,24 @@ export function DailyReportTable({
         </AccessControl>
       )}
 
-      <div className="flex-1 overflow-auto scrollbar-thin rounded-xl border border-border bg-card">
+      {!isLoading && sortedDates.length === 0 && (
+        <EmptyState
+          icon={ClipboardList}
+          title={t("dailyReport.noTasksFound")}
+          description={
+            hasActiveFilter
+              ? t("dailyReport.adjustFilters")
+              : t("dailyReport.addFirstEntry")
+          }
+          className="flex-1 md:hidden"
+        />
+      )}
+      <div
+        className={cn(
+          "flex-1 overflow-auto scrollbar-thin rounded-xl border border-border bg-card",
+          !isLoading && sortedDates.length === 0 && "max-md:hidden",
+        )}
+      >
         <table className="w-full min-w-[860px] border-collapse">
           <thead className="sticky top-0 z-10">
             <tr className="bg-card border-b border-border">

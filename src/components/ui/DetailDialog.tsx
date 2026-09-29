@@ -62,9 +62,13 @@ export function DetailDialog({
           {blocks.map((f) => (
             <div key={f.label} className="space-y-1.5">
               <p className="text-xs text-muted-foreground">{f.label}</p>
-              <div className="text-sm text-foreground whitespace-pre-wrap break-words rounded-md bg-secondary border border-border px-3 py-2">
-                {isEmpty(f.value) ? "-" : f.value}
-              </div>
+              {isEmpty(f.value) ? (
+                <p className="text-sm text-foreground">-</p>
+              ) : (
+                <div className="text-sm text-foreground whitespace-pre-wrap break-words rounded-md bg-secondary border border-border px-3 py-2">
+                  {f.value}
+                </div>
+              )}
             </div>
           ))}
         </div>
