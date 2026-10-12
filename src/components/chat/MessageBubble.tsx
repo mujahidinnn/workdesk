@@ -75,6 +75,10 @@ export function MessageBubble({
     : parts.find((p) => p.kind === "link")?.href;
   const attachments = message.attachments ?? [];
   const imageAttachments = attachments.filter(isImageAttachment);
+  const mentionsMe =
+    !isOwn &&
+    (message.mentions_everyone ||
+      (!!user && (message.mentions ?? []).includes(user.id)));
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const reactionGroups = useMemo(() => {
@@ -124,6 +128,8 @@ export function MessageBubble({
       className={cn(
         "group relative flex gap-2.5 px-1 py-1.5 hover:bg-secondary/40 rounded-lg -mx-1 scroll-mt-4",
         isOwn && "flex-row-reverse text-right",
+        mentionsMe &&
+          "bg-amber-500/10 hover:bg-amber-500/15 border-l-2 border-amber-500 rounded-l-none",
       )}
     >
       <button
