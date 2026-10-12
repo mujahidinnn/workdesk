@@ -15,7 +15,6 @@ describe("calcDurationHours", () => {
 
   it("wraps past midnight only when the shift is marked overnight", () => {
     expect(calcDurationHours("22:00", "02:00", true)).toBe(4);
-    // Same two times without the flag stay a typo, not 4 free hours.
     expect(calcDurationHours("22:00", "02:00")).toBe(0);
   });
 });

@@ -13,6 +13,8 @@ import {
   MessageCircle,
   Wallet,
   ShieldCheck,
+  SquareKanban,
+  ListTodo,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +24,6 @@ export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  /** Omit for pages every authenticated user can reach. */
   featureKey?: string;
   description: string;
 }
@@ -32,7 +33,6 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-/** Shared route list - feeds both the Sidebar and the command palette. */
 export function useNavGroups(): NavGroup[] {
   const { t } = useTranslation();
   const { isSuperadmin } = useAuth();
@@ -54,6 +54,20 @@ export function useNavGroups(): NavGroup[] {
           icon: ClipboardList,
           featureKey: "daily-report",
           description: t("nav.descriptions.dailyReport"),
+        },
+        {
+          href: "/boards",
+          label: t("nav.items.boards"),
+          icon: SquareKanban,
+          featureKey: "board",
+          description: t("nav.descriptions.boards"),
+        },
+        {
+          href: "/my-tasks",
+          label: t("nav.items.myTasks"),
+          icon: ListTodo,
+          featureKey: "board",
+          description: t("nav.descriptions.myTasks"),
         },
         {
           href: "/timeline",
@@ -134,7 +148,6 @@ export function useNavGroups(): NavGroup[] {
           featureKey: "master",
           description: t("nav.descriptions.masterHub"),
         },
-        // No featureKey: gated by is_superadmin instead of role permissions.
         ...(isSuperadmin()
           ? [
               {

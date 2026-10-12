@@ -455,7 +455,6 @@ CREATE FUNCTION public.get_users_with_email() RETURNS TABLE(id uuid, full_name t
   ORDER BY p.created_at ASC;
 $$;
 
--- Approvers decide on someone else's request; they don't get to rewrite it.
 CREATE FUNCTION public.guard_approval_edit() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public'

@@ -33,7 +33,6 @@ import { cn } from "@/lib/utils";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-/** Whose tasks the dialog lists: one day (a cell) or the whole week (a name). */
 interface WorkloadTarget {
   employeeId: number;
   name: string;
@@ -267,7 +266,6 @@ type DayAttendance = {
   clock_out: string | null;
 };
 
-/** The employee's attendance in the range; heatmap rows are employees, attendance is per auth user. */
 function useEmployeeAttendance(employeeId: number, from: string, to: string) {
   return useQuery<DayAttendance[]>({
     queryKey: ["attendance", "employee", employeeId, from, to],
@@ -291,7 +289,6 @@ function useEmployeeAttendance(employeeId: number, from: string, to: string) {
   });
 }
 
-/** Mounted only while the dialog is open, so the data is fetched on demand. */
 function WorkloadTasks({ target }: { target: WorkloadTarget }) {
   const { t } = useTranslation();
   const { canRead } = useAuth();

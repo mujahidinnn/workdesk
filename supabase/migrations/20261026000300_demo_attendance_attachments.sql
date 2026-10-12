@@ -1,7 +1,3 @@
--- Default data: attach demo files to part of the Izin / Sakit attendance days.
--- Same function as 20261024000000_security_and_demo_seed.sql; only the
--- t_attendance INSERT gained attachment_path / attachment_name.
-
 CREATE OR REPLACE FUNCTION public.superadmin_seed_demo_data()
 RETURNS JSONB
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, auth, extensions AS $seed$
@@ -207,8 +203,6 @@ BEGIN
       ELSE CASE WHEN x.h % 97 = 0 AND x.d < v_today THEN 'Lupa check-out' END
     END,
     CASE WHEN x.uid = v_yoga THEN v_maya END,
-    -- Files ship with the app in public/demo (a leading "/" = static, not the bucket).
-    -- Attachments are optional: most sick days carry one, some leave days do.
     CASE
       WHEN x.status = 'Sakit' AND x.h % 3 <> 0 THEN
         (ARRAY['/demo/surat-keterangan-sakit.png', '/demo/resep-obat.jpg'])[(1 + x.h % 2)::INT]

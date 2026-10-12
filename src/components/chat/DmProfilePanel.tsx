@@ -7,7 +7,6 @@ interface DmProfilePanelProps {
   onClickProfile: (userId: string) => void;
 }
 
-/** Replaces the member list for a DM, where a two-person list is redundant. */
 export function DmProfilePanel({
   otherUser,
   onClickProfile,

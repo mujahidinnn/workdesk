@@ -19,8 +19,6 @@ import type { ChatMessage, ChatPayload, ChatPollVote } from "@/lib/types";
 const TILE = 256;
 const ZOOM = 16;
 
-/** Static map from OSM tiles (no API key, no iframe): 3x3 tiles shifted so
- *  the point sits in the middle of the viewport. */
 export function LocationMap({ lat, lng }: { lat: number; lng: number }) {
   const n = 2 ** ZOOM;
   const xt = ((lng + 180) / 360) * n;
@@ -62,7 +60,6 @@ export function LocationMap({ lat, lng }: { lat: number; lng: number }) {
   );
 }
 
-/** Who picked what, one section per option. */
 function VotersDialog({
   open,
   onOpenChange,

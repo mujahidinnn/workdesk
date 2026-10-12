@@ -9,18 +9,6 @@
  * 2021-2027 lists, the lunar ones land on the day or one day off. Cuti
  * bersama cannot be computed at all, it is a yearly decree.
  */
-
-/**
- * Indonesia's national holidays for a year no official list covers yet.
- *
- * The government fixes the religious dates (SKB 3 Menteri) about a year
- * ahead, so every published source stops at next year. Past that, the dates
- * are computed: fixed days, Easter by the Gregorian computus, Islamic days
- * from the Umm al-Qura calendar and Imlek/Nyepi/Waisak from the Chinese
- * lunisolar calendar, both built into Intl. Checked against the official
- * 2021-2027 lists, the lunar ones land on the day or one day off. Cuti
- * bersama cannot be computed at all, it is a yearly decree.
- */
 export interface EstimatedHoliday {
   date: string;
   name: string;
@@ -33,11 +21,9 @@ function monthDay(fmt: Intl.DateTimeFormat, t: number) {
   const parts = fmt.formatToParts(new Date(t));
   const month = parts.find((p) => p.type === "month")?.value ?? "";
   const day = Number(parts.find((p) => p.type === "day")?.value);
-  // A leap month formats as e.g. "4bis"; it never carries a holiday.
   return { month: /^\d+$/.test(month) ? Number(month) : -1, day };
 }
 
-/** Every date in `year` whose calendar month/day matches. */
 function lunar(fmt: Intl.DateTimeFormat, year: number, month: number, day: number) {
   const out: string[] = [];
   for (let t = Date.UTC(year, 0, 1); t < Date.UTC(year + 1, 0, 1); t += DAY) {
@@ -47,7 +33,6 @@ function lunar(fmt: Intl.DateTimeFormat, year: number, month: number, day: numbe
   return out;
 }
 
-/** Easter Sunday, anonymous Gregorian algorithm (Meeus/Jones/Butcher). */
 function easter(y: number) {
   const a = y % 19, b = Math.floor(y / 100), c = y % 100;
   const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
@@ -92,8 +77,6 @@ export function estimateHolidays(year: number): EstimatedHoliday[] {
 
   add(lunar(chinese, year, 1, 1), "Tahun Baru Imlek");
   add(lunar(chinese, year, 4, 15), "Hari Raya Waisak");
-  // Nyepi follows the new moon of the Saka month Kesanga, the first
-  // lunar month to start on or after 1 March.
   for (let t = Date.UTC(year, 2, 1); t < Date.UTC(year, 4, 1); t += DAY) {
     if (monthDay(chinese, t).day === 1) {
       add([iso(t)], "Hari Suci Nyepi");

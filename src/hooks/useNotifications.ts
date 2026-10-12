@@ -7,12 +7,9 @@ import type { Notification } from "@/lib/types";
 export const NOTIFICATIONS_QK = ["notifications"] as const;
 const QK = NOTIFICATIONS_QK;
 
-/** Chat notifications (DM / mention) follow the channel's read state, not their own. */
 export const isChatNotification = (n: Notification) =>
   !!n.link?.startsWith("/chat");
 
-// Short two-tone chime via Web Audio - no asset to ship. Browsers block
-// audio until the user has interacted with the page; failures are ignored.
 const SOUND_KEY = "notif-sound-muted";
 
 export function isNotificationSoundMuted(): boolean {
@@ -55,7 +52,7 @@ function playNotificationSound() {
 }
 
 export function useNotifications() {
-  const { user } = useAuth();
+  const { user, canRead } = useAuth();
   const qc = useQueryClient();
 
   const query = useQuery<Notification[]>({
@@ -71,6 +68,15 @@ export function useNotifications() {
       return data as Notification[];
     },
   });
+
+  const canBoard = canRead("board");
+  useEffect(() => {
+    if (!user?.id || !canBoard) return;
+    // A Postgrest builder only sends when awaited/then-ed; `void` alone never fires it.
+    supabase.rpc("notify_my_overdue").then(({ error }) => {
+      if (error) console.error("notify_my_overdue", error.message);
+    });
+  }, [user?.id, canBoard]);
 
   // Inserts reach this client only via Realtime (no client INSERT policy, 20260922 migration).
   // Keyed on user id, not `user` (new ref per auth event), to avoid recreating the channel and racing a duplicate subscription.
@@ -101,7 +107,6 @@ export function useNotifications() {
   return query;
 }
 
-/** Derives unread count from useNotifications() data; call that once per screen, not a second subscription. */
 export function getUnreadCount(notifications: Notification[]): number {
   return notifications.filter((n) => !n.is_read).length;
 }
@@ -131,7 +136,6 @@ export function useMarkAllNotificationsRead() {
         .update({ is_read: true })
         .eq("user_id", user.id)
         .eq("is_read", false)
-        // Chat ones clear only when the channel is actually read.
         .not("link", "like", "/chat%");
       if (error) throw error;
     },

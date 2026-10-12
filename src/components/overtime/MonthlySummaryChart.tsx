@@ -72,7 +72,6 @@ function StatCard({
         <Icon className="w-4 h-4" />
       </div>
       <div className="min-w-0">
-        {/* Wraps on narrow cards instead of cutting the label off. */}
         <p
           title={label}
           className="text-[10px] text-muted-foreground uppercase tracking-wider lg:tracking-widest font-semibold leading-snug lg:truncate"
@@ -112,7 +111,6 @@ export function MonthlySummaryChart({
     return d.getFullYear() === thisYear && d.getMonth() + 1 === thisMonth;
   });
 
-  // Only approved rows count as real hours or days.
   const approvedThisMonth = thisMonthRecords.filter(
     (r) => r.status === "Approved",
   );
@@ -128,7 +126,6 @@ export function MonthlySummaryChart({
     (r) => r.type === "BusinessTrip_OutOfTown",
   ).length;
 
-  // The tile says "this month", so count this month only.
   const pendingCount = thisMonthRecords.filter(
     (r) => r.status === "Pending",
   ).length;

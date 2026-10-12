@@ -1,7 +1,3 @@
--- Issue Log demo data: tasks and problems follow the role and project, open
--- blockers cap progress at 70%, and comments run in office hours with the
--- owner closing resolved issues.
-
 CREATE OR REPLACE FUNCTION public.superadmin_seed_demo_data(p_holidays JSONB DEFAULT '[]'::JSONB)
 RETURNS JSONB
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, auth, extensions AS $seed$
@@ -67,7 +63,6 @@ BEGIN
   FROM jsonb_array_elements(p_holidays) h
   ON CONFLICT (date) DO NOTHING;
 
-  -- Fixed-date holidays still land when the caller passes none (offline, SQL call).
   INSERT INTO m_holidays (date, name, is_national)
   SELECT make_date(y, f.m, f.d), f.name, TRUE
   FROM generate_series(EXTRACT(YEAR FROM v_today)::INT - 1, EXTRACT(YEAR FROM v_today)::INT + 1) AS y
@@ -84,8 +79,6 @@ BEGIN
   VALUES (v_today + 18, 'HUT WorkDesk (libur perusahaan)', FALSE)
   ON CONFLICT (date) DO NOTHING;
 
-  -- Story beats are placed by workday index (n = 0 is the latest workday already underway),
-  -- so weekday mentions in chat and the matching overtime rows agree whatever day the seed runs.
   v_ref := v_today;
   WHILE NOT (EXTRACT(ISODOW FROM v_ref)::SMALLINT = ANY (v_workdays))
         OR EXISTS (SELECT 1 FROM m_holidays WHERE date = v_ref)
@@ -101,12 +94,9 @@ BEGIN
     AND NOT EXISTS (SELECT 1 FROM m_holidays h WHERE h.date = g.d::DATE);
 
   v_andi_join := (SELECT d FROM _wd WHERE n = 9);
-  -- Poster asks for RSVP by Thursday, so it goes out Monday to Wednesday.
   v_poster  := LEAST(v_ref, date_trunc('week', v_ref)::DATE + 2);
   v_maint   := v_ref - ((EXTRACT(ISODOW FROM v_ref)::INT - 4 + 7) % 7);
-  -- Minutes cover an early-week 14.00 meeting whose follow-ups run to Friday; today's may not have happened yet.
   v_notulen := (SELECT d FROM _wd WHERE n >= 1 AND EXTRACT(ISODOW FROM d) IN (1, 2) ORDER BY n LIMIT 1);
-  -- The survey map says "lanjut besok", so day 2 must be the next calendar day.
   v_survey  := (SELECT a.d FROM _wd a JOIN _wd b ON b.n = a.n - 1 AND b.d = a.d + 1
                 WHERE a.n >= 2 AND v_notulen NOT IN (a.d, b.d)
                 ORDER BY a.n LIMIT 1);
@@ -330,7 +320,6 @@ BEGIN
     (67, 'dm:gita:rizky',  v_gita,   'Riz, icon set baru sudah di Figma, pakai yang versi outline ya.', (SELECT d FROM _wd WHERE n = 2), '10:00', NULL, '{}', FALSE, NULL, FALSE, NULL),
     (68, 'dm:gita:rizky',  v_rizky,  'Siap, makasih Git 🙌', (SELECT d FROM _wd WHERE n = 2), '10:20', 67, '{}', FALSE, NULL, FALSE, NULL);
 
-  -- Anyone posting or claiming overtime on a workday was at work that day.
   DROP TABLE IF EXISTS _seed_busy;
   CREATE TEMP TABLE _seed_busy ON COMMIT DROP AS
   SELECT DISTINCT sender AS uid, d FROM _seed_msg
@@ -353,7 +342,6 @@ BEGIN
       ELSE CASE WHEN x.h % 97 = 0 AND x.d < v_today THEN 'Lupa check-out' END
     END,
     NULL,
-    -- A leading "/" means a static file in public/demo, not the storage bucket.
     CASE
       WHEN x.status = 'Sakit' AND x.h % 3 <> 0 THEN
         (ARRAY['/demo/surat-keterangan-sakit.png', '/demo/resep-obat.jpg'])[(1 + x.h % 2)::INT]
@@ -431,8 +419,6 @@ BEGIN
    WHERE t.user_id = o.uid AND t.date = o.d AND t.type = o.type
      AND o.final <> 'Pending';
 
-  -- project_code NULL = generic task for the role, used when the day has no project
-  -- or the role has no task written for that project.
   DROP TABLE IF EXISTS _seed_task_pool;
   CREATE TEMP TABLE _seed_task_pool ON COMMIT DROP AS
   SELECT role_title, project_code, descr FROM (VALUES
@@ -535,8 +521,6 @@ BEGIN
     ('Software Engineer Intern', NULL,      'Pair programming dengan mentor')
   ) AS p(role_title, project_code, descr);
 
-  -- scope: 'any' | 'project' (needs some project) | a project code.
-  -- problem is unique: the comments below join back on it to get the resolution.
   DROP TABLE IF EXISTS _seed_problem_pool;
   CREATE TEMP TABLE _seed_problem_pool ON COMMIT DROP AS
   SELECT * FROM (VALUES
@@ -588,7 +572,6 @@ BEGIN
     e.id,
     proj.id,
     pool.descr,
-    -- An open blocker never sits on a finished task.
     CASE WHEN prob.problem IS NOT NULL AND NOT st.resolved THEN LEAST(pg.v, 70) ELSE pg.v END,
     prob.problem,
     prob.problem IS NOT NULL AND st.resolved,
@@ -643,7 +626,6 @@ BEGIN
              + CASE WHEN public.demo_hash(a.date::TEXT || a.user_id::TEXT) % 7 = 0 THEN 2 ELSE 0 END
     AND (a.date < v_today OR k.k = 1);
 
-  -- Follow-ups land the next workday in office hours; the owner closes resolved issues.
   INSERT INTO t_task_comments (task_id, user_id, comment, mentions, created_at)
   SELECT t.id, c.uid, c.body, c.mentions, c.at
   FROM t_daily_tasks t
@@ -678,8 +660,6 @@ BEGIN
      t.is_resolved)
   ) AS c(uid, body, mentions, at, keep)
   WHERE c.keep AND c.at < NOW();
-
-  -- The trigger stamps mention notifications with the comment time, so back-dated ones aren't "just now".
 
   PERFORM set_config('request.jwt.claims',
     jsonb_build_object('sub', v_laras, 'role', 'authenticated')::TEXT, true);

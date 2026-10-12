@@ -13,7 +13,6 @@ const DENIED: FeaturePermission = {
   can_delete: false,
 };
 
-/** An active per-user override wins over the role permission. */
 export function resolvePermissions(
   features: Feature[],
   rolePermissions: RolePermission[],
@@ -28,7 +27,6 @@ export function resolvePermissions(
     );
 
     if (override) {
-      // Null override values fall back to the role.
       const base = rolePerm ?? DENIED;
       map[feature.feature_key] = {
         can_create: override.can_create ?? base.can_create,

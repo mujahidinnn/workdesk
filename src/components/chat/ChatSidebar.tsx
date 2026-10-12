@@ -39,7 +39,6 @@ function UnreadBadge({ count }: { count: number }) {
   );
 }
 
-/** WhatsApp-style list timestamp: time today, "Yesterday", weekday this week, else a short date. */
 function useLastMessageTime() {
   const { t } = useTranslation();
   const locale = useDateFnsLocale();
@@ -53,7 +52,6 @@ function useLastMessageTime() {
   };
 }
 
-/** Stable color per project name, same hashing idea as UserAvatar - keeps a project's icon badge a consistent color across visits. */
 function projectColorIndex(name: string): number {
   let hash = 0;
   for (let i = 0; i < name.length; i++)
@@ -70,7 +68,6 @@ interface ChatSidebarProps {
   onStartDm: (userId: string) => void;
   sidebarHidden: boolean;
   onToggleSidebar: () => void;
-  /** Mobile only: hide the list while a chat is open. */
   mobileHidden?: boolean;
 }
 
@@ -114,7 +111,6 @@ export function ChatSidebar({
       .filter((c) => c.type === "project" && matches(c))
       .map((c) => c.project_id),
   );
-  // Keep the project's default channel, which renders the group header.
   const visible = channels.filter(
     (c) =>
       matches(c) ||
@@ -158,7 +154,6 @@ export function ChatSidebar({
     return `${sender ? `${sender}: ` : ""}${clip}${body}`;
   }
 
-  /** Mobile-only title row with time plus a last-message line, like WhatsApp; desktop keeps the compact label. */
   function Label({
     channel,
     text,

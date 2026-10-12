@@ -13,7 +13,6 @@ import {
 } from "@/hooks/useWorkSchedule";
 import { cn } from "@/lib/utils";
 
-// ISO weekdays, 1 = Monday .. 7 = Sunday, same order the database stores.
 const ISO_DAYS = [1, 2, 3, 4, 5, 6, 7];
 
 export function WorkScheduleSettings() {

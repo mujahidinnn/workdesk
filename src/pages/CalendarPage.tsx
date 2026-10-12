@@ -26,7 +26,6 @@ import { useAuth } from "@/context/auth";
 import type { Holiday } from "@/lib/types";
 
 const CURRENT_YEAR = new Date().getFullYear();
-// Years past the official dataset are computed estimates (useSyncNationalHolidays).
 const SYNC_YEAR_OPTIONS = Array.from(
   { length: 9 },
   (_, i) => CURRENT_YEAR - 3 + i,

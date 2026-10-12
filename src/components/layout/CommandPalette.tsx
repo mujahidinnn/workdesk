@@ -22,7 +22,6 @@ import { useTheme } from "@/context/theme";
 import { useNavGroups } from "@/lib/navigation";
 
 interface CommandPaletteProps {
-  /** Opens the sign-out confirmation; signOut() itself isn't called here. */
   onRequestSignOut: () => void;
 }
 

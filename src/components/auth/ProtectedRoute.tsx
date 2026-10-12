@@ -17,9 +17,7 @@ function LoadingScreen() {
 }
 
 interface ProtectedRouteProps {
-  /** If provided, also checks if user can read this feature key */
   featureKey?: string;
-  /** When given, rendered instead of <Outlet /> once access checks pass */
   children?: ReactNode;
 }
 

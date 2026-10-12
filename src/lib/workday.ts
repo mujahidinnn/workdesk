@@ -18,12 +18,10 @@ export function isWeekend(date: Date): boolean {
   return day === 0 || day === 6;
 }
 
-/** ISO weekday: 1 = Monday .. 7 = Sunday. */
 function isoDay(date: Date): number {
   return date.getDay() === 0 ? 7 : date.getDay();
 }
 
-/** Working days come from the schedule, Mon-Fri when there is no row yet. */
 export function isWorkday(
   date: Date,
   holidays: Holiday[],
@@ -37,7 +35,6 @@ export function isWorkday(
   return !holidays.some((h) => h.date === dateStr);
 }
 
-/** First and last day of the selected period filter. */
 export function periodRange(
   type: PeriodType,
   date: Date,
@@ -48,7 +45,6 @@ export function periodRange(
   return { start: startOfYear(date), end: endOfYear(date) };
 }
 
-/** Skips future days so a half-finished month isn't judged against its full length. */
 export function countWorkdays(
   start: Date,
   end: Date,

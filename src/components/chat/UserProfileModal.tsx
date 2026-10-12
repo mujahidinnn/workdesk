@@ -12,7 +12,6 @@ import type { UserWithEmail } from "@/lib/types";
 
 interface UserProfileModalProps {
   user: UserWithEmail | null;
-  /** Hides the "Message" action on your own profile. */
   myUserId?: string;
   open: boolean;
   onOpenChange: (v: boolean) => void;

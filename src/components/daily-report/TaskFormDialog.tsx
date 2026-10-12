@@ -21,12 +21,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TaskAttachments } from "./TaskAttachments";
+import { BoardTaskSelect } from "./BoardTaskSelect";
 import type { DailyTaskWithRelations, Employee, Project } from "@/lib/types";
 
 interface TaskFormDialogProps {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   task?: DailyTaskWithRelations | null;
+  initial?: Partial<TaskFormValues>;
   employees: Employee[];
   projects: Project[];
   onSubmit: (data: TaskFormValues) => void;
@@ -40,12 +42,14 @@ export interface TaskFormValues {
   task_desc: string;
   progress_pct: number;
   problem_desc?: string;
+  board_task_id?: number | null;
 }
 
 export function TaskFormDialog({
   open,
   onOpenChange,
   task,
+  initial,
   employees,
   projects,
   onSubmit,
@@ -76,6 +80,7 @@ export function TaskFormDialog({
         task_desc: task.task_desc,
         progress_pct: task.progress_pct,
         problem_desc: task.problem_desc || "",
+        board_task_id: task.board_task_id,
       });
     } else {
       reset({
@@ -83,9 +88,11 @@ export function TaskFormDialog({
         progress_pct: 0,
         task_desc: "",
         problem_desc: "",
+        board_task_id: null,
+        ...initial,
       });
     }
-  }, [task, reset, open]);
+  }, [task, initial, reset, open]);
 
   const progress = watch("progress_pct");
 
@@ -201,6 +208,11 @@ export function TaskFormDialog({
             </Select>
           </div>
 
+          <BoardTaskSelect
+            value={watch("board_task_id") ?? null}
+            onChange={(v) => setValue("board_task_id", v)}
+          />
+
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground font-medium">
               {t("taskForm.fields.taskDesc")}
@@ -231,7 +243,6 @@ export function TaskFormDialog({
             />
           </div>
 
-          {/* Attachments need a saved task id. */}
           {task ? (
             <TaskAttachments taskId={task.id} />
           ) : (

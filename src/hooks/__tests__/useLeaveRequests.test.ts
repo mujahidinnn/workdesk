@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { countLeaveWorkingDays } from "../useLeaveRequests";
 
-// June 2025: 1st is a Sunday, so 2nd-6th is Mon-Fri and 7th is a Saturday.
 const holidays = new Set(["2025-06-04"]);
 
 describe("countLeaveWorkingDays", () => {
@@ -10,7 +9,6 @@ describe("countLeaveWorkingDays", () => {
   });
 
   it("skips the weekend", () => {
-    // Fri, Sat, Sun, Mon.
     expect(countLeaveWorkingDays("2025-06-06", "2025-06-09")).toBe(2);
   });
 

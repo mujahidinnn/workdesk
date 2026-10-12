@@ -38,7 +38,6 @@ describe("isEarlyLeave", () => {
     expect(isEarlyLeave("not-a-time", schedule, "Hadir")).toBe(false);
   });
 
-  // Number("") is 0, so an empty segment must not read as midnight.
   it("does not read an empty time string as midnight", () => {
     expect(isEarlyLeave("::", schedule, "Hadir")).toBe(false);
     expect(isEarlyLeave(":30", schedule, "Hadir")).toBe(false);
@@ -67,7 +66,6 @@ describe("workHours", () => {
     expect(workHours("08:00", "08:00")).toBeNull();
   });
 
-  // An empty segment must not produce a full working day.
   it("does not turn a junk clock in into a 17 hour day", () => {
     expect(workHours(":00", "17:00")).toBeNull();
     expect(workHours("08:", "17:00")).toBeNull();

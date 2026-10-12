@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
 
-  // Skipped when CRON_SECRET is unset (local dev); required in production.
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret && process.env.VERCEL_ENV === 'production') {
     return res.status(500).json({ error: 'CRON_SECRET is not configured' });

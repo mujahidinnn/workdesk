@@ -26,9 +26,7 @@ import type { ChatMessage } from "@/lib/types";
 const ZOOM_MIN = 0.5;
 const ZOOM_MAX = 3;
 const ZOOM_STEP = 0.25;
-/** Matches the header bar's h-14. */
 const HEADER_HEIGHT = 56;
-/** Thumbnail strip (h-[72px]) shown only when the message has several images. */
 const STRIP_HEIGHT = 72;
 
 interface ImageLightboxProps {
@@ -83,9 +81,6 @@ export function ImageLightbox({
 
   if (!image) return null;
 
-  // The modal itself is full-screen, but the image keeps its native
-  // resolution - only shrunk (preserving aspect ratio) if it wouldn't
-  // otherwise fit below the header, never enlarged past 100%.
   const viewport = {
     width: window.innerWidth,
     height:
@@ -242,7 +237,6 @@ export function ImageLightbox({
           </div>
         </div>
 
-        {/* overflow-auto only matters once zoom pushes the image past this area. */}
         <div className="flex-1 min-h-0 overflow-auto flex items-center justify-center">
           <img
             key={image.id}
@@ -291,7 +285,6 @@ export function ImageLightbox({
           </div>
         )}
 
-        {/* `fixed`, not `absolute`, so arrows don't scroll away with the zoomed image. */}
         {hasMultiple && (
           <>
             <button

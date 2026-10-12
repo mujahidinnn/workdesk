@@ -27,7 +27,6 @@ const MAX_OPTIONS = 12;
 interface RichMessageDialogProps {
   kind: RichKind | null;
   onClose: () => void;
-  /** body is the plain-text summary used by previews, search and notifications. */
   onSend: (payload: ChatPayload, body: string) => void;
   sending: boolean;
 }
@@ -52,7 +51,6 @@ export function RichMessageDialog({
   const [multi, setMulti] = useState(false);
   const [rsvp, setRsvp] = useState(true);
 
-  // Fresh form every time it opens.
   useEffect(() => {
     if (!kind) return;
     setCoords(null);

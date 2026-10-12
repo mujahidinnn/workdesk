@@ -1,7 +1,3 @@
-/**
- * Tour steps keyed like guide.tours.<key>, targeting `[data-tour]` attributes.
- * `clickFirst` clicks another data-tour id first, e.g. to switch tabs.
- */
 export interface TourStepConfig {
   selector: string;
   clickFirst?: string;

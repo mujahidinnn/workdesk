@@ -31,7 +31,6 @@ function spell(n: number): string {
   return `${spell(Math.floor(n / 1e12))} triliun ${spell(n % 1e12)}`;
 }
 
-/** Amount in Indonesian words, e.g. 2500000 → "Dua Juta Lima Ratus Ribu Rupiah". */
 export function terbilang(amount: number): string {
   const n = Math.round(Math.abs(amount));
   const words = n === 0 ? "nol" : spell(n);
@@ -44,11 +43,8 @@ export function terbilang(amount: number): string {
 type JsPDF = InstanceType<typeof import("jspdf").jsPDF>;
 type AutoTable = typeof import("jspdf-autotable").default;
 
-/** One page per employee, A4 portrait, same letterhead as the other exports.
- *  Several lines land in one PDF, one page each. */
 export async function downloadPayslips(
   lines: PayrollLineWithName[],
-  /** First day of the month the run covers. */
   period: string,
   companyName: string,
 ) {

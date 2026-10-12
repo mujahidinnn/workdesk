@@ -14,7 +14,7 @@ export function useFeatures() {
       if (error) throw error;
       return data as Feature[];
     },
-    staleTime: Infinity, // features never change at runtime
+    staleTime: Infinity,
   });
 }
 

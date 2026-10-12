@@ -22,9 +22,8 @@ export interface ChatChannelRow extends ChatChannel {
 
 const CHANNELS_QK = ["chat-channels"] as const;
 const ATTACHMENTS_BUCKET = "chat-attachments";
-const SIGNED_URL_TTL = 60 * 60; // Bucket is private, so no public URLs.
+const SIGNED_URL_TTL = 60 * 60;
 
-/** RLS already scopes this to General, the caller's project channels and their DMs. */
 export function useChatChannels() {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -76,7 +75,6 @@ function messagesKey(channelId: number | null) {
   return ["chat-messages", channelId] as const;
 }
 
-/** Resolves a message's attachment rows to signed URLs (bucket is private) - same pattern as useTaskAttachments. */
 async function withAttachmentUrls(
   messages: ChatMessage[],
 ): Promise<ChatMessage[]> {
@@ -85,7 +83,6 @@ async function withAttachmentUrls(
       if (!m.attachments || m.attachments.length === 0) return m;
       const attachments = await Promise.all(
         m.attachments.map(async (a) => {
-          // A leading "/" means a file shipped in public/ (demo seed), not a bucket object.
           if (a.file_path.startsWith("/")) return { ...a, url: a.file_path };
           const { data: signed } = await supabase.storage
             .from(ATTACHMENTS_BUCKET)
@@ -121,7 +118,6 @@ export function useChatMessages(channelId: number | null) {
     return subscribeShared(`chat-messages-${channelId}`, (channel) => {
       channel
         .on(
-          // "*", not just INSERT: rows also change on edit and pin/unpin.
           "postgres_changes",
           {
             event: "*",
@@ -145,7 +141,6 @@ export function useChatMessages(channelId: number | null) {
           () => qc.invalidateQueries({ queryKey: messagesKey(channelId) }),
         )
         .on(
-          // Anyone can react, so listen to both events. Also unfilterable.
           "postgres_changes",
           { event: "*", schema: "public", table: "t_chat_message_reactions" },
           () => qc.invalidateQueries({ queryKey: messagesKey(channelId) }),
@@ -164,12 +159,10 @@ export function useChatMessages(channelId: number | null) {
 export interface ChatMessageSearch {
   text: string;
   filter: "all" | "attachments" | "pinned" | "mine";
-  /** ISO timestamps, inclusive. */
   from: string | null;
   to: string | null;
 }
 
-/** Keyed under messagesKey so realtime invalidation refreshes search results too. */
 export function useSearchChatMessages(
   channelId: number,
   search: ChatMessageSearch | null,
@@ -185,7 +178,6 @@ export function useSearchChatMessages(
         .from("t_chat_messages")
         .select(messageSelect(filter === "attachments"))
         .eq("channel_id", channelId);
-      // Escape LIKE wildcards so "50%" matches literally.
       if (text) q = q.ilike("body", `%${text.replace(/[\\%_]/g, "\\$&")}%`);
       if (from) q = q.gte("created_at", from);
       if (to) q = q.lte("created_at", to);
@@ -300,7 +292,6 @@ export function useForwardMessage() {
       if (error) throw error;
 
       for (const att of message.attachments ?? []) {
-        // App-shipped files (path starts with "/") are shared, not copied.
         let newPath = att.file_path;
         if (!att.file_path.startsWith("/")) {
           const ext = att.file_name.includes(".")
@@ -333,7 +324,6 @@ export function useForwardMessage() {
 
 const UNREAD_QK = ["chat-unread-mentions"] as const;
 
-/** channel_id -> unread count of @mentions, @everyone, or any DM from the other person. */
 export function useUnreadMentionCounts() {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -405,7 +395,6 @@ export function useChatLastMessages() {
   return query;
 }
 
-/** Marks a channel read up to now, which clears its unread-mention badge. */
 export function useMarkChannelRead() {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -421,7 +410,6 @@ export function useMarkChannelRead() {
         { onConflict: "channel_id,user_id" },
       );
       if (error) throw error;
-      // Keep the bell in sync: reading the channel reads its notifications.
       const { error: notifError } = await supabase
         .from("t_notifications")
         .update({ is_read: true })
@@ -437,7 +425,6 @@ export function useMarkChannelRead() {
   });
 }
 
-/** Toggles the caller's own reaction on a message - inserts if they haven't reacted with that emoji yet, deletes if they have. */
 export function useToggleReaction() {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -475,7 +462,6 @@ export function useToggleReaction() {
   });
 }
 
-/** Server enforces single choice and option bounds; this just toggles. */
 export function useToggleVote() {
   const qc = useQueryClient();
   return useMutation({
@@ -499,7 +485,6 @@ export function useToggleVote() {
   });
 }
 
-/** Only the body is sent: the DB guard refuses other columns and stamps edited_at. */
 export function useEditChatMessage() {
   const qc = useQueryClient();
   return useMutation({
@@ -523,7 +508,6 @@ export function useEditChatMessage() {
   });
 }
 
-/** RLS only lets the sender delete. */
 export function useDeleteChatMessage() {
   const qc = useQueryClient();
   return useMutation({
@@ -547,7 +531,6 @@ export function useDeleteChatMessage() {
       if (error) throw error;
       if (!count) throw new Error("Message not deleted");
 
-      // A failed cleanup only leaves an orphan file, so don't fail the delete.
       if (atts.length > 0) {
         const { error: rmErr } = await supabase.storage
           .from(ATTACHMENTS_BUCKET)
@@ -561,7 +544,6 @@ export function useDeleteChatMessage() {
   });
 }
 
-/** pinned_by and the timestamp are set by the DB guard. */
 export function useTogglePinMessage() {
   const qc = useQueryClient();
   return useMutation({
@@ -585,7 +567,6 @@ export function useTogglePinMessage() {
   });
 }
 
-/** Gets (or lazily creates) the 1:1 DM channel with another user, then invalidates the channel list so it appears in the sidebar. */
 export function useStartDm() {
   const qc = useQueryClient();
   return useMutation({
@@ -600,7 +581,6 @@ export function useStartDm() {
   });
 }
 
-/** Admin-only; RLS enforces the admin and project-exists check. */
 export function useCreateProjectThread() {
   const qc = useQueryClient();
   return useMutation({
@@ -635,7 +615,6 @@ export function useProjectMemberIds(projectId: number | null) {
   });
 }
 
-/** All users for General, assigned members for a project channel, both participants for a DM. */
 export function useChannelMembers(
   channel: ChatChannelRow | null,
 ): UserWithEmail[] {

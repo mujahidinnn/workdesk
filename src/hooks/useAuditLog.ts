@@ -6,12 +6,10 @@ import type { AuditLogEntryWithActor } from "@/lib/types";
 export interface AuditLogFilters {
   action?: string;
   entityType?: string;
-  /** yyyy-MM-dd, local day, inclusive */
   from?: string;
   to?: string;
 }
 
-// Row triggers log "insert", the client logs "create"; same meaning.
 const ACTION_ALIASES: Record<string, string[]> = {
   create: ["create", "insert"],
 };

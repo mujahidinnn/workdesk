@@ -1,7 +1,3 @@
--- Default data: some days carry 4-5 tasks, so the workload heatmap shows
--- its "heavy" level. Same function as 20261026000300; only the daily-task
--- count changed.
-
 CREATE OR REPLACE FUNCTION public.superadmin_seed_demo_data()
 RETURNS JSONB
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, auth, extensions AS $seed$
@@ -207,8 +203,6 @@ BEGIN
       ELSE CASE WHEN x.h % 97 = 0 AND x.d < v_today THEN 'Lupa check-out' END
     END,
     CASE WHEN x.uid = v_yoga THEN v_maya END,
-    -- Files ship with the app in public/demo (a leading "/" = static, not the bucket).
-    -- Attachments are optional: most sick days carry one, some leave days do.
     CASE
       WHEN x.status = 'Sakit' AND x.h % 3 <> 0 THEN
         (ARRAY['/demo/surat-keterangan-sakit.png', '/demo/resep-obat.jpg'])[(1 + x.h % 2)::INT]
@@ -370,7 +364,6 @@ BEGIN
     LIMIT 1
   ) proj ON TRUE
   WHERE a.status = 'Hadir'
-    -- 1-3 tasks a day, and roughly one day in seven is a heavy one (+2, so 3-5).
     AND k.k <= 1 + (public.demo_hash(a.user_id::TEXT || a.date::TEXT) % 3)
              + CASE WHEN public.demo_hash(a.date::TEXT || a.user_id::TEXT) % 7 = 0 THEN 2 ELSE 0 END
     AND (a.date < v_today OR k.k = 1);

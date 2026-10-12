@@ -9,7 +9,6 @@ import authHandler from "./api/auth";
 // Supabase IP time out (AggregateError ETIMEDOUT) even though the host is reachable.
 net.setDefaultAutoSelectFamilyAttemptTimeout(2000);
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
@@ -17,7 +16,6 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
       proxy: {
-        // Mirrors the vercel.json rewrite so same-origin requests work in dev (see client.ts).
         "/supabase-api": {
           target: env.VITE_SUPABASE_URL,
           changeOrigin: true,
@@ -28,7 +26,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       {
-        // Vercel serves api/auth.ts in production; run the same handler here.
         name: "auth-bff",
         configureServer(server) {
           process.env.VITE_SUPABASE_URL ??= env.VITE_SUPABASE_URL;
@@ -48,7 +45,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     base: "/",
-    // Setup provides localStorage, which the supabase client reads on import.
     test: {
       environment: "node",
       include: ["src/**/__tests__/**/*.test.ts"],
@@ -58,7 +54,6 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       rollupOptions: {
         output: {
-          // Split shared libraries so a deploy only invalidates the chunk that changed.
           manualChunks(id) {
             if (!id.includes("node_modules")) return;
             if (id.includes("@supabase")) return "supabase";

@@ -94,17 +94,14 @@ export default function OvertimePage() {
       user_id: user.id,
       type: values.type,
       date: values.date,
-      // Only an overtime shift can end on another day.
       end_date: isOvertime ? values.end_date : null,
       start_time: isOvertime ? values.start_time || null : null,
       end_time: isOvertime ? values.end_time || null : null,
       project_id: values.project_id,
       activity_description: values.activity_description.trim(),
-      // duration_hours and daily_allowance are computed by the database.
       status: "Pending" as const,
     };
     if (editingRecord) {
-      // One write so the resubmit resets status and clears the rejection note together.
       updateRecord.mutate(
         { id: editingRecord.id, ...payload, rejection_note: null },
         { onSuccess: () => setFormOpen(false) },

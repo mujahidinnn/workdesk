@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-/** Row 1 of every Master Hub tab: title/count/subtitle left, actions right. */
 export function SectionHeader({
   title,
   count,
@@ -38,7 +37,6 @@ export function SectionHeader({
   );
 }
 
-/** Row 2: search + filters left, optional view controls pushed right. */
 export function Toolbar({
   children,
   end,

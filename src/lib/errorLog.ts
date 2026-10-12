@@ -1,10 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 
-/**
- * Fire-and-forget report to t_error_log, read on the superadmin page.
- * Works signed out too, which is what a failed sign-in is.
- */
 export function logClientError(
   source: string,
   message: string,

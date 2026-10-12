@@ -80,7 +80,6 @@ export default function SuperadminPage() {
         if (error) throw error;
         return;
       }
-      // Holidays shape attendance and workdays, so the seed needs them up front.
       const y = new Date().getFullYear();
       const { rows } = await nationalHolidays([y - 1, y, y + 1]);
       const { error } = await supabase.rpc(fn, { p_holidays: rows });

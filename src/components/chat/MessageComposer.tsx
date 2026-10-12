@@ -37,7 +37,6 @@ import { useSendChatMessage } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
 import type { ChatMessage, ChatPayload, UserWithEmail } from "@/lib/types";
 
-// Matches the chat-attachments bucket's file_size_limit / allowed_mime_types.
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const ACCEPT_DOCS =
   "audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip";
@@ -88,7 +87,6 @@ export function MessageComposer({
 
   useEffect(() => () => recorderRef.current?.stop(), []);
 
-  // Device kinds are listed even before permission, so no prompt here.
   useEffect(() => {
     navigator.mediaDevices
       ?.enumerateDevices()
@@ -96,7 +94,6 @@ export function MessageComposer({
       .catch(() => {});
   }, []);
 
-  // Grow with content like WhatsApp; max-h on the textarea caps it and scrolls.
   useLayoutEffect(() => {
     const el = textareaRef.current;
     if (!el) return;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
@@ -37,6 +37,13 @@ export function AppShell() {
   const location = useLocation();
   const isChat = location.pathname === "/chat";
   const desktopSidebarHidden = isChat && chatSidebarHidden;
+  // Captured per render, so the page that is animating out keeps rendering
+  // itself; a live <Outlet/> would mount the next page twice (once in the
+  // exiting wrapper), losing its state and any one-shot navigation state.
+  const outlet = useOutlet({
+    sidebarHidden: desktopSidebarHidden,
+    toggleSidebar: () => setChatSidebarHidden((v) => !v),
+  });
   const navigate = useNavigate();
   const { preference, setPreference } = useTheme();
   const { user, profile, signOut, isAdmin } = useAuth();
@@ -164,7 +171,7 @@ export function AppShell() {
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 md:px-6 border-b border-border glass-card">
+        <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 md:px-6 bg-card/80 backdrop-blur-lg border-b border-border">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(true)}
@@ -185,7 +192,6 @@ export function AppShell() {
           <div className="flex items-center gap-2">
             <NotificationBell />
 
-            {/* Rendered via Radix portal to avoid overflow/z-index clipping. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -313,12 +319,7 @@ export function AppShell() {
               transition={{ duration: 0.2, ease: "easeOut" }}
               className={isChat ? "h-full" : "min-h-full"}
             >
-              <Outlet
-                context={{
-                  sidebarHidden: desktopSidebarHidden,
-                  toggleSidebar: () => setChatSidebarHidden((v) => !v),
-                }}
-              />
+              {outlet}
             </motion.div>
           </AnimatePresence>
         </main>

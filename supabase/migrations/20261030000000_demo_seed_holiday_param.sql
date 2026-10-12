@@ -68,7 +68,6 @@ BEGIN
   FROM jsonb_array_elements(p_holidays) h
   ON CONFLICT (date) DO NOTHING;
 
-  -- Fixed-date holidays still land when the caller passes none (offline, SQL call).
   INSERT INTO m_holidays (date, name, is_national)
   SELECT make_date(y, f.m, f.d), f.name, TRUE
   FROM generate_series(EXTRACT(YEAR FROM v_today)::INT - 1, EXTRACT(YEAR FROM v_today)::INT + 1) AS y
@@ -85,8 +84,6 @@ BEGIN
   VALUES (v_today + 18, 'HUT WorkDesk (libur perusahaan)', FALSE)
   ON CONFLICT (date) DO NOTHING;
 
-  -- Story beats are placed by workday index (n = 0 is the latest workday already underway),
-  -- so weekday mentions in chat and the matching overtime rows agree whatever day the seed runs.
   v_ref := v_today;
   WHILE NOT (EXTRACT(ISODOW FROM v_ref)::SMALLINT = ANY (v_workdays))
         OR EXISTS (SELECT 1 FROM m_holidays WHERE date = v_ref)
@@ -102,12 +99,9 @@ BEGIN
     AND NOT EXISTS (SELECT 1 FROM m_holidays h WHERE h.date = g.d::DATE);
 
   v_andi_join := (SELECT d FROM _wd WHERE n = 9);
-  -- Poster asks for RSVP by Thursday, so it goes out Monday to Wednesday.
   v_poster  := LEAST(v_ref, date_trunc('week', v_ref)::DATE + 2);
   v_maint   := v_ref - ((EXTRACT(ISODOW FROM v_ref)::INT - 4 + 7) % 7);
-  -- Minutes cover an early-week 14.00 meeting whose follow-ups run to Friday; today's may not have happened yet.
   v_notulen := (SELECT d FROM _wd WHERE n >= 1 AND EXTRACT(ISODOW FROM d) IN (1, 2) ORDER BY n LIMIT 1);
-  -- The survey map says "lanjut besok", so day 2 must be the next calendar day.
   v_survey  := (SELECT a.d FROM _wd a JOIN _wd b ON b.n = a.n - 1 AND b.d = a.d + 1
                 WHERE a.n >= 2 AND v_notulen NOT IN (a.d, b.d)
                 ORDER BY a.n LIMIT 1);
@@ -331,7 +325,6 @@ BEGIN
     (67, 'dm:gita:rizky',  v_gita,   'Riz, icon set baru sudah di Figma, pakai yang versi outline ya.', (SELECT d FROM _wd WHERE n = 2), '10:00', NULL, '{}', FALSE, NULL, FALSE, NULL),
     (68, 'dm:gita:rizky',  v_rizky,  'Siap, makasih Git 🙌', (SELECT d FROM _wd WHERE n = 2), '10:20', 67, '{}', FALSE, NULL, FALSE, NULL);
 
-  -- Anyone posting or claiming overtime on a workday was at work that day.
   DROP TABLE IF EXISTS _seed_busy;
   CREATE TEMP TABLE _seed_busy ON COMMIT DROP AS
   SELECT DISTINCT sender AS uid, d FROM _seed_msg
@@ -354,7 +347,6 @@ BEGIN
       ELSE CASE WHEN x.h % 97 = 0 AND x.d < v_today THEN 'Lupa check-out' END
     END,
     NULL,
-    -- A leading "/" means a static file in public/demo, not the storage bucket.
     CASE
       WHEN x.status = 'Sakit' AND x.h % 3 <> 0 THEN
         (ARRAY['/demo/surat-keterangan-sakit.png', '/demo/resep-obat.jpg'])[(1 + x.h % 2)::INT]
@@ -571,8 +563,6 @@ BEGIN
   WHERE t.problem_desc IS NOT NULL
     AND (c.uid = v_dewi OR t.id % 2 = 0)
     AND t.created_at + make_interval(hours => c.after_h) < NOW();
-
-  -- The trigger stamps mention notifications with the comment time, so back-dated ones aren't "just now".
 
   PERFORM set_config('request.jwt.claims',
     jsonb_build_object('sub', v_laras, 'role', 'authenticated')::TEXT, true);

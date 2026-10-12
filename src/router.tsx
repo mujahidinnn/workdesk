@@ -2,11 +2,13 @@ import { lazy, Suspense, type ReactNode } from "react";
 import { AppShell } from "./components/layout/AppShell";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PageFallback } from "./components/layout/PageFallback";
+import { RouteError } from "./components/layout/ErrorBoundary";
 
-// Pages are split per route: the login screen should not ship the chat,
-// the Excel writer and the PDF writer along with it.
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const DailyReportPage = lazy(() => import("./pages/DailyReportPage"));
+const BoardsPage = lazy(() => import("./pages/BoardsPage"));
+const BoardPage = lazy(() => import("./pages/BoardPage"));
+const MyTasksPage = lazy(() => import("./pages/MyTasksPage"));
 const MasterHubPage = lazy(() => import("./pages/MasterHubPage"));
 const TimelinePage = lazy(() => import("./pages/TimelinePage"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
@@ -29,19 +31,23 @@ const load = (element: ReactNode) => (
   <Suspense fallback={<PageFallback />}>{element}</Suspense>
 );
 
-/** Page behind both the auth check and a feature permission. */
 const guarded = (featureKey: string, element: ReactNode) => (
   <ProtectedRoute featureKey={featureKey}>{load(element)}</ProtectedRoute>
 );
 
 export const routers = [
-  { path: "/login", element: load(<LoginPage />) },
-  { path: "/reset-password", element: load(<ResetPasswordPage />) },
-  { path: "/403", element: load(<ForbiddenPage />) },
+  { path: "/login", element: load(<LoginPage />), errorElement: <RouteError /> },
+  {
+    path: "/reset-password",
+    element: load(<ResetPasswordPage />),
+    errorElement: <RouteError />,
+  },
+  { path: "/403", element: load(<ForbiddenPage />), errorElement: <RouteError /> },
 
   {
     path: "/",
     element: <ProtectedRoute />,
+    errorElement: <RouteError />,
     children: [
       {
         element: <AppShell />,
@@ -51,6 +57,9 @@ export const routers = [
             path: "daily-report",
             element: guarded("daily-report", <DailyReportPage />),
           },
+          { path: "boards", element: guarded("board", <BoardsPage />) },
+          { path: "boards/:boardId", element: guarded("board", <BoardPage />) },
+          { path: "my-tasks", element: guarded("board", <MyTasksPage />) },
           { path: "timeline", element: guarded("timeline", <TimelinePage />) },
           { path: "calendar", element: guarded("holidays", <CalendarPage />) },
           {
@@ -68,14 +77,9 @@ export const routers = [
           { path: "payroll", element: guarded("payroll", <PayrollPage />) },
           { path: "export", element: guarded("export", <ExportPage />) },
           { path: "master", element: guarded("master", <MasterHubPage />) },
-          // No featureKey: the sidebar entry and the page both check is_superadmin,
-          // and so does every RPC it calls.
           { path: "superadmin", element: load(<SuperadminPage />) },
-          // No featureKey: chat is open to every authenticated user, like Discord.
           { path: "chat", element: load(<ChatPage />) },
-          // No featureKey: every authenticated user manages their own profile.
           { path: "settings/profile", element: load(<ProfileSettingsPage />) },
-          // No featureKey: the guide is visible to every authenticated user.
           { path: "guide", element: load(<GuidePage />) },
         ],
       },

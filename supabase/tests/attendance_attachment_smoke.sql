@@ -25,7 +25,6 @@ UPDATE profiles SET role_id = (SELECT id FROM m_roles WHERE role_name = 'Admin')
  WHERE id = '00000000-0000-0000-0000-0000000000ba';
 SELECT set_config('test.role', '', false);
 
--- May delete attendance but not edit it.
 INSERT INTO t_user_access_override
   (user_id, feature_id, can_create, can_read, can_update, can_delete, is_override_active)
 SELECT '00000000-0000-0000-0000-0000000000bd', id, false, true, false, true, true
@@ -43,7 +42,6 @@ DO $$
 DECLARE
   v_count INT;
 BEGIN
-  -- 1. Izin / Sakit without a note is refused, with one it goes in
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000b1', true);
   PERFORM set_config('test.role', 'authenticated', true);
@@ -65,7 +63,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 1b: Izin with a note was refused';
   END IF;
 
-  -- 2. Uploads only into your own folder
   SET LOCAL ROLE authenticated;
   INSERT INTO storage.objects (bucket_id, name, owner_id)
   VALUES ('attendance-attachments', '00000000-0000-0000-0000-0000000000b1/own.pdf',
@@ -81,7 +78,6 @@ BEGIN
   END;
   RESET ROLE;
 
-  -- 3. Another employee can see it (attendance.read) but not delete it
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000b2', true);
   SELECT COUNT(*) INTO v_count FROM storage.objects
@@ -97,7 +93,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 3b: another employee deleted someone''s attachment';
   END IF;
 
-  -- 4. Admin (update + delete) and a delete-only user may remove it
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000ba', true);
   DELETE FROM storage.objects WHERE name = '00000000-0000-0000-0000-0000000000b1/by-admin.pdf';
@@ -116,7 +111,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 4b: attendance.delete alone cannot remove the attachment';
   END IF;
 
-  -- 5. The owner may remove their own file
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000b1', true);
   DELETE FROM storage.objects WHERE name = '00000000-0000-0000-0000-0000000000b1/own.pdf';

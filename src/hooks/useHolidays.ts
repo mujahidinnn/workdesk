@@ -61,28 +61,23 @@ export function useDeleteHoliday() {
   });
 }
 
-// Covers Indonesia's full calendar (lunar holidays, cuti bersama), unlike
-// generic holiday APIs such as Nager.Date.
 const HOLIDAYS_SOURCE_URL =
   "https://raw.githubusercontent.com/guangrei/APIHariLibur_V2/main/holidays.json";
 
 type HolidaysJson = Record<string, { summary: string }>;
 const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Marks computed rows as provisional until the official list replaces them. */
 const ESTIMATE_SUFFIX = " (perkiraan)";
 
 type HolidayRow = { date: string; name: string; is_national: boolean };
 
-/** The official dataset only reaches about a year ahead; later years are
- *  estimated and saved with ESTIMATE_SUFFIX. */
 export async function nationalHolidays(years: number[]) {
   let all: HolidaysJson = {};
   try {
     const res = await fetch(HOLIDAYS_SOURCE_URL);
     if (res.ok) all = (await res.json()) as HolidaysJson;
   } catch {
-    // Offline or source down: the estimate below still works.
+    /* offline: fall back to the estimate */
   }
 
   const rows: HolidayRow[] = [];
@@ -99,7 +94,6 @@ export async function nationalHolidays(years: number[]) {
         name: h.name + ESTIMATE_SUFFIX,
         is_national: true,
       }));
-      // Two holidays can fall on one day; the table keeps one row per date.
       yearRows = yearRows.filter((r, i) => yearRows.findIndex((x) => x.date === r.date) === i);
     }
     rows.push(...yearRows);
@@ -114,7 +108,6 @@ export function useSyncNationalHolidays() {
       const { rows, estimatedYears } = await nationalHolidays([year]);
       const estimated = estimatedYears.length > 0;
       if (!estimated) {
-        // Official list replaces any estimate, including one that landed a day off.
         const { error } = await supabase
           .from("m_holidays")
           .delete()

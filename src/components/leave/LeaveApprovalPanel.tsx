@@ -28,7 +28,6 @@ import type { LeaveRequestWithProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  /** Pending requests from other people. Self-approval is blocked by the database. */
   requests: LeaveRequestWithProfile[];
 }
 

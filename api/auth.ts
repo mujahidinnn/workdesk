@@ -51,8 +51,6 @@ export default async function handler(req: Req, res: ServerResponse) {
   if (!supabaseUrl) return send(res, 500, { error: "Missing VITE_SUPABASE_URL" });
   if (req.method !== "POST") return send(res, 405, { error: "Method not allowed" });
 
-  // SameSite=Strict already keeps the cookie off cross-site requests; this
-  // rejects them outright.
   const origin = req.headers.origin;
   if (origin && new URL(origin).host !== req.headers.host)
     return send(res, 403, { error: "Cross-origin request" });
@@ -94,7 +92,6 @@ export default async function handler(req: Req, res: ServerResponse) {
   if (upstream.pathname === "/auth/v1/logout") {
     res.setHeader("Set-Cookie", cookie("", 0));
   } else if (isRefresh && upstreamRes.status >= 400 && upstreamRes.status < 500) {
-    // Revoked/reused token: drop it so the next load doesn't retry it.
     res.setHeader("Set-Cookie", cookie("", 0));
   }
 
@@ -102,7 +99,7 @@ export default async function handler(req: Req, res: ServerResponse) {
   try {
     json = JSON.parse(text);
   } catch {
-    // Not JSON (e.g. 204 from logout): pass through untouched.
+    /* not JSON (e.g. 204 from logout): pass through */
   }
   if (upstreamRes.ok && json && typeof json.refresh_token === "string") {
     res.setHeader("Set-Cookie", cookie(json.refresh_token, MAX_AGE));

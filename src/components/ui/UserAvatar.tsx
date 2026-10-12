@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import { AVATAR_CHIP_COLORS as AVATAR_COLORS } from "@/lib/colorPalettes";
 import { useIsOnline } from "@/hooks/useOnlineUsers";
 
-/** Stable color derived from the name string so the same person always gets the same color */
 function nameToColorIndex(name: string): number {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
@@ -29,23 +28,14 @@ const SIZE = {
 } as const;
 
 interface UserAvatarProps {
-  /** Display name used for initials fallback and accessible alt text */
   name: string;
-  /** Optional photo URL - shown as an image if provided */
   avatarUrl?: string | null;
-  /** Override the automatic color index (e.g. pass `employee.id % 6`) */
   colorIndex?: number;
   size?: keyof typeof SIZE;
   className?: string;
-  /** When set, shows a green dot while this user is online */
   presenceUserId?: string;
 }
 
-/**
- * Shared avatar component used everywhere in WorkDesk.
- * Shows a real photo when `avatarUrl` is set, otherwise renders
- * color-coded initials consistent across the whole app.
- */
 export function UserAvatar({
   name,
   avatarUrl,

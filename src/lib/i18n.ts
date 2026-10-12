@@ -15,7 +15,7 @@ i18n.use(initReactI18next).init({
     en: { translation: en },
     id: { translation: id },
   },
-  lng: "en", // default; auth context overrides once profile loads
+  lng: "en",
   fallbackLng: "en",
   interpolation: { escapeValue: false },
   returnNull: false,

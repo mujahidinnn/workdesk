@@ -43,9 +43,7 @@ Semua tabel di schema `public`, RLS aktif, masuk publication `supabase_realtime`
 **`m_divisions`**: `id serial pk`, `name text unique not null`, `color text`, `is_active bool default true`, `created_at`.
 Seed: Backend, Frontend, Mobile, UI/UX, QA, DevOps, PM.
 
-**`m_employees`**: tambah `division_id int null references m_divisions(id) on delete set null`. Kolom `department` lama tidak disentuh.
-
-**`m_project_members`**: tambah `member_role text not null default 'member' check (member_role in ('pic','member','reviewer'))`.
+**`m_project_members`**: tambah `member_role text not null default 'member' check (member_role in ('pic','member','reviewer'))`. Policy UPDATE baru: PIC project atau editor Master Hub boleh mengubah role. `syncProjectMembers` di client diubah jadi diff (bukan hapus-semua lalu insert ulang) agar role tidak hilang saat project diedit.
 
 ### 3.2 Board dan kolom
 
@@ -67,7 +65,7 @@ Kolom yang masih berisi task tidak bisa dihapus (trigger menolak). Pindahkan dul
 | `board_id` | int not null fk `t_boards` cascade | |
 | `column_id` | int null fk `t_board_columns` restrict | wajib untuk root (`parent_id is null`), null untuk child |
 | `parent_id` | bigint null fk `t_tasks` cascade | |
-| `root_id` | bigint not null | diisi trigger, = id sendiri bila root |
+| `root_id` | bigint not null default 0 | diisi trigger, = id sendiri bila root |
 | `depth` | int not null default 0 | diisi trigger |
 | `task_no` | int not null | diisi trigger dari `t_boards.next_task_no`, unik per board, tampil sebagai `#118` |
 | `title` | text not null | |
@@ -113,12 +111,13 @@ Action: `created, updated(field,from,to), moved(column_from,column_to), reparent
 
 **`t_daily_tasks`**: tambah `board_task_id bigint null references t_tasks(id) on delete set null`, index.
 
-### 3.4 View
+### 3.4 Progres dan workload
 
-- **`v_task_progress`**: per task, `steps_total`, `steps_done`, `children_total`, `children_done`, `progress_pct` (rekursif, subtree penuh). Dipakai untuk badge `x/y` dan progress bar.
-- **`v_task_workload`**: per `user_id`, `division_id`, `board_id`, berisi jumlah `todo`, `in_progress`, `in_review`, `overdue`, dan `done_7d`. Hanya node yang di-assign langsung ke user, tidak termasuk yang di-archive.
+Dihitung di client dari data yang sudah dimuat, bukan view SQL:
+- `src/lib/taskTree.ts` `computeProgress`: setiap step di subtree ditambah setiap node di bawahnya dihitung satu unit, lalu dicari persentase yang selesai.
+- `src/lib/workload.ts` `summarizeWorkload`: per assignee, jumlah `todo`, `in_progress`, `in_review`, `overdue`, dan `done_7d`. Hanya node yang di-assign langsung yang dihitung, dan yang diarsipkan tidak ikut.
 
-Kedua view `security_invoker = true` agar RLS tabel dasar tetap berlaku.
+Alasannya: cukup satu implementasi yang di-unit-test, dan tidak ada recursive CTE untuk setiap request.
 
 ## 4. Aturan akses
 
@@ -149,7 +148,9 @@ Feature key baru `board` di `m_features`, dengan izin default disalin dari `dail
 | Root masuk kolom `is_done_column` | hanya bila `status = 'done'` |
 | Archive / hapus | pembuat (bila belum ada child/assignee lain), PIC, admin |
 
-Kolom `status`, `completed_at`, `completed_by` tidak bisa diubah lewat UPDATE langsung. Trigger menolak, kecuali flag sesi lokal yang di-set oleh RPC.
+Kolom `status`, `completed_at`, `completed_by`, `submitted_by`, `parent_id`, dan `column_id` tidak bisa diubah lewat UPDATE langsung dari client (trigger menolak bila `current_user = 'authenticated'`; RPC berjalan sebagai owner). Perpindahan wajib lewat `move_task`/`reparent_task`.
+
+Siapa pun yang mengajukan review (`submitted_by`) tidak bisa meng-approve pengajuannya sendiri, termasuk assignee ancestor. Selama status `in_review`, daftar assignee terkunci. Hak kerja ikut gugur saat user dikeluarkan dari project. PIC hanya bisa mengubah `member_role`, tidak bisa memindah baris keanggotaan. Helper internal (`reopen_lineage`, `notify_user`, `log_task_activity`, `slot_task`, dll.) di-REVOKE dari client. Policy storage daily-report tidak lagi mencakup folder `board/`.
 
 Setiap edit pada step atau child yang sudah `done` membuat parent `done` kembali ke `in_progress` (trigger), agar status tidak bohong.
 
@@ -211,6 +212,8 @@ DnD memakai optimistic update di cache React Query, dan rollback bila RPC gagal 
 - `ReviewDialog`: approve/reject + catatan.
 - `WorkloadTable`: user x status, group per divisi, heat color. Klik angka memfilter board.
 
+Divisi untuk workload diambil dari divisi task, bukan divisi karyawan.
+
 Komponen lama yang bisa dipakai ulang: `UserAvatar`, `EmptyState`, `DeleteConfirmationModal`, `date-picker-field`, `PresenceDot`, pola `TaskAttachments` dan `TaskComments` (diparameterkan via hook, bukan diduplikasi bila perubahan kecil).
 
 ### 7.4 Lib murni (`src/lib/`)
@@ -224,7 +227,7 @@ Komponen lama yang bisa dipakai ulang: `UserAvatar`, `EmptyState`, `DeleteConfir
 - `TaskFormDialog` dapat field opsional "Task terkait": combobox node yang di-assign ke saya, dengan pencarian `#no` atau judul.
 - `DailyReportTable` dan kanban menampilkan chip `#no` yang membuka detail task.
 - `TaskDetailDialog` menampilkan daftar log harian tertaut.
-- Dashboard: widget workload ringkas dari `v_task_workload`.
+- Dashboard: widget workload ringkas (`TaskWorkloadCard`, dihitung lewat `summarizeWorkload`).
 
 ## 8. Error handling
 

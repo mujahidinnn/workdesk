@@ -1,11 +1,9 @@
 -- Replays security fixes already folded into 20260919000000_init.sql so existing
 -- databases get them without a reset. Idempotent on fresh databases.
 
--- Overtime is filed as Pending; only an approver moves it on.
 DROP POLICY IF EXISTS overtime_insert ON public.t_overtime_business_trips;
 CREATE POLICY overtime_insert ON public.t_overtime_business_trips FOR INSERT TO authenticated WITH CHECK (((user_id = auth.uid()) AND ((status)::text = 'Pending'::text) AND (approved_by IS NULL) AND (rejection_note IS NULL)));
 
--- Payroll officers don't set their own pay.
 DROP POLICY IF EXISTS rates_insert ON public.t_employee_rates;
 CREATE POLICY rates_insert ON public.t_employee_rates FOR INSERT TO authenticated WITH CHECK ((public.is_payroll_officer() AND (profile_id <> auth.uid())));
 DROP POLICY IF EXISTS rates_update ON public.t_employee_rates;
@@ -13,22 +11,18 @@ CREATE POLICY rates_update ON public.t_employee_rates FOR UPDATE TO authenticate
 DROP POLICY IF EXISTS payroll_lines_update ON public.t_payroll_lines;
 CREATE POLICY payroll_lines_update ON public.t_payroll_lines FOR UPDATE TO authenticated USING ((public.is_payroll_officer() AND (user_id <> auth.uid()))) WITH CHECK ((public.is_payroll_officer() AND (user_id <> auth.uid())));
 
--- Self check-in is limited to what the gate modal offers.
 DROP POLICY IF EXISTS attendance_insert ON public.t_attendance;
 CREATE POLICY attendance_insert ON public.t_attendance FOR INSERT TO authenticated WITH CHECK ((((user_id = auth.uid()) AND (status = ANY (ARRAY['Hadir'::text, 'Izin'::text, 'Sakit'::text]))) OR public.has_permission('attendance'::text, 'create'::text)));
 
--- Access changes are audited by triggers and edge functions, not the client.
 DROP POLICY IF EXISTS audit_insert_own ON public.t_audit_log;
 CREATE POLICY audit_insert_own ON public.t_audit_log FOR INSERT TO authenticated WITH CHECK (((actor_id = auth.uid()) AND (entity_type <> ALL (ARRAY['user'::text, 'user_role'::text, 'role_permission'::text, 'access_override'::text, 'profile'::text]))));
 
--- Task attachments are deleted by their uploader or a master editor.
 DROP POLICY IF EXISTS attachments_delete ON public.t_task_attachments;
 CREATE POLICY attachments_delete ON public.t_task_attachments FOR DELETE TO authenticated USING (((uploaded_by = auth.uid()) OR public.has_permission('master'::text, 'update'::text)));
 DROP POLICY IF EXISTS task_attachments_delete ON storage.objects;
 CREATE POLICY task_attachments_delete ON storage.objects FOR DELETE TO authenticated
   USING (bucket_id = 'task-attachments' AND (owner_id = (auth.uid())::text OR public.has_permission('master', 'update')));
 
--- No SVG in chat uploads.
 UPDATE storage.buckets SET allowed_mime_types = ARRAY[
     'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/*', 'audio/*', 'application/pdf',
     'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -37,7 +31,6 @@ UPDATE storage.buckets SET allowed_mime_types = ARRAY[
     'text/plain', 'text/csv', 'application/zip', 'application/x-zip-compressed']
  WHERE id = 'chat-attachments';
 
--- E-mail addresses are for admins only.
 CREATE OR REPLACE FUNCTION public.get_users_with_email() RETURNS TABLE(id uuid, full_name text, email text, role_id integer, role_name text, employee_id integer, employee_name text, employee_role_title text, avatar_url text, created_at timestamp with time zone, banned_until timestamp with time zone, is_superadmin boolean)
     LANGUAGE sql SECURITY DEFINER
     SET search_path TO 'public', 'auth'
@@ -63,7 +56,6 @@ CREATE OR REPLACE FUNCTION public.get_users_with_email() RETURNS TABLE(id uuid, 
   ORDER BY p.created_at ASC;
 $$;
 
--- Approvers decide on someone else's request; they don't get to rewrite it.
 CREATE OR REPLACE FUNCTION public.guard_approval_edit() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public'

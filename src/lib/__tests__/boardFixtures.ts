@@ -1,0 +1,35 @@
+import type { BoardTaskRow } from "../types";
+
+export function row(over: Partial<BoardTaskRow> & { id: number }): BoardTaskRow {
+  return {
+    board_id: 1,
+    column_id: over.parent_id ? null : 10,
+    parent_id: null,
+    root_id: over.id,
+    depth: 0,
+    task_no: over.id,
+    title: `T${over.id}`,
+    description: null,
+    expected_output: null,
+    division_id: null,
+    priority: "medium",
+    start_date: null,
+    due_date: null,
+    estimate_hours: null,
+    status: "todo",
+    position: over.id * 1024,
+    created_by: null,
+    completed_at: null,
+    completed_by: null,
+    submitted_by: null,
+    archived_at: null,
+    created_at: "2026-10-01T00:00:00Z",
+    updated_at: "2026-10-01T00:00:00Z",
+    assignees: [],
+    reviewers: [],
+    steps: [],
+    labels: [],
+    reviews: [],
+    ...over,
+  };
+}

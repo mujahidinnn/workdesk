@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 
-// Matches the attendance-attachments bucket's file_size_limit / allowed_mime_types.
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPT =
   "image/jpeg,image/png,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -11,7 +10,6 @@ const ACCEPT =
 interface AttachmentInputProps {
   file: File | null;
   onChange: (f: File | null) => void;
-  /** Name of the file already stored, shown until a new one is picked. */
   currentName?: string | null;
 }
 

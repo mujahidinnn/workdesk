@@ -81,7 +81,6 @@ export default function AttendancePage() {
     to,
     filters,
   );
-  // Recap needs every status to derive Alpa, so table filters don't apply to it.
   const { data: myRecords = [] } = useAttendance(from, to, {
     userId: user?.id,
   });

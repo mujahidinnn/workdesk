@@ -6,10 +6,6 @@ interface JobTitleMaps {
   byUser: Record<string, string>;
 }
 
-/**
- * Job title (m_employees.role_title, e.g. "QA Engineer") for anyone shown by
- * name. Look up by employee id or by auth user id; missing = no title.
- */
 export function useJobTitles() {
   const { data } = useQuery<JobTitleMaps>({
     queryKey: ["job-titles"],

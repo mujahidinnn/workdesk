@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e1b4b"/><stop offset="1" stop-color="#4338ca"/></linearGradient>
+    <g id="meter"><rect width="96" height="120" rx="12" fill="#e0e7ff"/><rect x="12" y="14" width="72" height="34" rx="6" fill="#1e1b4b"/>
+      <text x="48" y="38" text-anchor="middle" font-family="monospace" font-size="18" fill="#a3e635">0482</text>
+      <circle cx="48" cy="82" r="20" fill="none" stroke="#6366f1" stroke-width="5"/><path d="M48 82 L60 70" stroke="#1e1b4b" stroke-width="4" stroke-linecap="round"/></g>
+  </defs>
+  <rect width="1200" height="240" fill="url(#bg)"/>
+  <!-- circuit traces -->
+  <g fill="none" stroke="#a5b4fc" stroke-opacity=".35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 60 H180 L220 100 H330"/><path d="M0 180 H150 L190 140 H330"/><path d="M426 120 H560"/><path d="M640 120 H780 L820 70 H960 L1000 100"/><path d="M780 120 L820 170 H960 L1000 140"/><path d="M1096 120 H1200"/>
+  </g>
+  <g fill="#a3e635"><circle cx="180" cy="60" r="5"/><circle cx="150" cy="180" r="5"/><circle cx="820" cy="70" r="5"/><circle cx="820" cy="170" r="5"/></g>
+  <!-- meters -->
+  <use href="#meter" x="330" y="60"/>
+  <use href="#meter" x="1000" y="60"/>
+  <!-- gateway -->
+  <g transform="translate(560 70)">
+    <rect width="80" height="100" rx="14" fill="#c7d2fe"/><rect x="14" y="16" width="52" height="8" rx="4" fill="#4338ca"/>
+    <g fill="#22c55e"><circle cx="22" cy="44" r="5"/><circle cx="40" cy="44" r="5"/></g><circle cx="58" cy="44" r="5" fill="#f59e0b"/>
+    <path d="M28 -6 v-22 M52 -6 v-22" stroke="#c7d2fe" stroke-width="5" stroke-linecap="round"/>
+    <g fill="none" stroke="#a3e635" stroke-width="3" stroke-linecap="round"><path d="M20 -40 a28 28 0 0 1 40 0"/><path d="M8 -52 a46 46 0 0 1 64 0" stroke-opacity=".5"/></g>
+  </g>
+  <!-- bolt -->
+  <path d="M120 96 l-26 48 h22 l-10 40 l34 -56 h-22 l10 -32z" fill="#facc15"/>
+</svg>

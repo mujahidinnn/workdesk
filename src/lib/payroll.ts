@@ -1,10 +1,8 @@
 import type { EmployeeRate, OvertimeRecordWithRelations } from "@/lib/types";
 
-/** Gross pay only: tax and BPJS are handled by the payroll system reading this export. */
 export interface PayrollLine {
   userId: string;
   name: string;
-  /** Zero unless the export covers exactly one month, see payrollRecap. */
   baseSalary: number;
   overtimeHours: number;
   overtimePay: number;
@@ -15,11 +13,6 @@ export interface PayrollLine {
   gross: number;
 }
 
-/**
- * Sums money already stamped by the DB trigger, since rates may have changed after approval.
- * Only Approved records count; everyone with a rate row gets a line, even with no overtime.
- * @param includeBaseSalary Base salary is monthly: pass false unless the export covers exactly one month.
- */
 export function payrollRecap(
   records: OvertimeRecordWithRelations[],
   rates: EmployeeRate[],

@@ -25,7 +25,6 @@ interface Props {
   lines: PayrollLineWithName[];
   period: string;
   companyName: string;
-  /** A finalized run is read-only except for the payment flag. */
   isDraft: boolean;
   canManage: boolean;
   onSaveDeductions: (payload: {
@@ -39,7 +38,6 @@ interface Props {
   isSaving: boolean;
 }
 
-/** Only deductions are editable; everything else on the row is computed server-side. */
 export function PayrollLinesTable({
   lines,
   period,

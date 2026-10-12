@@ -18,7 +18,6 @@ export function useUsers(filters: UserFilters = {}) {
     queryKey: ["users", filters],
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      // get_users_with_email RETURNS TABLE, so PostgREST filters apply to it.
       let query = supabase.rpc("get_users_with_email");
       if (filters.roleId) query = query.eq("role_id", Number(filters.roleId));
       if (filters.linked === "linked")

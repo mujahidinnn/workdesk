@@ -1,4 +1,3 @@
--- Izin / Sakit must say why; a supporting file (letter, photo) is optional.
 ALTER TABLE public.t_attendance
   ADD COLUMN attachment_path text,
   ADD COLUMN attachment_name text;
@@ -14,7 +13,6 @@ INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
     'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
 ON CONFLICT (id) DO NOTHING;
 
--- Uploads land in the uploader's own folder: <auth.uid()>/<uuid>.<ext>.
 CREATE POLICY attendance_attachments_insert ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (bucket_id = 'attendance-attachments' AND (auth.uid())::text = (storage.foldername(name))[1]);
 CREATE POLICY attendance_attachments_read ON storage.objects FOR SELECT TO authenticated

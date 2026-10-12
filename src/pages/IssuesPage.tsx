@@ -216,7 +216,6 @@ export default function IssuesPage() {
   );
   const hasServerFilter = Object.values(filters).some(Boolean);
 
-  // Status filters locally: the chips need open and resolved counts loaded together.
   const filtered = problems.filter((task) => {
     const matchSearch =
       !search ||

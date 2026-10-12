@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { LogoMark } from "@/components/brand/Logo";
 import { topoPath } from "@/lib/topo";
 
-// Dark green backdrop drawn with gradients so the login screen ships no image.
 const backdrop =
   "radial-gradient(ellipse at 20% 30%, hsl(152 60% 22% / .8), transparent 55%)," +
   "radial-gradient(ellipse at 80% 70%, hsl(160 50% 18% / .7), transparent 50%)," +
@@ -16,9 +15,6 @@ const topo = (opacity: number) =>
     `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'><path d='${contour}' fill='none' stroke='white' stroke-opacity='${opacity}' stroke-linecap='round'/></svg>`,
   )}")`;
 
-// Page and hero panel share one viewport-fixed map, so the panel reads as a
-// window onto the same terrain. The panel gets brighter lines and a green
-// lift to pull focus.
 const fixedBg = {
   backgroundColor: "hsl(160 20% 5%)",
   backgroundAttachment: "fixed",
@@ -31,8 +27,6 @@ const heroBg = {
   backgroundImage: `${topo(0.16)}, linear-gradient(hsl(152 60% 30% / .15), hsl(152 60% 30% / .15)), ${backdrop}`,
 };
 
-// The card keeps the reference's light palette in both themes: white panel,
-// project green accent. Scoped CSS vars so the shadcn inputs and buttons follow.
 const lightCard = {
   "--card": "0 0% 100%",
   "--foreground": "200 25% 10%",
@@ -53,7 +47,6 @@ export function AuthLayout({ children }: { children: ReactNode }) {
       className="min-h-screen flex flex-col md:items-center md:justify-center md:p-8"
       style={pageBg}
     >
-      {/* Mobile: brand hero on the page, form panel docks below as a sheet. */}
       <header className="md:hidden px-6 pt-10 pb-8 text-white space-y-6">
         <div className="flex items-center gap-2">
           <LogoMark className="h-7 w-auto" />

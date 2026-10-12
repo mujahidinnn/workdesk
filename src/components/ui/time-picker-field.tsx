@@ -30,7 +30,6 @@ export function TimePickerField({
   className,
 }: {
   label?: string;
-  /** "HH:MM", or "" when unset */
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;

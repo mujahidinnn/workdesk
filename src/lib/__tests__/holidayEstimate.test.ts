@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { estimateHolidays } from "../holidayEstimate";
 
-// The official 2026 dates (SKB 3 Menteri). Lunar estimates may be a day off.
 const OFFICIAL_2026: Record<string, string> = {
   "Isra Mikraj Nabi Muhammad": "2026-01-16",
   "Tahun Baru Imlek": "2026-02-17",

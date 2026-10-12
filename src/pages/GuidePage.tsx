@@ -31,7 +31,6 @@ interface GuideEntry {
   icon: LucideIcon;
   label: string;
   description: string;
-  /** Chrome elements live on every page, so no navigation before the tour. */
   skipNavigate?: boolean;
 }
 
@@ -91,14 +90,12 @@ export default function GuidePage() {
 
   const features = [...pageFeatures, ...extraFeatures];
 
-  // Delay matches AppShell's ~200ms page transition.
   function handleOpen(item: GuideEntry) {
     if (item.skipNavigate) {
       startAppTour(item.guideKey);
       return;
     }
     navigate(item.href);
-    // Lazy routes and async data mean a fixed delay can miss the target, so retry.
     const startedAt = Date.now();
     const tryStart = () => {
       if (startAppTour(item.guideKey) || Date.now() - startedAt > 8000) return;
@@ -133,7 +130,6 @@ export default function GuidePage() {
           const key = item.guideKey;
           const purpose = t(`guide.features.${key}.purpose`);
           const flow = t(`guide.features.${key}.flow`);
-          // i18n returns the key string when a menu has no guide text yet.
           const rawSteps = t(`guide.features.${key}.steps`, {
             returnObjects: true,
           });

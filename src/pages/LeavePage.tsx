@@ -61,7 +61,6 @@ export default function LeavePage() {
       ...patch,
     }));
 
-  // Own requests are never approvable, the database rejects self-approval.
   const approvalBase: LeaveFilters = {
     status: "Pending",
     excludeUserId: user?.id,
@@ -87,7 +86,6 @@ export default function LeavePage() {
   function handleFormSubmit(values: LeaveFormValues) {
     if (!user) return;
     if (editing) {
-      // Saving requeues the request, so a stale rejection note no longer applies.
       updateRequest.mutate(
         { id: editing.id, ...values, status: "Pending", rejection_note: null },
         { onSuccess: () => setFormOpen(false) },

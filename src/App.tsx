@@ -33,7 +33,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Separate component so useTheme is inside ThemeProvider
 function AppInner() {
   const { theme } = useTheme();
   return (

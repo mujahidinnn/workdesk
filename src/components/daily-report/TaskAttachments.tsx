@@ -1,16 +1,20 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Paperclip, X, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { DeleteConfirmationModal } from "@/components/ui/DeleteConfirmationModal";
 import {
   useTaskAttachments,
   useUploadTaskAttachment,
   useDeleteTaskAttachment,
+  type TaskAttachmentWithUrl,
 } from "@/hooks/useTaskAttachments";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/auth";
+import type { TaskSource } from "@/lib/types";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // matches the storage bucket's file_size_limit
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 function isImage(fileName: string) {
   return /\.(jpe?g|png|webp|gif)$/i.test(fileName);
@@ -18,14 +22,25 @@ function isImage(fileName: string) {
 
 interface TaskAttachmentsProps {
   taskId: number;
+  source?: TaskSource;
+  canManage?: boolean;
 }
 
-export function TaskAttachments({ taskId }: TaskAttachmentsProps) {
+export function TaskAttachments({
+  taskId,
+  source = "daily",
+  canManage = false,
+}: TaskAttachmentsProps) {
+  const { user, canUpdate } = useAuth();
+  // Mirrors the delete policies: the uploader, a master editor (daily log) or the PIC (board).
+  const canRemove = (a: TaskAttachmentWithUrl) =>
+    a.uploaded_by === user?.id || (source === "board" ? canManage : canUpdate("master"));
   const { t } = useTranslation();
-  const { data: attachments = [], isLoading } = useTaskAttachments(taskId);
-  const upload = useUploadTaskAttachment();
-  const deleteAttachment = useDeleteTaskAttachment();
+  const { data: attachments = [], isLoading } = useTaskAttachments(taskId, source);
+  const upload = useUploadTaskAttachment(source);
+  const deleteAttachment = useDeleteTaskAttachment(source);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [removing, setRemoving] = useState<TaskAttachmentWithUrl | null>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -104,24 +119,36 @@ export function TaskAttachments({ taskId }: TaskAttachmentsProps) {
                   </>
                 )}
               </a>
-              <button
-                type="button"
-                onClick={() =>
-                  deleteAttachment.mutate({
-                    id: a.id,
-                    filePath: a.file_path,
-                    taskId,
-                  })
-                }
-                title={t("taskForm.attachments.delete")}
-                className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X className="w-3 h-3" />
-              </button>
+              {canRemove(a) && (
+                <button
+                  type="button"
+                  onClick={() => setRemoving(a)}
+                  title={t("taskForm.attachments.delete")}
+                  aria-label={t("taskForm.attachments.delete")}
+                  className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
           ))}
         </div>
       )}
+
+      <DeleteConfirmationModal
+        open={!!removing}
+        onOpenChange={(o) => !o && setRemoving(null)}
+        title={t("taskForm.attachments.deleteTitle")}
+        description={t("taskForm.attachments.deleteDesc", { name: removing?.file_name })}
+        isPending={deleteAttachment.isPending}
+        onConfirm={() =>
+          removing &&
+          deleteAttachment.mutate(
+            { id: removing.id, filePath: removing.file_path, taskId },
+            { onSuccess: () => setRemoving(null) },
+          )
+        }
+      />
     </div>
   );
 }

@@ -239,7 +239,7 @@ export default function ProfileSettingsPage() {
     try {
       await supabase.auth.updateUser({ email: user.email });
     } catch {
-      // Best-effort: always clear local state
+      /* best-effort: always clear local state */
     } finally {
       setPendingEmail(null);
       setNewEmail(user.email);

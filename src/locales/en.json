@@ -26,7 +26,9 @@
       "superadmin": "Superadmin",
       "overtime": "Overtime",
       "payroll": "Payroll",
-      "guide": "Guide"
+      "guide": "Guide",
+      "boards": "Task Boards",
+      "myTasks": "My Tasks"
     },
     "descriptions": {
       "dashboard": "Overview & analytics",
@@ -42,7 +44,9 @@
       "superadmin": "Tenant & system control",
       "overtime": "Overtime & Business Trip",
       "payroll": "Monthly run & payslips",
-      "guide": "What WorkDesk can do"
+      "guide": "What WorkDesk can do",
+      "boards": "Plan project work as cards, subtasks and steps",
+      "myTasks": "Everything assigned to you, and what waits for your review"
     }
   },
   "commandPalette": {
@@ -162,13 +166,15 @@
       "project": "Project",
       "taskDesc": "Task Description",
       "problem": "Description / Problem",
-      "problemOptional": "(optional)"
+      "problemOptional": "(optional)",
+      "boardTask": "Board task"
     },
     "placeholders": {
       "employee": "Select employee...",
       "project": "Select project...",
       "taskDesc": "Describe what was done today...",
-      "problem": "Any notes, blockers, or constraints encountered..."
+      "problem": "Any notes, blockers, or constraints encountered...",
+      "boardTask": "Not linked to a board task"
     },
     "saving": "Saving...",
     "update": "Update Task",
@@ -181,7 +187,9 @@
       "saveFirst": "Save the task first, then add photos or files.",
       "uploading": "Uploading...",
       "empty": "No files attached",
-      "delete": "Remove file"
+      "delete": "Remove file",
+      "deleteTitle": "Remove this file?",
+      "deleteDesc": "\"{{name}}\" will be deleted for everyone."
     }
   },
   "issues": {
@@ -242,7 +250,8 @@
       "projectTypes": "Project Types",
       "projectStatus": "Project Status",
       "users": "Users",
-      "auditLog": "Audit Log"
+      "auditLog": "Audit Log",
+      "divisions": "Divisions"
     },
     "projects": {
       "title": "Projects",
@@ -399,6 +408,8 @@
       "columnName": "Name",
       "columnActions": "Actions",
       "namePlaceholder": "Enter name...",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Short note about this item...",
       "empty": "No items yet",
       "emptyHint": "Click Add to create the first entry",
       "noResults": "No items match your search",
@@ -420,7 +431,17 @@
       "editItem": "Edit {{title}}",
       "save": "Save",
       "saving": "Saving...",
-      "required": "Required"
+      "required": "Required",
+      "divisions": {
+        "title": "Divisions",
+        "subtitle": "Teams that board tasks are split by",
+        "itemLabel": "Division",
+        "deleteTitle": "Delete division?",
+        "deleteDesc": "Tasks in \"{{name}}\" keep their content but lose the division.",
+        "activate": "Use again for new tasks",
+        "deactivate": "Stop offering for new tasks (keeps old tasks)"
+      },
+      "inactive": "Inactive"
     },
     "filters": {
       "allStatuses": "All statuses",
@@ -1636,5 +1657,274 @@
       "title": "Delete Leave Request",
       "desc": "This request will be removed permanently. This cannot be undone."
     }
+  },
+  "board": {
+    "status": {
+      "todo": "To do",
+      "in_progress": "In progress",
+      "in_review": "In review",
+      "done": "Done"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "roles": {
+      "pic": "PIC",
+      "reviewer": "Reviewer",
+      "member": "Member"
+    },
+    "views": {
+      "board": "Board",
+      "list": "List",
+      "workload": "Workload"
+    },
+    "sentBack": "Sent back",
+    "actions": {
+      "start": "Start",
+      "backToTodo": "Move to To do",
+      "submit": "Submit for review",
+      "archive": "Archive",
+      "withdraw": "Withdraw"
+    },
+    "blockers": {
+      "not_assignee": "Only an assignee can submit",
+      "status": "Already in review or done",
+      "output": "Fill in the expected output first",
+      "steps": "Finish every step first",
+      "subtasks": "Every subtask must be approved first"
+    },
+    "review": {
+      "approve": "Approve",
+      "reject": "Send back",
+      "approveTitle": "Approve this task",
+      "rejectTitle": "Send this task back",
+      "notePlaceholder": "Optional note for the assignees",
+      "rejectPlaceholder": "What needs fixing? (required)"
+    },
+    "boards": {
+      "title": "Task Boards",
+      "subtitle": "One board per project. Open a project to plan and track its work.",
+      "search": "Search projects...",
+      "empty": "No projects yet",
+      "emptyHint": "You only see projects you are a member of.",
+      "open": "{{count}} open",
+      "overdue": "{{count}} overdue",
+      "done": "{{count}} done",
+      "back": "Back to boards",
+      "menu": "Board options",
+      "detail": "Project details",
+      "openMaster": "Open in Master Hub",
+      "openBoard": "Open board",
+      "tasks": "Cards",
+      "taskSummary": "{{open}} open, {{overdue}} overdue, {{done}} done",
+      "members": "Members"
+    },
+    "card": {
+      "add": "Add a card",
+      "titlePlaceholder": "Task title",
+      "detail": "Task details",
+      "descriptionPlaceholder": "What is this task about? Add context, links, acceptance notes...",
+      "outputPlaceholder": "What exactly is delivered when this is done?",
+      "toTop": "Back to top",
+      "mySteps_one": "{{count}} step for you",
+      "mySteps_other": "{{count}} steps for you",
+      "myStepsHint": "Steps on this card assigned to you"
+    },
+    "column": {
+      "add": "Add column",
+      "namePrompt": "Column name",
+      "menu": "Column options",
+      "rename": "Rename",
+      "wip": "Set WIP limit",
+      "wipPrompt": "Maximum cards in this column. Leave empty for no limit.",
+      "wipPlaceholder": "No limit",
+      "wipClear": "Remove limit",
+      "markDone": "Mark as done column",
+      "unmarkDone": "Unmark done column",
+      "delete": "Delete column",
+      "deleteNonEmpty": "Move the cards out to delete",
+      "deleteTitle": "Delete column?",
+      "deleteDesc": "\"{{name}}\" will be removed from this board. Archived cards still in it keep it from being deleted.",
+      "color": "Colour",
+      "noColor": "No colour"
+    },
+    "errors": {
+      "doneNeedsApproval": "Only an approved task can go into a done column"
+    },
+    "fields": {
+      "title": "title",
+      "description": "Description",
+      "expected_output": "Expected output",
+      "division_id": "division",
+      "priority": "priority",
+      "start_date": "start date",
+      "due_date": "due date",
+      "estimate_hours": "estimate",
+      "status": "status"
+    },
+    "filter": {
+      "search": "Search title or #number...",
+      "mine": "My tasks",
+      "allPeople": "Everyone",
+      "allDivisions": "All divisions",
+      "allLabels": "All labels",
+      "anyDue": "Any due date",
+      "overdue": "Overdue",
+      "week": "Due in 7 days"
+    },
+    "list": {
+      "task": "Task",
+      "column": "Column",
+      "division": "Division",
+      "assignees": "Assignees",
+      "status": "Status",
+      "progress": "Progress",
+      "due": "Due"
+    },
+    "members": {
+      "hint": "Roles decide who can manage the board (PIC) and who reviews work (PIC, Reviewer). Add or remove members in Master Hub.",
+      "manage": "Add or remove members in Master Hub",
+      "leftSuffix": "(left the project)"
+    },
+    "meta": {
+      "add": "Add",
+      "assignees": "Assignees",
+      "reviewers": "Reviewers",
+      "reviewersDefault": "Any PIC or reviewer",
+      "division": "Division",
+      "priority": "Priority",
+      "start": "Start",
+      "due": "Due",
+      "estimate": "Estimate (hours)",
+      "labels": "Labels",
+      "newLabel": "New label, press Enter",
+      "none": "None",
+      "clear": "Clear",
+      "assignMe": "Assign to me"
+    },
+    "move": {
+      "title": "Move",
+      "toColumn": "To column",
+      "promote": "Make it a card in",
+      "underTask": "Make it a subtask of...",
+      "search": "Search tasks...",
+      "none": "No task fits",
+      "toBoard": "Move to another board"
+    },
+    "myTasks": {
+      "title": "My Tasks",
+      "mine": "Assigned to me",
+      "review": "To review ({{count}})",
+      "empty": "Nothing assigned to you",
+      "noReview": "Nothing waiting for your review",
+      "groups": {
+        "overdue": "Overdue",
+        "today": "Due today",
+        "week": "Next 7 days",
+        "later": "Later",
+        "noDue": "No due date"
+      },
+      "steps": "Steps assigned to me"
+    },
+    "steps": {
+      "title": "Steps",
+      "addPlaceholder": "Add a step, press Enter",
+      "titlePlaceholder": "Step",
+      "notePlaceholder": "Add a note",
+      "delete": "Delete step",
+      "reorder": "Drag to reorder",
+      "doneBy": "Done by {{name}} on {{at}}",
+      "assign": "Assign this step"
+    },
+    "subtasks": {
+      "title": "Subtasks",
+      "addPlaceholder": "Add a subtask, press Enter",
+      "expand": "Show subtasks",
+      "reorder": "Drag to reorder",
+      "assign": "Assign this subtask"
+    },
+    "tabs": {
+      "comments": "Comments",
+      "activity": "Activity"
+    },
+    "activity": {
+      "system": "System",
+      "created": "created this task",
+      "updated": "changed {{field}} to {{to}}",
+      "moved": "moved this from {{from}} to {{to}}",
+      "reparented": "moved this in the task tree",
+      "archived": "archived this task",
+      "restored": "restored this task",
+      "assigned": "assigned {{name}}",
+      "unassigned": "removed {{name}}",
+      "step_added": "added step \"{{title}}\"",
+      "step_checked": "completed \"{{title}}\"",
+      "step_unchecked": "reopened \"{{title}}\"",
+      "step_removed": "deleted step \"{{title}}\"",
+      "submitted_review": "submitted this for review",
+      "approved": "approved this task{{note}}",
+      "rejected": "sent this back{{note}}",
+      "commented": "commented",
+      "step_assigned": "assigned step \"{{title}}\" to {{name}}",
+      "withdrawn": "withdrew it from review",
+      "moved_board": "moved this card from another board"
+    },
+    "dailyLogs": {
+      "title": "Daily log",
+      "log": "Log progress",
+      "empty": "No daily entries linked yet. Progress logged in the daily report against this task shows up here."
+    },
+    "workload": {
+      "person": "Person",
+      "open": "Open",
+      "todo": "To do",
+      "in_progress": "In progress",
+      "in_review": "In review",
+      "overdue": "Overdue",
+      "done_7d": "Done (7d)",
+      "dashboardTitle": "Task workload",
+      "steps": "Open steps",
+      "empty": "No board work in this division."
+    },
+    "archive": {
+      "title": "Archive this task?",
+      "description": "\"{{title}}\" and its subtasks will disappear from the board. Their history is kept."
+    },
+    "labels": {
+      "namePlaceholder": "Label name",
+      "color": "Label colour",
+      "create": "Create label",
+      "save": "Save",
+      "edit": "Edit label",
+      "delete": "Delete",
+      "deleteTitle": "Delete label?",
+      "deleteDesc": "\"{{name}}\" will be removed from every card on this board."
+    },
+    "banner": {
+      "change": "Banner",
+      "upload": "Upload image",
+      "reset": "Use default banner",
+      "tooLarge": "Image is too large (max 5MB)",
+      "pick": "Choose a pattern",
+      "pickTitle": "Board banner",
+      "palette": "Colours",
+      "illustrations": "Illustrations",
+      "patterns": "Patterns"
+    },
+    "archived": {
+      "title": "Archived",
+      "hint": "Archived cards and subtasks leave the board but keep their history. The PIC can bring them back.",
+      "empty": "Nothing archived on this board.",
+      "restore": "Restore",
+      "under": "Subtask of #{{no}} {{title}}",
+      "inColumn": "Card in {{column}}",
+      "by": "archived by {{name}} on {{at}}",
+      "restoreTitle": "Restore this task?",
+      "restoreDesc": "\"{{title}}\" goes back on the board where it was, with its subtasks."
+    },
+    "superadmin": "Superadmin"
   }
 }

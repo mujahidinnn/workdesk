@@ -9,22 +9,18 @@ import {
 export interface DetailField {
   label: string;
   value: ReactNode;
-  /** Long content (notes, descriptions, files) gets its own full-width block. */
   block?: boolean;
 }
 
 interface DetailDialogProps {
   title: string;
-  /** null = closed. */
   fields: DetailField[] | null;
   onClose: () => void;
-  /** Actions under the fields, e.g. a link to the full page. */
   footer?: ReactNode;
 }
 
 const isEmpty = (v: ReactNode) => v == null || v === "" || v === false;
 
-/** Read-only view of one table row, opened by clicking the row. */
 export function DetailDialog({
   title,
   fields,
@@ -36,14 +32,14 @@ export function DetailDialog({
 
   return (
     <Dialog open={!!fields} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="bg-card border-border max-w-md max-h-[85vh] overflow-y-auto">
+      <DialogContent className="bg-card border-border max-w-md max-h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-foreground text-base font-semibold">
             {title}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="-mx-5 min-h-0 flex-1 space-y-4 overflow-y-auto px-5 scrollbar-thin sm:-mx-6 sm:px-6">
           {inline.length > 0 && (
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
               {inline.map((f) => (

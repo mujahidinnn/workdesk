@@ -127,7 +127,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (i18n.language !== lang) i18n.changeLanguage(lang);
     } catch (err) {
       console.error("loadProfile failed:", err);
-      // Keep existing state on transient errors.
     } finally {
       if (generation === loadGenerationRef.current) setIsLoading(false);
     }
@@ -138,7 +137,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, loadProfile]);
 
   useEffect(() => {
-    // INITIAL_SESSION covers the initial check, so no separate getSession() (avoids double-loading).
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, sess) => {
@@ -167,16 +165,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(sess);
       setUser(sess?.user ?? null);
       if (sess?.user && loadedUserIdRef.current === sess.user.id) {
-        // Same user already loaded: refresh only when the user may have changed.
         if (event === "USER_UPDATED") setTimeout(() => loadProfile(sess.user.id), 0);
       } else if (sess?.user) {
         // isLoading may already be false from an earlier "no session" resolve;
         // reset it so guards wait for this sign-in's permissions, not stale ones.
         setIsLoading(true);
-        // Deferred so the auth listener returns quickly.
         setTimeout(() => loadProfile(sess.user.id), 0);
       } else {
-        loadGenerationRef.current++; // invalidate any load still in flight
+        loadGenerationRef.current++;
         loadedUserIdRef.current = null;
         setProfile(null);
         setPermissions({});
@@ -213,7 +209,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
-  // Memoized so context consumers don't cascade-render.
   const canRead = useCallback(
     (f: string) => permissions[f]?.can_read ?? false,
     [permissions],

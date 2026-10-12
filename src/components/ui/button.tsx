@@ -39,7 +39,6 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  /** Shows a spinner in place of the icon and disables the button. */
   loading?: boolean;
 }
 

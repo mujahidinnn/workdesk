@@ -20,7 +20,6 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return jsonResponse({ error: "Missing Authorization header" }, 401);
 
-    // Caller-scoped client, used only to identify the caller.
     const callerClient = createClient(SUPABASE_URL, ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -69,7 +68,6 @@ Deno.serve(async (req) => {
     });
     if (createErr) return jsonResponse({ error: createErr.message }, 400);
 
-    // handle_new_user() already inserted a default profile; patch it.
     const { error: updateErr } = await adminClient
       .from("profiles")
       .update({
@@ -79,7 +77,6 @@ Deno.serve(async (req) => {
       })
       .eq("id", created.user.id);
     if (updateErr) {
-      // Roll back the auth user to avoid an orphaned account.
       await adminClient.auth.admin.deleteUser(created.user.id);
       return jsonResponse({ error: updateErr.message }, 400);
     }

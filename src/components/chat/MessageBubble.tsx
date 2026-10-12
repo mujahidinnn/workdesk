@@ -42,7 +42,6 @@ interface MessageBubbleProps {
   message: ChatMessage;
   channelId: number;
   isOwn: boolean;
-  /** False in General for non-admins: the DB refuses that pin. */
   canPin: boolean;
   memberNames: string[];
   replyToMessage?: ChatMessage | null;

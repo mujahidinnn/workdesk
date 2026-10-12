@@ -1,4 +1,3 @@
-/** Rotating colors for the initials chip on an avatar. */
 export const AVATAR_CHIP_COLORS = [
   "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-400",
   "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-400",
@@ -17,7 +16,6 @@ export const ROLE_BADGE_COLORS: Record<string, string> = {
     "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900/40",
 };
 
-/** Picked by index so a project keeps the same color everywhere. */
 export const PROJECT_BADGE_COLORS = [
   "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800/40",
   "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-800/40",

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { endOfDay, format, startOfDay } from "date-fns";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { endOfDay, format, isSameDay, startOfDay } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import {
   ArrowDown,
@@ -40,6 +40,7 @@ import {
 import { channelTitle } from "@/lib/chat";
 import { useJobTitles } from "@/hooks/useJobTitles";
 import { cn } from "@/lib/utils";
+import { useDateFnsLocale } from "@/lib/dateLocale";
 import type { ChatChannelRow } from "@/hooks/useChat";
 import type { ChatMessage, UserWithEmail } from "@/lib/types";
 
@@ -50,7 +51,6 @@ interface ChatWindowProps {
   channel: ChatChannelRow;
   members: UserWithEmail[];
   onClickSender: (userId: string) => void;
-  /** Mobile only: back to the channel list. */
   onBack: () => void;
   mobileHidden?: boolean;
 }
@@ -63,10 +63,10 @@ export function ChatWindow({
   mobileHidden = false,
 }: ChatWindowProps) {
   const { t } = useTranslation();
+  const dateLocale = useDateFnsLocale();
   const jobTitles = useJobTitles();
   const { user, isAdmin } = useAuth();
   const { data: messages = [], isLoading } = useChatMessages(channel.id);
-  // A pin in General is an announcement; mirrors the DB guard's admin-only rule.
   const canPin = channel.type !== "general" || isAdmin();
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -78,7 +78,6 @@ export function ChatWindow({
     markRead(channel.id);
   }, [channel.id, messages.length, markRead]);
 
-  // Don't yank a reader scrolled into history down to new messages.
   const atBottomRef = useRef(true);
   const lastChannelRef = useRef(channel.id);
   const lastSenderId = messages[messages.length - 1]?.sender_id;
@@ -294,21 +293,34 @@ export function ChatWindow({
           {filtering && !searching && visibleMessages.length === 0 && (
             <EmptyState size="sm" icon={Search} title={t("common.noResults")} />
           )}
-          {visibleMessages.map((m) => (
-            <MessageBubble
-              key={m.id}
-              message={m}
-              channelId={channel.id}
-              isOwn={m.sender_id === user?.id}
-              canPin={canPin}
-              memberNames={memberNames}
-              replyToMessage={
-                m.reply_to_id ? messagesById.get(m.reply_to_id) : null
-              }
-              onReply={setReplyTo}
-              onClickSender={onClickSender}
-            />
-          ))}
+          {visibleMessages.map((m, i) => {
+            const date = new Date(m.created_at);
+            const prev = visibleMessages[i - 1];
+            const newDay = !prev || !isSameDay(date, new Date(prev.created_at));
+            return (
+              <Fragment key={m.id}>
+                {newDay && (
+                  <div className="my-3 flex items-center gap-3 text-[11px] font-semibold text-muted-foreground">
+                    <div className="h-px flex-1 bg-border" />
+                    {format(date, "d MMMM yyyy", { locale: dateLocale })}
+                    <div className="h-px flex-1 bg-border" />
+                  </div>
+                )}
+                <MessageBubble
+                  message={m}
+                  channelId={channel.id}
+                  isOwn={m.sender_id === user?.id}
+                  canPin={canPin}
+                  memberNames={memberNames}
+                  replyToMessage={
+                    m.reply_to_id ? messagesById.get(m.reply_to_id) : null
+                  }
+                  onReply={setReplyTo}
+                  onClickSender={onClickSender}
+                />
+              </Fragment>
+            );
+          })}
           <div ref={bottomRef} />
         </div>
       </ScrollArea>

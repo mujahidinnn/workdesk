@@ -99,15 +99,28 @@ async function syncProjectTypes(projectId: number, typeIds: number[]) {
   }
 }
 
+// Diff, not delete-all: each row carries a member_role the task board relies on.
 async function syncProjectMembers(projectId: number, userIds: string[]) {
-  const { error: delErr } = await supabase
+  const { data: current, error } = await supabase
     .from("m_project_members")
-    .delete()
+    .select("user_id")
     .eq("project_id", projectId);
-  if (delErr) throw delErr;
+  if (error) throw error;
+  const have = new Set(current.map((r) => r.user_id));
 
-  if (userIds.length > 0) {
-    const rows = userIds.map((user_id) => ({ project_id: projectId, user_id }));
+  const removed = [...have].filter((id) => !userIds.includes(id));
+  if (removed.length > 0) {
+    const { error: delErr } = await supabase
+      .from("m_project_members")
+      .delete()
+      .eq("project_id", projectId)
+      .in("user_id", removed);
+    if (delErr) throw delErr;
+  }
+
+  const added = userIds.filter((id) => !have.has(id));
+  if (added.length > 0) {
+    const rows = added.map((user_id) => ({ project_id: projectId, user_id }));
     const { error: insErr } = await supabase
       .from("m_project_members")
       .insert(rows);

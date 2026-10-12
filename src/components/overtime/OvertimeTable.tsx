@@ -191,8 +191,6 @@ export function OvertimeTable({
             <tbody>
               {paged.map((r, idx) => {
                 const isOwn = r.user_id === currentUserId;
-                // A rejected request is not a dead end, the owner can fix it and
-                // send it back, or withdraw it. Approved rows stay locked.
                 const canModify =
                   isOwn && (r.status === "Pending" || r.status === "Rejected");
                 const timeStr = formatShiftTime(r);

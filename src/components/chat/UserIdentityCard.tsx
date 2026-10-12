@@ -9,7 +9,6 @@ interface UserIdentityCardProps {
   avatarSize?: "md" | "lg";
 }
 
-/** Avatar + name + role/job badges + contact rows - the identity block shared by the full profile modal and the DM sidebar's "who am I talking to" panel. */
 export function UserIdentityCard({
   user,
   avatarSize = "lg",

@@ -37,7 +37,6 @@ export function countLeaveWorkingDays(
   ).length;
 }
 
-// The approver on record is always the session that actually clicked approve.
 async function sessionUserId(): Promise<string> {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user)
@@ -47,11 +46,9 @@ async function sessionUserId(): Promise<string> {
 
 export interface LeaveFilters {
   userId?: string;
-  /** Approvers never see their own requests in the queue. */
   excludeUserId?: string;
   status?: LeaveStatus;
   type?: LeaveType;
-  /** yyyy-MM-dd, inclusive; a request matches when its period overlaps. */
   from?: string;
   to?: string;
 }
@@ -83,7 +80,6 @@ export function useLeaveRequests(filters: LeaveFilters = {}) {
   });
 }
 
-/** Yearly Cuti entitlement from the employee record linked to the profile. */
 export function useLeaveQuota(employeeId: number | null | undefined) {
   return useQuery<number>({
     queryKey: [...QK, "quota", employeeId],
@@ -100,10 +96,6 @@ export function useLeaveQuota(employeeId: number | null | undefined) {
   });
 }
 
-/**
- * Remaining Cuti for one person in one year. Only approved Cuti counts, and
- * only the part of a request that falls inside the year being asked about.
- */
 export function useLeaveBalance(
   userId: string | undefined,
   employeeId: number | null | undefined,
@@ -174,8 +166,6 @@ export function useCreateLeaveRequest() {
   });
 }
 
-// Owner edits always reset to Pending, the only status the update policy
-// accepts from them; fixing a rejected request also clears the note.
 export function useUpdateLeaveRequest() {
   const qc = useQueryClient();
   return useMutation({
@@ -221,7 +211,6 @@ export function useDeleteLeaveRequest() {
   });
 }
 
-// Attendance rows are written by a DB trigger on approval, not here.
 export function useApproveLeaveRequest() {
   const qc = useQueryClient();
   return useMutation({

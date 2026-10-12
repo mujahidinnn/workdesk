@@ -46,7 +46,6 @@ export default function DailyReportPage() {
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
   const location = useLocation();
-  // Deep links from the dashboard: ?employee=<id>&from=<date>&to=<date>
   const [filters, setFilters] = useState<DailyTaskFilters>(() => {
     const p = new URLSearchParams(location.search);
     const deepLinked = p.has("from") || p.has("to");
@@ -64,20 +63,21 @@ export default function DailyReportPage() {
   const { data: employees = [] } = useEmployees();
   const { data: presenceMap = {} } = useEmployeePresence();
 
+  const [prefill, setPrefill] = useState<Partial<TaskFormValues> | undefined>();
   useEffect(() => {
-    if ((location.state as { openAdd?: boolean } | null)?.openAdd) {
+    const state = location.state as { openAdd?: boolean; prefill?: Partial<TaskFormValues> } | null;
+    if (state?.openAdd) {
+      setPrefill(state.prefill);
       setDialogOpen(true);
       navigate(location.pathname, { replace: true, state: null });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Lifted above the view switcher so search/filter state survives switching views.
   const hasActiveFilter = !!search || Object.values(filters).some(Boolean);
   const setFilter = (patch: Partial<DailyTaskFilters>) =>
     setFilters((f) => ({ ...f, ...patch }));
 
-  // Employee/project/date filters run in the query; free-text stays local.
   const filteredTasks = useMemo(() => {
     const q = search.toLowerCase().trim();
     if (!q) return tasks;
@@ -95,6 +95,7 @@ export default function DailyReportPage() {
 
   const handleAdd = () => {
     setEditingTask(null);
+    setPrefill(undefined);
     setDialogOpen(true);
   };
   const handleEdit = (task: DailyTaskWithRelations) => {
@@ -118,6 +119,7 @@ export default function DailyReportPage() {
       task_desc: data.task_desc,
       progress_pct: data.progress_pct,
       problem_desc: data.problem_desc || null,
+      board_task_id: data.board_task_id ?? null,
     };
     if (editingTask) {
       updateTask.mutate(
@@ -125,7 +127,6 @@ export default function DailyReportPage() {
         { onSuccess: () => setDialogOpen(false) },
       );
     } else {
-      // is_resolved is only flipped later via the Issue Log's resolve toggle.
       createTask.mutate(
         { ...payload, is_resolved: false },
         { onSuccess: () => setDialogOpen(false) },
@@ -240,6 +241,7 @@ export default function DailyReportPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         task={editingTask}
+        initial={prefill}
         employees={employees}
         projects={projects}
         onSubmit={handleSubmit}

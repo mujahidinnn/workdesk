@@ -67,7 +67,6 @@ function bytes(n: number) {
   return `${n.toFixed(i ? 1 : 0)} ${units[i]}`;
 }
 
-/** Amber when something needs a look, muted when the list is clean. */
 function Panel({
   title,
   count,

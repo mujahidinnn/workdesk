@@ -121,7 +121,6 @@ export default {
           "0 0 20px hsl(152 76% 40% / 0.15), 0 0 40px hsl(152 76% 40% / 0.05)",
         "glow-amber":
           "0 0 20px hsl(38 92% 50% / 0.15), 0 0 40px hsl(38 92% 50% / 0.05)",
-        // Theme-aware: dark-mode strength is too heavy on light surfaces.
         card: "0 1px 3px hsl(var(--shadow) / var(--shadow-strength)), 0 1px 2px hsl(var(--shadow) / calc(var(--shadow-strength) * 0.75))",
         "card-hover":
           "0 4px 12px hsl(var(--shadow) / calc(var(--shadow-strength) * 1.25)), 0 2px 4px hsl(var(--shadow) / calc(var(--shadow-strength) * 0.75))",

@@ -8,7 +8,6 @@ function periodPrefix(type: PeriodType, date: Date): string {
   return format(date, "yyyy");
 }
 
-/** Keeps only records whose `date` (YYYY-MM-DD) falls in the given period. */
 export function filterByPeriod<T extends { date: string }>(
   records: T[],
   type: PeriodType,

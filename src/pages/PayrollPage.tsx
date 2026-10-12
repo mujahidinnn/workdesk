@@ -41,7 +41,6 @@ export default function PayrollPage() {
   const { canUpdate } = useAuth();
   const canManage = canUpdate("payroll");
 
-  // Any day works: the server truncates to the first of the month.
   const [month, setMonth] = useState(() => format(new Date(), "yyyy-MM-01"));
   const [selectedRunId, setSelectedRunId] = useState<number | null>(null);
   const [confirmFinalize, setConfirmFinalize] = useState(false);
@@ -53,7 +52,6 @@ export default function PayrollPage() {
   const { data: users = [] } = useUsers();
   const companyName = useWorkSchedule().data?.company_name ?? "WorkDesk";
 
-  // Default to the newest run, the one being worked on.
   const activeRun = runs.find((r) => r.id === selectedRunId) ?? runs[0] ?? null;
   const { data: lines = [] } = usePayrollLines(
     activeRun?.id ?? null,
@@ -77,7 +75,6 @@ export default function PayrollPage() {
             job_title: user?.employee_role_title,
           };
         })
-        // Names are joined client-side from useUsers, so search can't be server-side.
         .filter((line) =>
           line.name.toLowerCase().includes(search.trim().toLowerCase()),
         )
@@ -198,7 +195,6 @@ export default function PayrollPage() {
             </div>
           </div>
 
-          {/* One action group on the right; the primary action stays last. */}
           <div className="flex items-center gap-2 flex-wrap ml-auto">
             {!isDraft && (
               <p className="text-[11px] text-muted-foreground mr-1">

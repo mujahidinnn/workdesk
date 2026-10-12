@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     // Ban, don't delete: profiles.id cascades from auth.users, so a hard delete
     // would wipe history the revoke dialog promises to keep.
     const { error } = await adminClient.auth.admin.updateUserById(user_id, {
-      ban_duration: "876000h", // ~100 years, effectively permanent
+      ban_duration: "876000h",
     });
     if (error) return jsonResponse({ error: error.message }, 400);
 

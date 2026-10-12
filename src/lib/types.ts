@@ -52,12 +52,14 @@ export interface DailyTask {
   progress_pct: number;
   problem_desc: string | null;
   is_resolved: boolean;
+  board_task_id: number | null;
   created_at: string;
 }
 
 export interface DailyTaskWithRelations extends DailyTask {
   employee: Employee;
   project: Project;
+  board_task?: Pick<BoardTask, "id" | "task_no" | "board_id" | "title"> | null;
 }
 
 export interface DashboardSummary {
@@ -134,7 +136,6 @@ export interface OvertimeRecord {
   user_id: string;
   type: OvertimeType;
   date: string;
-  /** Day the shift ends. Same as date, or the next day for an overnight shift. */
   end_date: string | null;
   start_time: string | null;
   end_time: string | null;
@@ -153,9 +154,8 @@ export interface OvertimeRecordWithRelations extends OvertimeRecord {
   submitter: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
 }
 
-/** Aggregated monthly summary for chart */
 export interface OvertimeMonthSummary {
-  month: number; // 1-12
+  month: number;
   label: string;
   overtimeHours: number;
   businessTripLocalDays: number;
@@ -167,7 +167,6 @@ export type PaymentStatus = "Unpaid" | "Paid";
 
 export interface PayrollRun {
   id: number;
-  /** First day of the month the run covers. */
   period: string;
   status: PayrollRunStatus;
   note: string | null;
@@ -192,14 +191,12 @@ export interface PayrollLine {
   bpjs: number;
   other_deduction: number;
   deduction_note: string | null;
-  /** Both computed by the database, never sent from here. */
   gross: number;
   net: number;
   payment_status: PaymentStatus;
   paid_at: string | null;
 }
 
-/** What the payroll table and the payslip render: a line plus who it is for. */
 export interface PayrollLineWithName extends PayrollLine {
   name: string;
   job_title?: string | null;
@@ -217,7 +214,6 @@ export interface EmployeeRate {
   profile?: Pick<Profile, "id" | "full_name"> | null;
 }
 
-/** Extended user row returned by get_users_with_email() RPC */
 export interface UserWithEmail {
   id: string;
   full_name: string | null;
@@ -226,7 +222,6 @@ export interface UserWithEmail {
   role_name: string | null;
   employee_id: number | null;
   employee_name: string | null;
-  /** Employee job title (m_employees.role_title), not the RBAC role in role_name. */
   employee_role_title: string | null;
   avatar_url: string | null;
   created_at: string;
@@ -240,7 +235,6 @@ export interface ChatChannel {
   id: number;
   type: ChatChannelType;
   project_id: number | null;
-  /** Thread name within a project's chat; null for its default channel. Always null for general/dm. */
   name: string | null;
   dm_user_a: string | null;
   dm_user_b: string | null;
@@ -253,7 +247,6 @@ export interface ChatAttachment {
   file_name: string;
   file_type: string | null;
   file_size: number | null;
-  /** Signed URL resolved client-side at fetch time; the bucket is private. */
   url?: string | null;
 }
 
@@ -271,12 +264,10 @@ export type ChatPayload =
       starts_at: string;
       location?: string;
       description?: string;
-      /** Absent on older events, which always asked for RSVP. */
       rsvp?: boolean;
     }
   | { type: "poll"; question: string; options: string[]; multi: boolean };
 
-/** Poll vote or event RSVP (0 = going, 1 = not going). */
 export interface ChatPollVote {
   user_id: string;
   option_idx: number;
@@ -292,7 +283,6 @@ export interface ChatMessage {
   mentions: string[];
   mentions_everyone: boolean;
   forwarded_from_sender_name: string | null;
-  /** Set the first time the sender edits the body; drives the "edited" marker. */
   edited_at: string | null;
   pinned_at: string | null;
   pinned_by: string | null;
@@ -359,7 +349,6 @@ export interface Holiday {
 
 export type AttendanceStatus = "Hadir" | "Izin" | "Sakit" | "Cuti" | "Alpa";
 
-/** Statuses an employee picks themselves at check-in. Cuti and Alpa are derived. */
 export const SELF_CHECK_IN_STATUSES: AttendanceStatus[] = [
   "Hadir",
   "Izin",
@@ -383,23 +372,17 @@ export interface Attendance {
 
 export interface AttendanceWithProfile extends Attendance {
   profile: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
-  /** Short-lived signed URL; the bucket is private. */
   attachment_url?: string | null;
 }
 
-/** Singleton company-wide work schedule used to flag late check-ins. */
 export interface WorkSchedule {
   id: number;
   clock_in_time: string;
   clock_out_time: string;
-  /** Printed on payslips. */
   company_name: string;
   late_tolerance_minutes: number;
-  /** IANA zone the company clocks by, e.g. "Asia/Jakarta". */
   timezone: string;
-  /** ISO weekday numbers that count as working days: 1 = Monday .. 7 = Sunday. */
   work_days: number[];
-  /** Everything on or before this date is closed for edits. */
   locked_until: string | null;
   updated_at: string;
   updated_by: string | null;
@@ -424,4 +407,109 @@ export interface LeaveRequest {
 
 export interface LeaveRequestWithProfile extends LeaveRequest {
   submitter: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
+}
+
+export type TaskStatus = "todo" | "in_progress" | "in_review" | "done";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+export type MemberRole = "pic" | "member" | "reviewer";
+export type TaskSource = "daily" | "board";
+
+export interface Division {
+  id: number;
+  name: string;
+  description: string | null;
+  color: string | null;
+  is_active: boolean;
+}
+
+export interface Board {
+  id: number;
+  project_id: number;
+  name: string;
+  background: string | null;
+  next_task_no: number;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface BoardColumn {
+  id: number;
+  board_id: number;
+  name: string;
+  color: string | null;
+  position: number;
+  wip_limit: number | null;
+  is_done_column: boolean;
+}
+
+export interface BoardTask {
+  id: number;
+  board_id: number;
+  column_id: number | null;
+  parent_id: number | null;
+  root_id: number;
+  depth: number;
+  task_no: number;
+  title: string;
+  description: string | null;
+  expected_output: string | null;
+  division_id: number | null;
+  priority: TaskPriority;
+  start_date: string | null;
+  due_date: string | null;
+  estimate_hours: number | null;
+  status: TaskStatus;
+  position: number;
+  created_by: string | null;
+  completed_at: string | null;
+  completed_by: string | null;
+  submitted_by: string | null;
+  archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BoardTaskRow extends BoardTask {
+  assignees: { user_id: string; assigned_by: string | null }[];
+  reviewers: { user_id: string }[];
+  steps: { id: number; is_done: boolean; assignee_id?: string | null; done_by?: string | null }[];
+  labels: { label_id: number }[];
+  reviews: { decision: "approved" | "rejected"; created_at: string }[];
+}
+
+export interface TaskStep {
+  id: number;
+  task_id: number;
+  title: string;
+  note: string | null;
+  position: number;
+  is_done: boolean;
+  done_by: string | null;
+  done_at: string | null;
+  assignee_id: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface TaskLabel {
+  id: number;
+  board_id: number;
+  name: string;
+  color: string;
+}
+
+export interface BoardMember {
+  user_id: string;
+  member_role: MemberRole;
+  left?: boolean;
+  profile: Pick<Profile, "id" | "full_name" | "avatar_url"> | null;
+}
+
+export interface TaskActivity {
+  id: number;
+  task_id: number;
+  actor_id: string | null;
+  action: string;
+  detail: Record<string, unknown>;
+  created_at: string;
 }

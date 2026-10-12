@@ -1,4 +1,4 @@
-import { AlertTriangle, Trash2 } from "lucide-react";
+import { AlertTriangle, Trash2, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -17,6 +17,8 @@ interface DeleteConfirmationModalProps {
   description: string;
   onConfirm: () => void;
   isPending?: boolean;
+  confirmLabel?: string;
+  confirmIcon?: LucideIcon;
 }
 
 export function DeleteConfirmationModal({
@@ -26,6 +28,8 @@ export function DeleteConfirmationModal({
   description,
   onConfirm,
   isPending = false,
+  confirmLabel,
+  confirmIcon: ConfirmIcon = Trash2,
 }: DeleteConfirmationModalProps) {
   const { t } = useTranslation();
 
@@ -61,8 +65,8 @@ export function DeleteConfirmationModal({
             onClick={onConfirm}
             loading={isPending}
           >
-            <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-            {isPending ? t("deleteModal.deleting") : t("deleteModal.confirm")}
+            <ConfirmIcon className="w-3.5 h-3.5 mr-1.5" />
+            {confirmLabel ?? (isPending ? t("deleteModal.deleting") : t("deleteModal.confirm"))}
           </Button>
         </DialogFooter>
       </DialogContent>

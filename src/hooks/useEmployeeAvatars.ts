@@ -3,14 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface EmployeeAvatarInfo {
   avatarUrl: string | null;
-  /** May differ from m_employees.full_name. */
   profileName: string | null;
 }
 
-/**
- * Returns a map of employee_id → { avatarUrl, profileName } for all employees
- * that have a linked auth profile.  Used to show real photos across the app.
- */
 export function useEmployeeAvatarMap(): Record<number, EmployeeAvatarInfo> {
   const { data = {} } = useQuery<Record<number, EmployeeAvatarInfo>>({
     queryKey: ["employee-avatar-map"],

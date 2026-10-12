@@ -36,7 +36,6 @@ VALUES
   ('00000000-0000-0000-0000-0000000000e1', 8000000, 50000, 100000, 300000),
   ('00000000-0000-0000-0000-0000000000e2', 6000000, 40000,  80000, 250000);
 
--- emp1: approved work plus rejected/pending rows that must not count. emp2: no work.
 INSERT INTO t_overtime_business_trips
   (user_id, type, date, start_time, end_time, activity_description, status)
 VALUES
@@ -45,7 +44,6 @@ VALUES
   ('00000000-0000-0000-0000-0000000000e1', 'Overtime', '2026-03-07', '18:00', '23:00', 'ot rejected', 'Rejected'),
   ('00000000-0000-0000-0000-0000000000e1', 'Overtime', '2026-03-08', '18:00', '23:00', 'ot pending',  'Pending'),
   ('00000000-0000-0000-0000-0000000000e1', 'BusinessTrip_Local', '2026-03-09', NULL, NULL, 'trip', 'Approved'),
-  -- A different month, so the period boundary is exercised.
   ('00000000-0000-0000-0000-0000000000e1', 'Overtime', '2026-04-01', '18:00', '22:00', 'next month', 'Approved');
 
 CREATE OR REPLACE FUNCTION pg_temp.act_as(p_uid TEXT) RETURNS VOID
@@ -64,7 +62,6 @@ DECLARE
   v_status  TEXT;
   v_paid_at TIMESTAMPTZ;
 BEGIN
-  -- 1. An employee cannot open a payroll run
   SET LOCAL ROLE authenticated;
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000e1');
   BEGIN
@@ -75,7 +72,6 @@ BEGIN
   END;
   RESET ROLE;
 
-  -- 2. The admin's run counts approved rows only, inside the month
   SET LOCAL ROLE authenticated;
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000a1');
   v_run_id := generate_payroll_run('2026-03-01');
@@ -99,14 +95,12 @@ BEGIN
     RAISE EXCEPTION 'FAIL 2e: net differs from gross with no deductions';
   END IF;
 
-  -- 3. Someone with a rate but no work still gets a line
   SELECT COUNT(*) INTO v_count FROM t_payroll_lines
    WHERE run_id = v_run_id AND user_id = '00000000-0000-0000-0000-0000000000e2';
   IF v_count <> 1 THEN
     RAISE EXCEPTION 'FAIL 3: an employee with no overtime dropped out of the run';
   END IF;
 
-  -- 4. Deductions are optional, and bounded by what was earned
   UPDATE t_payroll_lines SET pph21 = 200000, bpjs = 150000
    WHERE run_id = v_run_id AND user_id = '00000000-0000-0000-0000-0000000000e1';
   SELECT net INTO v_net FROM t_payroll_lines
@@ -123,7 +117,6 @@ BEGIN
     NULL;
   END;
 
-  -- 5. Regenerating restates earnings and keeps the deductions
   PERFORM generate_payroll_run('2026-03-01');
   SELECT * INTO v_line FROM t_payroll_lines
    WHERE run_id = v_run_id AND user_id = '00000000-0000-0000-0000-0000000000e1';
@@ -138,14 +131,12 @@ BEGIN
     RAISE EXCEPTION 'FAIL 5c: regenerating duplicated lines, % rows', v_count;
   END IF;
 
-  -- 6. A draft is nobody's payslip yet
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000e1');
   SELECT COUNT(*) INTO v_count FROM t_payroll_lines;
   IF v_count <> 0 THEN
     RAISE EXCEPTION 'FAIL 6: an employee read a draft payroll line';
   END IF;
 
-  -- 7. Finalizing freezes the money
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000a1');
   UPDATE t_payroll_runs SET status = 'Finalized' WHERE id = v_run_id;
   SELECT finalized_at IS NOT NULL INTO v_status FROM t_payroll_runs WHERE id = v_run_id;
@@ -175,7 +166,6 @@ BEGIN
     IF SQLERRM LIKE 'FAIL 7d%' THEN RAISE; END IF;
   END;
 
-  -- 8. Payment status still moves, and carries its own timestamp
   UPDATE t_payroll_lines SET payment_status = 'Paid'
    WHERE run_id = v_run_id AND user_id = '00000000-0000-0000-0000-0000000000e1';
   SELECT paid_at INTO v_paid_at FROM t_payroll_lines
@@ -192,7 +182,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 8b: going back to Unpaid kept paid_at';
   END IF;
 
-  -- 9. A finalized run is each employee's own payslip, and only theirs
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000e1');
   SELECT COUNT(*) INTO v_count FROM t_payroll_lines;
   IF v_count <> 1 THEN
@@ -209,7 +198,6 @@ BEGIN
     NULL;
   END;
 
-  -- 10. A finalized run cannot be deleted
   PERFORM pg_temp.act_as('00000000-0000-0000-0000-0000000000a1');
   BEGIN
     DELETE FROM t_payroll_runs WHERE id = v_run_id;

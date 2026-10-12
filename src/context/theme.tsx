@@ -4,7 +4,6 @@ type Theme = "dark" | "light";
 export type ThemePreference = Theme | "system";
 
 interface ThemeContextValue {
-  /** Resolved theme actually applied to the document. */
   theme: Theme;
   preference: ThemePreference;
   setPreference: (p: ThemePreference) => void;
@@ -48,7 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem("theme", preference);
     } catch {
-      // Storage may be unavailable (private mode).
+      /* storage unavailable (private mode) */
     }
   }, [preference]);
 

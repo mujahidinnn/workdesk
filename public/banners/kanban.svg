@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#134e4a"/><stop offset="1" stop-color="#0d9488"/></linearGradient>
+    <g id="card"><rect width="150" height="40" rx="7" fill="#f8fafc"/><rect x="12" y="10" width="90" height="7" rx="3.5" fill="#334155" fill-opacity=".7"/><rect x="12" y="24" width="56" height="6" rx="3" fill="#334155" fill-opacity=".3"/></g></defs>
+  <rect width="1200" height="240" fill="url(#bg)"/>
+  <g fill="#fff" fill-opacity=".1"><rect x="140" y="30" width="180" height="200" rx="12"/><rect x="350" y="30" width="180" height="200" rx="12"/><rect x="560" y="30" width="180" height="200" rx="12"/><rect x="770" y="30" width="180" height="200" rx="12"/></g>
+  <g fill="#fff" fill-opacity=".7"><rect x="155" y="44" width="60" height="8" rx="4"/><rect x="365" y="44" width="70" height="8" rx="4"/><rect x="575" y="44" width="50" height="8" rx="4"/><rect x="785" y="44" width="40" height="8" rx="4"/></g>
+  <use href="#card" x="155" y="64"/><use href="#card" x="155" y="112"/><use href="#card" x="155" y="160"/>
+  <use href="#card" x="365" y="64"/><use href="#card" x="365" y="112"/>
+  <use href="#card" x="575" y="64"/>
+  <use href="#card" x="785" y="64"/><use href="#card" x="785" y="112"/>
+  <!-- label stripes -->
+  <g><rect x="155" y="64" width="6" height="40" rx="3" fill="#f43f5e"/><rect x="365" y="112" width="6" height="40" rx="3" fill="#fbbf24"/><rect x="785" y="64" width="6" height="40" rx="3" fill="#22c55e"/><rect x="785" y="112" width="6" height="40" rx="3" fill="#22c55e"/></g>
+  <!-- dragged card -->
+  <g transform="translate(590 128) rotate(-6)"><rect width="150" height="40" rx="7" fill="#fef3c7" stroke="#fbbf24" stroke-width="2"/><rect x="12" y="10" width="90" height="7" rx="3.5" fill="#92400e" fill-opacity=".7"/><rect x="12" y="24" width="56" height="6" rx="3" fill="#92400e" fill-opacity=".35"/></g>
+  <path d="M708 186 l10 26 l6 -10 l10 8 l4 -4 l-10 -8 l10 -6z" fill="#fff"/>
+  <!-- check badge -->
+  <g transform="translate(1050 120)"><circle r="46" fill="#fff" fill-opacity=".12"/><circle r="30" fill="#22c55e"/><path d="M-12 0 l8 8 l16 -16" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

@@ -55,14 +55,11 @@ export const OVERTIME_TYPES: OvertimeType[] = [
 ];
 
 export interface OvertimeFilters {
-  /** Only this submitter's rows */
   userId?: string;
-  /** Everyone but this submitter (approval queue) */
   excludeUserId?: string;
   status?: OvertimeRecord["status"];
   type?: OvertimeType;
   projectId?: string;
-  /** yyyy-MM-dd, inclusive */
   from?: string;
   to?: string;
 }
@@ -181,7 +178,6 @@ export function useUpsertEmployeeRate() {
   });
 }
 
-// duration_hours and daily_allowance are omitted: a trigger computes and overwrites them.
 export type OvertimeRecordPayload = Omit<
   OvertimeRecord,
   | "id"
@@ -224,7 +220,6 @@ export function useUpdateOvertimeRecord() {
       ...payload
     }: Partial<OvertimeRecordPayload> & {
       id: number;
-      // Resubmit sends status and the cleared note in one write; RLS checks the edited row.
       rejection_note?: string | null;
     }) => {
       const { data, error } = await supabase

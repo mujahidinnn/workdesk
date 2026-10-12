@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#065f46"/><stop offset="1" stop-color="#34d399"/></linearGradient>
+    <g id="pin"><path d="M0 0 c-12 -15 -17 -24 -17 -32 a17 17 0 0 1 34 0 c0 8 -5 17 -17 32z"/><circle cx="0" cy="-32" r="6" fill="#fff"/></g>
+  </defs>
+  <rect width="1200" height="240" fill="url(#bg)"/>
+  <!-- terrain contours -->
+  <g fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="2">
+    <path d="M-20 200 C150 150 300 230 460 170 S760 120 900 180 S1100 210 1220 160"/>
+    <path d="M-20 160 C140 110 320 190 470 130 S760 80 910 140 S1100 170 1220 120"/>
+    <path d="M-20 120 C160 70 320 150 480 90 S770 40 920 100 S1110 130 1220 80"/>
+    <path d="M-20 80 C170 30 330 110 490 50 S780 0 930 60 S1120 90 1220 40"/>
+  </g>
+  <!-- survey points -->
+  <g fill="#fbbf24"><use href="#pin" x="180" y="150"/><use href="#pin" x="360" y="110"/><use href="#pin" x="520" y="170"/><use href="#pin" x="690" y="96"/></g>
+  <g fill="#f43f5e"><use href="#pin" x="430" y="200"/></g>
+  <path d="M180 150 L360 110 L520 170 L690 96" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-dasharray="6 8"/>
+  <!-- phone with form -->
+  <g transform="translate(900 22)">
+    <rect width="120" height="210" rx="18" fill="#0f172a"/><rect x="8" y="14" width="104" height="182" rx="10" fill="#f8fafc"/>
+    <rect x="18" y="26" width="60" height="8" rx="4" fill="#065f46"/>
+    <g fill="#e2e8f0"><rect x="18" y="44" width="84" height="18" rx="5"/><rect x="18" y="68" width="84" height="18" rx="5"/></g>
+    <rect x="18" y="92" width="84" height="56" rx="6" fill="#a7f3d0"/><circle cx="40" cy="112" r="8" fill="#fbbf24"/><path d="M18 148 l26 -22 l18 14 l14 -10 l26 18z" fill="#34d399"/>
+    <rect x="18" y="158" width="84" height="22" rx="11" fill="#059669"/>
+    <!-- offline badge -->
+    <g transform="translate(96 4)"><circle r="16" fill="#fbbf24"/><path d="M-7 2 a10 10 0 0 1 14 0 M-3 6 a4 4 0 0 1 6 0" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/><path d="M-9 -8 L9 10" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/></g>
+  </g>
+  <!-- clipboard -->
+  <g transform="translate(1060 60) rotate(8)">
+    <rect width="90" height="120" rx="8" fill="#fef3c7"/><rect x="28" y="-8" width="34" height="16" rx="5" fill="#92400e"/>
+    <g stroke="#92400e" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"><path d="M16 30h58M16 50h58M16 70h40M16 90h50"/></g>
+  </g>
+</svg>

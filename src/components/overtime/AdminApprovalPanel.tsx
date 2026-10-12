@@ -78,7 +78,6 @@ export function AdminApprovalPanel({
   const approve = useApproveOvertimeRecord();
   const reject = useRejectOvertimeRecord();
 
-  // The database refuses self-approval; hide the button that would fail.
   const { data: records = [], isLoading } = useOvertimeRecords({
     excludeUserId: currentUserId,
     status: statusFilter === "all" ? undefined : statusFilter,
@@ -114,7 +113,6 @@ export function AdminApprovalPanel({
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const selectablePending = paged.filter((r) => r.status === "Pending");
 
-  // Clear selection so a bulk approve never hits rows no longer on screen.
   const visibleKey = paged.map((r) => r.id).join(",");
   useEffect(() => {
     setSelected(new Set());

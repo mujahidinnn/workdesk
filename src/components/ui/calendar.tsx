@@ -1,12 +1,12 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayButton, DayPicker } from "react-day-picker";
+import { DayButton, DayPicker, type DateRange } from "react-day-picker";
+import { isAfter, isSameDay } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
-  /** Override today's highlight (defaults to the neutral "bg-accent" look). */
   todayClassName?: string;
 };
 
@@ -17,6 +17,20 @@ function Calendar({
   todayClassName,
   ...props
 }: CalendarProps) {
+  const [hovered, setHovered] = React.useState<Date>();
+  const range =
+    props.mode === "range"
+      ? ((props as { selected?: DateRange }).selected)
+      : undefined;
+  const picking =
+    !!range?.from && (!range.to || isSameDay(range.from, range.to));
+  const preview =
+    picking && hovered && range?.from
+      ? isAfter(hovered, range.from)
+        ? { from: range.from, to: hovered }
+        : { from: hovered, to: range.from }
+      : undefined;
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -40,9 +54,7 @@ function Calendar({
         weekday:
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         week: "flex w-full mt-2",
-        day: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
-        range_start: "rounded-l-md",
-        range_end: "rounded-r-md",
+        day: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20 [&:first-child>button]:rounded-l-md [&:last-child>button]:rounded-r-md",
         outside: "text-muted-foreground opacity-50",
         disabled: "text-muted-foreground opacity-50",
         hidden: "invisible",
@@ -60,6 +72,21 @@ function Calendar({
         ),
       }}
       {...props}
+      modifiers={{
+        ...props.modifiers,
+        preview: preview ?? [],
+        preview_edge: picking && hovered ? hovered : [],
+        preview_from: preview ? preview.from : [],
+        preview_to: preview ? preview.to : [],
+      }}
+      onDayMouseEnter={(date, m, e) => {
+        setHovered(date);
+        props.onDayMouseEnter?.(date, m, e);
+      }}
+      onDayMouseLeave={(date, m, e) => {
+        setHovered(undefined);
+        props.onDayMouseLeave?.(date, m, e);
+      }}
     />
   );
 }
@@ -83,13 +110,28 @@ function CalendarDayButton({
       className={cn(
         buttonVariants({ variant: "ghost" }),
         "h-9 w-9 p-0 font-normal",
-        modifiers.range_middle &&
-          "rounded-none bg-accent text-accent-foreground",
         modifiers.today &&
           !modifiers.selected &&
           (todayClassName ?? "bg-accent text-accent-foreground"),
         modifiers.selected &&
+          !modifiers.range_middle &&
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+        modifiers.range_middle &&
+          "rounded-none bg-primary/15 text-foreground hover:bg-primary/25",
+        modifiers.preview &&
+          !modifiers.selected &&
+          "rounded-none bg-primary/15 text-foreground hover:bg-primary/15",
+        modifiers.preview_edge &&
+          !modifiers.selected &&
+          "bg-primary/30 hover:bg-primary/30",
+        modifiers.preview_from &&
+          !modifiers.preview_to &&
+          "rounded-l-md rounded-r-none",
+        modifiers.preview_to &&
+          !modifiers.preview_from &&
+          "rounded-r-md rounded-l-none",
+        modifiers.range_start && !modifiers.range_end && "rounded-r-none",
+        modifiers.range_end && !modifiers.range_start && "rounded-l-none",
         className,
       )}
       {...props}

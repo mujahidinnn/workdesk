@@ -13,9 +13,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// A curated common-chat set grouped like Slack/Discord's picker, not the
-// full Unicode range - browsers/OS render these natively so there's no
-// font/asset weight to ship for it.
 const EMOJI_GROUPS: { label: string; emoji: string[] }[] = [
   {
     label: "Smileys & Emotion",

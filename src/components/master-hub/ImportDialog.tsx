@@ -16,9 +16,7 @@ import type { ImportResult } from "@/lib/importMasterData";
 interface ImportDialogProps<T> {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  /** Parses the uploaded file into valid rows + row-level errors */
   onParse: (file: File) => Promise<ImportResult<T>>;
-  /** Bulk-inserts the valid rows once the user confirms */
   onImport: (rows: T[]) => Promise<void>;
 }
 
@@ -56,7 +54,6 @@ export function ImportDialog<T>({
     setImporting(true);
     try {
       await onImport(result.valid);
-      // Each row's create-mutation toasts on its own; collapse them into one summary.
       toast.dismiss();
       toast.success(
         t(

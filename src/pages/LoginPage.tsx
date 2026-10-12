@@ -286,7 +286,6 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      {/* Pinned to the bottom of the form panel (AuthLayout's section is relative). */}
       <p className="absolute bottom-4 inset-x-0 text-center text-[11px] text-muted-foreground">
         {DEFAULT_ADMIN.email} · {DEFAULT_ADMIN.password}
       </p>

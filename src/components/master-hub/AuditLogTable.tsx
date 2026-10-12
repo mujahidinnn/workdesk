@@ -19,7 +19,6 @@ const CREATE_COLOR =
   "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800/40";
 
 const ACTION_COLORS: Record<string, string> = {
-  // Row triggers log "insert", the client logs "create".
   create: CREATE_COLOR,
   insert: CREATE_COLOR,
   update:
@@ -28,7 +27,6 @@ const ACTION_COLORS: Record<string, string> = {
     "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-950 dark:text-rose-400 dark:border-rose-800/40",
 };
 
-// Client-side logAudit() calls plus the audit_row_change() trigger tables.
 const ENTITY_TYPES = [
   "project",
   "employee",
@@ -57,9 +55,6 @@ function show(v: unknown, max = 24): string {
   return s.length > max ? `${s.slice(0, max - 1)}…` : s;
 }
 
-/** Row-trigger entries carry before/after snapshots: an update shows only
- *  the fields that changed, an insert or delete the row's own values.
- *  Client-logged entries are already a flat summary. */
 function describe(detail: unknown, max?: number): string[] {
   if (!detail || typeof detail !== "object") return [];
   const d = detail as { before?: Obj; after?: Obj };

@@ -36,7 +36,6 @@ export function useCreateEmployee() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (
-      // Other columns have DB defaults or are nullable, so a name + job title sheet still imports.
       payload: Partial<Omit<Employee, "id" | "created_at">> &
         Pick<Employee, "full_name" | "role_title">,
     ) => {
@@ -84,7 +83,6 @@ export function useUpdateEmployee() {
   });
 }
 
-/** The DB refuses to drop an employee referenced by daily reports. */
 function describeDeleteError(e: Error): string {
   return e.message.includes("violates foreign key constraint")
     ? "This employee already has reported work. Set them to Inactive instead of deleting."

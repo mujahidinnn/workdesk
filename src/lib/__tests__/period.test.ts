@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { filterByPeriod } from "../period";
 
-// Every record sits on a month or year edge, which is where an off by one hides.
 const records = [
   { date: "2024-12-31" },
   { date: "2025-01-01" },

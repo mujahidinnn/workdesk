@@ -5,17 +5,10 @@ interface EmptyStateProps {
   icon: LucideIcon;
   title: string;
   description?: string;
-  /** Use the smaller variant inside compact spaces like dropdowns */
   size?: "default" | "sm";
   className?: string;
 }
 
-/**
- * Shared "nothing here" illustration - an icon inside a soft rounded badge
- * rather than a bare small icon, so empty tables/lists don't read as
- * unstyled placeholders. Used for both true-empty and no-search-results
- * states; pass different title/description text for each.
- */
 export function EmptyState({
   icon: Icon,
   title,

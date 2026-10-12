@@ -9,7 +9,6 @@ export interface ChannelTitle {
   name: string;
   subtitle: string;
   avatarUrl?: string | null;
-  /** Set only for DM channels - the other participant, for the avatar + profile click. */
   otherUserId?: string;
 }
 
@@ -41,14 +40,12 @@ export function channelTitle(
 export interface MessagePart {
   text: string;
   kind: "text" | "mention" | "link";
-  /** Set only for kind "link" - the actual href (protocol-prefixed even for bare "www." text). */
   href?: string;
 }
 
 const URL_RE = /(?:https?:\/\/|www\.)\S+/gi;
 const TRAILING_PUNCT_RE = /[.,;:!?)'"\]]+$/;
 
-/** Splits plain text into "text" and "link" parts, trimming trailing sentence punctuation off a matched URL so "check example.com." doesn't swallow the period into the link. */
 function splitLinks(text: string): MessagePart[] {
   const parts: MessagePart[] = [];
   let lastIndex = 0;
@@ -71,13 +68,11 @@ function splitLinks(text: string): MessagePart[] {
   return parts;
 }
 
-/** Splits a message body into mention / link / plain-text parts for rendering. Mentions are matched against real channel member names (not guessed from arbitrary "@word" text); links are auto-detected http(s)/www URLs. */
 export function messageParts(
   body: string,
   memberNames: string[],
   withEveryone = true,
 ): MessagePart[] {
-  // "everyone" is a reserved broadcast mention, not a member name.
   const names = [
     ...memberNames.filter(Boolean),
     ...(withEveryone ? ["everyone"] : []),

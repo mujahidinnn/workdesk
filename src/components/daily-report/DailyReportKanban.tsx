@@ -128,9 +128,7 @@ function TaskCard({
 }
 
 interface DailyReportKanbanProps {
-  /** Already filtered by the parent toolbar. */
   tasks: DailyTaskWithRelations[];
-  /** Whether search or a filter is currently narrowing `tasks` */
   hasActiveFilter?: boolean;
   employees: Employee[];
   projects: Project[];

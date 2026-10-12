@@ -26,7 +26,9 @@
       "superadmin": "Superadmin",
       "overtime": "Lembur",
       "payroll": "Penggajian",
-      "guide": "Panduan"
+      "guide": "Panduan",
+      "boards": "Task Board",
+      "myTasks": "Task Saya"
     },
     "descriptions": {
       "dashboard": "Ikhtisar & analitik",
@@ -42,7 +44,9 @@
       "superadmin": "Kontrol tenant & sistem",
       "overtime": "Lembur & dinas luar",
       "payroll": "Proses gaji & slip",
-      "guide": "Apa saja yang bisa dilakukan WorkDesk"
+      "guide": "Apa saja yang bisa dilakukan WorkDesk",
+      "boards": "Rencanakan pekerjaan project sebagai card, subtask, dan langkah",
+      "myTasks": "Semua yang ditugaskan ke kamu, dan yang menunggu review darimu"
     }
   },
   "commandPalette": {
@@ -162,13 +166,15 @@
       "project": "Proyek",
       "taskDesc": "Deskripsi Tugas",
       "problem": "Keterangan / Masalah",
-      "problemOptional": "(opsional)"
+      "problemOptional": "(opsional)",
+      "boardTask": "Task board"
     },
     "placeholders": {
       "employee": "Pilih karyawan...",
       "project": "Pilih proyek...",
       "taskDesc": "Jelaskan apa yang dikerjakan hari ini...",
-      "problem": "Catatan, kendala, atau hambatan yang ditemui..."
+      "problem": "Catatan, kendala, atau hambatan yang ditemui...",
+      "boardTask": "Tidak ditautkan ke task board"
     },
     "saving": "Menyimpan...",
     "update": "Perbarui Tugas",
@@ -181,7 +187,9 @@
       "saveFirst": "Simpan tugas dulu, baru bisa tambah foto atau file.",
       "uploading": "Mengunggah...",
       "empty": "Belum ada file",
-      "delete": "Hapus file"
+      "delete": "Hapus file",
+      "deleteTitle": "Hapus file ini?",
+      "deleteDesc": "\"{{name}}\" akan dihapus untuk semua orang."
     }
   },
   "issues": {
@@ -242,7 +250,8 @@
       "projectTypes": "Jenis Proyek",
       "projectStatus": "Status Proyek",
       "users": "Pengguna",
-      "auditLog": "Log Audit"
+      "auditLog": "Log Audit",
+      "divisions": "Divisi"
     },
     "projects": {
       "title": "Proyek",
@@ -399,6 +408,8 @@
       "columnName": "Nama",
       "columnActions": "Aksi",
       "namePlaceholder": "Masukkan nama...",
+      "description": "Deskripsi (opsional)",
+      "descriptionPlaceholder": "Catatan singkat tentang item ini...",
       "empty": "Belum ada data",
       "emptyHint": "Klik Tambah untuk membuat entri pertama",
       "noResults": "Tidak ada data yang cocok",
@@ -420,7 +431,17 @@
       "editItem": "Ubah {{title}}",
       "save": "Simpan",
       "saving": "Menyimpan...",
-      "required": "Wajib diisi"
+      "required": "Wajib diisi",
+      "divisions": {
+        "title": "Divisi",
+        "subtitle": "Tim yang dipakai untuk membagi task board",
+        "itemLabel": "Divisi",
+        "deleteTitle": "Hapus divisi?",
+        "deleteDesc": "Task di \"{{name}}\" tetap ada, hanya divisinya dikosongkan.",
+        "activate": "Pakai lagi untuk task baru",
+        "deactivate": "Jangan tawarkan untuk task baru (task lama tetap)"
+      },
+      "inactive": "Nonaktif"
     },
     "filters": {
       "allStatuses": "Semua status",
@@ -1636,5 +1657,274 @@
       "title": "Hapus Pengajuan",
       "desc": "Pengajuan ini akan dihapus permanen dan tidak bisa dikembalikan."
     }
+  },
+  "board": {
+    "status": {
+      "todo": "Belum mulai",
+      "in_progress": "Dikerjakan",
+      "in_review": "Direview",
+      "done": "Selesai"
+    },
+    "priority": {
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi",
+      "urgent": "Mendesak"
+    },
+    "roles": {
+      "pic": "PIC",
+      "reviewer": "Reviewer",
+      "member": "Anggota"
+    },
+    "views": {
+      "board": "Board",
+      "list": "Daftar",
+      "workload": "Beban kerja"
+    },
+    "sentBack": "Dikembalikan",
+    "actions": {
+      "start": "Mulai",
+      "backToTodo": "Kembalikan ke belum mulai",
+      "submit": "Ajukan review",
+      "archive": "Arsipkan",
+      "withdraw": "Tarik pengajuan"
+    },
+    "blockers": {
+      "not_assignee": "Hanya assignee yang bisa mengajukan",
+      "status": "Sudah direview atau selesai",
+      "output": "Isi output yang diharapkan dulu",
+      "steps": "Selesaikan semua langkah dulu",
+      "subtasks": "Semua subtask harus di-approve dulu"
+    },
+    "review": {
+      "approve": "Approve",
+      "reject": "Kembalikan",
+      "approveTitle": "Approve task ini",
+      "rejectTitle": "Kembalikan task ini",
+      "notePlaceholder": "Catatan untuk assignee (opsional)",
+      "rejectPlaceholder": "Apa yang perlu diperbaiki? (wajib)"
+    },
+    "boards": {
+      "title": "Task Board",
+      "subtitle": "Satu board per project. Buka project untuk merencanakan dan memantau pekerjaannya.",
+      "search": "Cari project...",
+      "empty": "Belum ada project",
+      "emptyHint": "Kamu hanya melihat project tempat kamu menjadi anggota.",
+      "open": "{{count}} aktif",
+      "overdue": "{{count}} terlambat",
+      "done": "{{count}} selesai",
+      "back": "Kembali ke daftar board",
+      "menu": "Opsi board",
+      "detail": "Detail project",
+      "openMaster": "Buka di Master Hub",
+      "openBoard": "Buka board",
+      "tasks": "Card",
+      "taskSummary": "{{open}} aktif, {{overdue}} terlambat, {{done}} selesai",
+      "members": "Anggota"
+    },
+    "card": {
+      "add": "Tambah card",
+      "titlePlaceholder": "Judul task",
+      "detail": "Detail task",
+      "descriptionPlaceholder": "Task ini tentang apa? Tambahkan konteks, link, catatan penerimaan...",
+      "outputPlaceholder": "Apa persisnya yang dihasilkan saat task ini selesai?",
+      "toTop": "Kembali ke atas",
+      "mySteps_one": "{{count}} langkah untukmu",
+      "mySteps_other": "{{count}} langkah untukmu",
+      "myStepsHint": "Langkah di card ini yang ditugaskan ke kamu"
+    },
+    "column": {
+      "add": "Tambah kolom",
+      "namePrompt": "Nama kolom",
+      "menu": "Opsi kolom",
+      "rename": "Ganti nama",
+      "wip": "Atur batas WIP",
+      "wipPrompt": "Maksimal card di kolom ini. Kosongkan untuk tanpa batas.",
+      "wipPlaceholder": "Tanpa batas",
+      "wipClear": "Hapus batas",
+      "markDone": "Jadikan kolom selesai",
+      "unmarkDone": "Batalkan kolom selesai",
+      "delete": "Hapus kolom",
+      "deleteNonEmpty": "Pindahkan card dulu untuk menghapus",
+      "deleteTitle": "Hapus kolom?",
+      "deleteDesc": "\"{{name}}\" akan dihapus dari board ini. Card terarsip yang masih ada di kolom ini membuatnya tidak bisa dihapus.",
+      "color": "Warna",
+      "noColor": "Tanpa warna"
+    },
+    "errors": {
+      "doneNeedsApproval": "Hanya task yang sudah di-approve yang bisa masuk kolom selesai"
+    },
+    "fields": {
+      "title": "judul",
+      "description": "Deskripsi",
+      "expected_output": "Output yang diharapkan",
+      "division_id": "divisi",
+      "priority": "prioritas",
+      "start_date": "tanggal mulai",
+      "due_date": "tenggat",
+      "estimate_hours": "estimasi",
+      "status": "status"
+    },
+    "filter": {
+      "search": "Cari judul atau #nomor...",
+      "mine": "Task saya",
+      "allPeople": "Semua orang",
+      "allDivisions": "Semua divisi",
+      "allLabels": "Semua label",
+      "anyDue": "Semua tenggat",
+      "overdue": "Terlambat",
+      "week": "Tenggat 7 hari"
+    },
+    "list": {
+      "task": "Task",
+      "column": "Kolom",
+      "division": "Divisi",
+      "assignees": "Assignee",
+      "status": "Status",
+      "progress": "Progres",
+      "due": "Tenggat"
+    },
+    "members": {
+      "hint": "Role menentukan siapa yang mengelola board (PIC) dan siapa yang mereview pekerjaan (PIC, Reviewer). Tambah atau hapus anggota di Master Hub.",
+      "manage": "Tambah atau hapus anggota di Master Hub",
+      "leftSuffix": "(sudah keluar dari project)"
+    },
+    "meta": {
+      "add": "Tambah",
+      "assignees": "Assignee",
+      "reviewers": "Reviewer",
+      "reviewersDefault": "PIC atau reviewer mana pun",
+      "division": "Divisi",
+      "priority": "Prioritas",
+      "start": "Mulai",
+      "due": "Tenggat",
+      "estimate": "Estimasi (jam)",
+      "labels": "Label",
+      "newLabel": "Label baru, tekan Enter",
+      "none": "Tidak ada",
+      "clear": "Hapus",
+      "assignMe": "Tugaskan ke saya"
+    },
+    "move": {
+      "title": "Pindah",
+      "toColumn": "Ke kolom",
+      "promote": "Jadikan card di",
+      "underTask": "Jadikan subtask dari...",
+      "search": "Cari task...",
+      "none": "Tidak ada task yang cocok",
+      "toBoard": "Pindah ke board lain"
+    },
+    "myTasks": {
+      "title": "Task Saya",
+      "mine": "Ditugaskan ke saya",
+      "review": "Perlu direview ({{count}})",
+      "empty": "Belum ada task untukmu",
+      "noReview": "Tidak ada yang menunggu review darimu",
+      "groups": {
+        "overdue": "Terlambat",
+        "today": "Tenggat hari ini",
+        "week": "7 hari ke depan",
+        "later": "Nanti",
+        "noDue": "Tanpa tenggat"
+      },
+      "steps": "Langkah untuk saya"
+    },
+    "steps": {
+      "title": "Langkah",
+      "addPlaceholder": "Tambah langkah, tekan Enter",
+      "titlePlaceholder": "Langkah",
+      "notePlaceholder": "Tambah catatan",
+      "delete": "Hapus langkah",
+      "reorder": "Seret untuk mengurutkan",
+      "doneBy": "Diselesaikan {{name}} pada {{at}}",
+      "assign": "Tugaskan langkah ini"
+    },
+    "subtasks": {
+      "title": "Subtask",
+      "addPlaceholder": "Tambah subtask, tekan Enter",
+      "expand": "Tampilkan subtask",
+      "reorder": "Seret untuk mengurutkan",
+      "assign": "Tugaskan subtask ini"
+    },
+    "tabs": {
+      "comments": "Komentar",
+      "activity": "Aktivitas"
+    },
+    "activity": {
+      "system": "Sistem",
+      "created": "membuat task ini",
+      "updated": "mengubah {{field}} menjadi {{to}}",
+      "moved": "memindahkan dari {{from}} ke {{to}}",
+      "reparented": "memindahkan task ini di pohon task",
+      "archived": "mengarsipkan task ini",
+      "restored": "memulihkan task ini",
+      "assigned": "menugaskan {{name}}",
+      "unassigned": "melepas {{name}}",
+      "step_added": "menambah langkah \"{{title}}\"",
+      "step_checked": "menyelesaikan \"{{title}}\"",
+      "step_unchecked": "membuka lagi \"{{title}}\"",
+      "step_removed": "menghapus langkah \"{{title}}\"",
+      "submitted_review": "mengajukan review",
+      "approved": "meng-approve task ini{{note}}",
+      "rejected": "mengembalikan task ini{{note}}",
+      "commented": "berkomentar",
+      "step_assigned": "menugaskan langkah \"{{title}}\" ke {{name}}",
+      "withdrawn": "menarik pengajuan review",
+      "moved_board": "memindahkan card ini dari board lain"
+    },
+    "dailyLogs": {
+      "title": "Daily log",
+      "log": "Catat progres",
+      "empty": "Belum ada daily log yang tertaut. Progres yang dicatat di daily report untuk task ini akan muncul di sini."
+    },
+    "workload": {
+      "person": "Orang",
+      "open": "Aktif",
+      "todo": "Belum mulai",
+      "in_progress": "Dikerjakan",
+      "in_review": "Direview",
+      "overdue": "Terlambat",
+      "done_7d": "Selesai (7h)",
+      "dashboardTitle": "Beban kerja task",
+      "steps": "Langkah terbuka",
+      "empty": "Belum ada pekerjaan board di divisi ini."
+    },
+    "archive": {
+      "title": "Arsipkan task ini?",
+      "description": "\"{{title}}\" beserta subtask-nya akan hilang dari board. Riwayatnya tetap tersimpan."
+    },
+    "labels": {
+      "namePlaceholder": "Nama label",
+      "color": "Warna label",
+      "create": "Buat label",
+      "save": "Simpan",
+      "edit": "Ubah label",
+      "delete": "Hapus",
+      "deleteTitle": "Hapus label?",
+      "deleteDesc": "\"{{name}}\" akan dilepas dari semua card di board ini."
+    },
+    "banner": {
+      "change": "Banner",
+      "upload": "Unggah gambar",
+      "reset": "Pakai banner default",
+      "tooLarge": "Gambar terlalu besar (maks 5MB)",
+      "pick": "Pilih pattern",
+      "pickTitle": "Banner board",
+      "palette": "Warna",
+      "illustrations": "Ilustrasi",
+      "patterns": "Pattern"
+    },
+    "archived": {
+      "title": "Arsip",
+      "hint": "Card dan subtask yang diarsipkan hilang dari board tapi riwayatnya tetap ada. PIC bisa memulihkannya.",
+      "empty": "Belum ada yang diarsipkan di board ini.",
+      "restore": "Pulihkan",
+      "under": "Subtask dari #{{no}} {{title}}",
+      "inColumn": "Card di {{column}}",
+      "by": "diarsipkan {{name}} pada {{at}}",
+      "restoreTitle": "Pulihkan task ini?",
+      "restoreDesc": "\"{{title}}\" kembali ke board di tempat semula, beserta subtask-nya."
+    },
+    "superadmin": "Superadmin"
   }
 }

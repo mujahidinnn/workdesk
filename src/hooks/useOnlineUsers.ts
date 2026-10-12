@@ -5,7 +5,6 @@ let online = new Set<string>();
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
-/** Mount once (AppShell) so anyone signed in anywhere counts as online. */
 export function useTrackPresence(userId: string | undefined) {
   useEffect(() => {
     if (!userId) return;

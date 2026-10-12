@@ -2,7 +2,7 @@ import type { ProjectType, WorkStatus } from "@/lib/types";
 import type { ProjectPayload } from "@/hooks/useProjects";
 
 export interface ImportRowError {
-  row: number; // 1 = header row
+  row: number;
   message: string;
 }
 
@@ -11,7 +11,6 @@ export interface ImportResult<T> {
   errors: ImportRowError[];
 }
 
-/** Reads the first worksheet of an uploaded .xlsx file as an array of cell-value rows. */
 async function readRows(file: File): Promise<unknown[][]> {
   const { default: ExcelJS } = await import("exceljs");
   const wb = new ExcelJS.Workbook();
@@ -20,7 +19,7 @@ async function readRows(file: File): Promise<unknown[][]> {
   if (!ws) return [];
   const rows: unknown[][] = [];
   ws.eachRow((row) => {
-    rows.push((row.values as unknown[]).slice(1)); // exceljs values[0] is always empty
+    rows.push((row.values as unknown[]).slice(1));
   });
   return rows;
 }
@@ -33,10 +32,6 @@ function cellText(v: unknown): string {
   return String(v).trim();
 }
 
-/**
- * Column order matches exportProjectsExcel(). Unknown Status/Types are left
- * blank instead of failing the row, since they're easy to fix later.
- */
 export async function parseProjectsExcel(
   file: File,
   workStatuses: WorkStatus[],
@@ -94,7 +89,6 @@ export interface EmployeeImportRow {
   status: "Active" | "Inactive";
 }
 
-/** Column order matches exportEmployeesExcel(); Joined is ignored. */
 export async function parseEmployeesExcel(
   file: File,
 ): Promise<ImportResult<EmployeeImportRow>> {

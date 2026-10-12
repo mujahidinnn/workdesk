@@ -39,6 +39,8 @@ calculations live in `src/lib/`.
 | --- | --- | --- | --- |
 | Dashboard | `DashboardPage.tsx` | `useDailyTasks`, `useHrisSummary` | `components/dashboard/` |
 | Daily report | `DailyReportPage.tsx` | `useDailyTasks` | `components/daily-report/` |
+| Task board | `BoardsPage.tsx`, `BoardPage.tsx` | `useBoards`, `useBoard`, `useBoardTasks`, `useBoardColumns`, `useTaskSteps`, `useTaskActivity` | `components/board/` |
+| My tasks | `MyTasksPage.tsx` | `useMyTasks` | reuses `board/` |
 | Timeline | `TimelinePage.tsx` | `useDailyTasks`, `useTaskComments` | reuses `daily-report/` |
 | Issues | `IssuesPage.tsx` | `useDailyTasks`, `useEmployees` | reuses `daily-report/` |
 | Attendance | `AttendancePage.tsx` | `useAttendance`, `useWorkSchedule` | `components/attendance/` |
@@ -57,7 +59,9 @@ Shared helpers worth knowing before writing a new one: `lib/attendance.ts`
 (late, early leave, hours worked), `lib/workday.ts` (working days, period
 ranges), `lib/period.ts` (period filtering by date prefix),
 `lib/permissions.ts` (role and override merge), `lib/payroll.ts` (gross pay
-recap per employee).
+recap per employee), `lib/taskTree.ts` (board task tree and progress),
+`lib/taskPermissions.ts` (who may work on, submit or review a board task),
+`lib/position.ts` (fractional card order).
 
 ## Adding Code
 
@@ -80,8 +84,14 @@ Ownership, approval rules, the period lock, the clock stamps and the audit
 trail are enforced by RLS policies and triggers, not by the UI. The UI only
 hides actions the database would refuse. The rules live in
 `supabase/migrations/`, with runnable proof in `supabase/tests/security_smoke.sql`
-and, for payroll, `supabase/tests/payroll_smoke.sql`. When you add a rule that protects data,
-add it there and add a case to the matching test.
+and, for payroll, `supabase/tests/payroll_smoke.sql`, for the task board,
+`supabase/tests/board_smoke.sql`, for the demo seed, `supabase/tests/demo_seed_smoke.sql`. When you add a rule that protects data,
+add it there and add a case to the matching test. Run one with
+`supabase/tests/scratch_db.sh supabase/tests/<name>.sql` (needs Docker).
+
+Task board in particular: a node is finished only through `submit_review()`
+and `review_task()`, nobody approves their own node, and only a node's
+assignees (or an ancestor's, or the project PIC) may tick its steps.
 
 Payroll in particular: a run's earnings come from `generate_payroll_run()`,
 never from an insert by the client, and finalizing a run freezes every
@@ -93,7 +103,9 @@ amount on it. Deductions are optional and capped at what was earned.
 covered is the pure logic where a silent mistake costs money or misstates
 attendance (`lib/attendance.ts`, `lib/workday.ts`, `lib/period.ts`,
 `lib/permissions.ts`, `lib/payroll.ts`, `calcDurationHours`,
-`countLeaveWorkingDays`). Add a case
+`countLeaveWorkingDays`) and the task board logic (`lib/taskTree.ts`,
+`lib/taskPermissions.ts`, `lib/position.ts`, `lib/boardFilter.ts`,
+`lib/workload.ts`). Add a case
 there when you touch one of those. Database rules are proved by the SQL smoke
 test above, not by these.
 

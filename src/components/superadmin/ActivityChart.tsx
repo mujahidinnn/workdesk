@@ -19,7 +19,6 @@ export interface ActivityBucket {
 
 const DAYS = 14;
 
-// Delete is also dashed so it isn't distinguished from Create by hue alone.
 const SERIES = [
   { key: "create", name: "Create", color: "#10b981" },
   { key: "update", name: "Update", color: "#0ea5e9" },

@@ -64,7 +64,6 @@ DECLARE
   v_hours NUMERIC;
   v_money NUMERIC;
 BEGIN
-  -- 1. An employee cannot touch someone else's daily report
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e2', true);
   PERFORM set_config('test.role', 'authenticated', true);
@@ -75,7 +74,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 1a: employee updated another employee''s task';
   END IF;
 
-  -- Their own row is fine.
   INSERT INTO t_daily_tasks (date, employee_id, project_id, task_desc)
   VALUES (CURRENT_DATE, 9002, 9001, 'Emp Two task');
 
@@ -84,12 +82,11 @@ BEGIN
     VALUES (CURRENT_DATE, 9001, 9001, 'posted as someone else');
     RAISE EXCEPTION 'FAIL 1b: employee posted a task as another employee';
   EXCEPTION WHEN insufficient_privilege THEN
-    NULL;  -- expected
+    NULL;
   END;
 
   RESET ROLE;
 
-  -- 2. A profile insert by a signed-in user cannot grant Admin
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e3', true);
 
@@ -111,7 +108,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 2b: self-inserted profile linked itself to an employee';
   END IF;
 
-  -- 3. An employee cannot re-point their profile at another employee
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   BEGIN
@@ -119,11 +115,10 @@ BEGIN
     WHERE id = '00000000-0000-0000-0000-0000000000e1';
     RAISE EXCEPTION 'FAIL 3: employee re-linked their profile';
   EXCEPTION WHEN raise_exception THEN
-    IF SQLERRM LIKE 'FAIL 3%' THEN RAISE; END IF;  -- expected guard message
+    IF SQLERRM LIKE 'FAIL 3%' THEN RAISE; END IF;
   END;
   RESET ROLE;
 
-  -- 4. Self check-in is stamped by the server, not the client
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
 
@@ -140,18 +135,16 @@ BEGIN
     RAISE EXCEPTION 'FAIL 4b: the device clock was trusted';
   END IF;
 
-  -- Checking out in the same second is refused with a readable message.
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   BEGIN
     PERFORM attendance_check_out();
     RAISE EXCEPTION 'FAIL 4c: a zero length day was accepted';
   EXCEPTION WHEN raise_exception THEN
-    IF SQLERRM LIKE 'FAIL 4c%' THEN RAISE; END IF;  -- expected guard message
+    IF SQLERRM LIKE 'FAIL 4c%' THEN RAISE; END IF;
   END;
   RESET ROLE;
 
-  -- After a real working day, check-out closes the row.
   UPDATE t_attendance SET clock_in = '08:00'
    WHERE user_id = '00000000-0000-0000-0000-0000000000e1';
 
@@ -166,7 +159,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 4d: check-out did not stamp clock_out';
   END IF;
 
-  -- 5. Overtime cannot be approved by the person who filed it
   INSERT INTO t_overtime_business_trips
     (id, user_id, type, date, start_time, end_time, activity_description, duration_hours)
   VALUES (9001, '00000000-0000-0000-0000-0000000000a1', 'Overtime', CURRENT_DATE,
@@ -180,11 +172,10 @@ BEGIN
      WHERE id = 9001;
     RAISE EXCEPTION 'FAIL 5: an admin approved their own overtime';
   EXCEPTION WHEN insufficient_privilege THEN
-    NULL;  -- expected: the row fails the policy's WITH CHECK
+    NULL;
   END;
   RESET ROLE;
 
-  -- 5b. A rejected request can be resubmitted, an approved one is locked for its owner.
   UPDATE t_overtime_business_trips SET status = 'Rejected',
          rejection_note = 'not this month', approved_by = NULL
    WHERE id = 9001;
@@ -211,7 +202,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 5c: an approved request was edited by its owner';
   END IF;
 
-  -- 6. Hours and money come from the server, not the form
   INSERT INTO t_overtime_business_trips
     (id, user_id, type, date, start_time, end_time, activity_description,
      duration_hours, daily_allowance)
@@ -228,7 +218,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 6b: pay was % instead of 2 hours times the 25000 rate', v_money;
   END IF;
 
-  -- A trip ignores the hourly rate and takes the flat one.
   INSERT INTO t_overtime_business_trips
     (id, user_id, type, date, activity_description, daily_allowance)
   VALUES (9003, '00000000-0000-0000-0000-0000000000e1', 'BusinessTrip_OutOfTown',
@@ -239,7 +228,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 6c: trip allowance was % instead of the 400000 rate', v_money;
   END IF;
 
-  -- 6d. An overnight shift is four hours, a typo is still refused
   INSERT INTO t_overtime_business_trips
     (id, user_id, type, date, end_date, start_time, end_time, activity_description)
   VALUES (9004, '00000000-0000-0000-0000-0000000000e1', 'Overtime', CURRENT_DATE,
@@ -257,7 +245,7 @@ BEGIN
             '18:00', '08:00', 'typo, not marked overnight');
     RAISE EXCEPTION 'FAIL 6e: a same day shift ending before it started was accepted';
   EXCEPTION WHEN check_violation THEN
-    NULL;  -- expected
+    NULL;
   END;
 
   BEGIN
@@ -267,13 +255,12 @@ BEGIN
             CURRENT_DATE + 5, '22:00', '02:00', 'five nights');
     RAISE EXCEPTION 'FAIL 6f: a shift spanning five days was accepted';
   EXCEPTION WHEN check_violation THEN
-    NULL;  -- expected
+    NULL;
   END;
 
-  -- 7. Approving leave writes the attendance rows
   INSERT INTO t_leave_requests (id, user_id, type, start_date, end_date, reason)
   VALUES (9001, '00000000-0000-0000-0000-0000000000e2', 'Cuti',
-          CURRENT_DATE + 7, CURRENT_DATE + 13, 'family');  -- 7 days: always spans a workday
+          CURRENT_DATE + 7, CURRENT_DATE + 13, 'family');
 
   UPDATE t_leave_requests
      SET status = 'Approved', approved_by = '00000000-0000-0000-0000-0000000000a1'
@@ -291,7 +278,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 7b: approved leave sent no notification';
   END IF;
 
-  -- 7c. Resubmitting does not fire a decision notification
   SELECT COUNT(*) INTO v_count FROM t_notifications
   WHERE user_id = '00000000-0000-0000-0000-0000000000e2';
 
@@ -303,7 +289,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 7c: resubmitting a leave request sent a decision notice';
   END IF;
 
-  -- 8. A closed period refuses further edits
   UPDATE m_work_schedule SET locked_until = CURRENT_DATE + 30;
   BEGIN
     INSERT INTO t_overtime_business_trips
@@ -312,11 +297,10 @@ BEGIN
             '18:00', '20:00', 'in a closed month', 2);
     RAISE EXCEPTION 'FAIL 8: a closed period still accepted a new row';
   EXCEPTION WHEN raise_exception THEN
-    IF SQLERRM LIKE 'FAIL 8%' THEN RAISE; END IF;  -- expected guard message
+    IF SQLERRM LIKE 'FAIL 8%' THEN RAISE; END IF;
   END;
   UPDATE m_work_schedule SET locked_until = NULL;
 
-  -- 9. The staff directory hides e-mail from non-admins
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   SELECT COUNT(*) INTO v_count FROM get_users_with_email() WHERE email <> '';
@@ -333,8 +317,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 9b: an admin can no longer read e-mail addresses';
   END IF;
 
-  -- 10. Chat guard: text is the sender's, pin is the channel's
-  -- Project 9001 got its chat channel from the create-project trigger.
   INSERT INTO m_project_members (project_id, user_id) VALUES
     (9001, '00000000-0000-0000-0000-0000000000e1'),
     (9001, '00000000-0000-0000-0000-0000000000e2');
@@ -347,7 +329,6 @@ BEGIN
 
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e2', true);
-  -- e2 is in the project but did not send it: the pin must move, the body must not.
   UPDATE t_chat_messages
      SET body = 'hijacked', pinned_at = '2000-01-01', channel_id = 9999
    WHERE id = 9001;
@@ -367,7 +348,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 10b: pin was not stamped as (me, now), or an edit leaked';
   END IF;
 
-  -- The sender's own edit goes through and gets marked as edited.
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   UPDATE t_chat_messages SET body = 'fixed typo' WHERE id = 9001;
@@ -379,7 +359,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 10c: the sender could not edit, or edited_at went unstamped';
   END IF;
 
-  -- 10d. Pinning in General is an admin's call, not any employee's
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   BEGIN
@@ -388,7 +367,7 @@ BEGIN
     RAISE EXCEPTION 'FAIL 10d: an employee pinned a message in General';
   EXCEPTION WHEN raise_exception THEN
     RESET ROLE;
-    IF SQLERRM LIKE 'FAIL 10d%' THEN RAISE; END IF;  -- expected guard message
+    IF SQLERRM LIKE 'FAIL 10d%' THEN RAISE; END IF;
   END;
 
   SET LOCAL ROLE authenticated;
@@ -402,7 +381,6 @@ BEGIN
     RAISE EXCEPTION 'FAIL 10e: an admin can no longer pin in General';
   END IF;
 
-  -- 11. Approval workflow and pay can't be self-served
   SET LOCAL ROLE authenticated;
   PERFORM set_config('test.uid', '00000000-0000-0000-0000-0000000000e1', true);
   PERFORM set_config('test.role', 'authenticated', true);
@@ -428,7 +406,7 @@ BEGIN
     RAISE EXCEPTION 'FAIL 11b: an approver rewrote the hours of a request';
   EXCEPTION WHEN raise_exception THEN
     RESET ROLE;
-    IF SQLERRM LIKE 'FAIL 11b%' THEN RAISE; END IF;  -- expected guard message
+    IF SQLERRM LIKE 'FAIL 11b%' THEN RAISE; END IF;
   END;
 
   SET LOCAL ROLE authenticated;

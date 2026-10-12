@@ -32,11 +32,9 @@ import type {
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-// Hours and money are not here: the server computes both on save.
 export interface OvertimeFormValues {
   type: OvertimeType;
   date: string;
-  /** Day the shift ends. Same as date, date + 1 overnight, null for a trip. */
   end_date: string | null;
   start_time: string;
   end_time: string;
@@ -44,8 +42,6 @@ export interface OvertimeFormValues {
   activity_description: string;
 }
 
-// The switch is easier to fill in than a second date field, and the database
-// only allows the next day anyway.
 type FormState = Omit<OvertimeFormValues, "end_date"> & { overnight: boolean };
 
 interface Props {
@@ -122,8 +118,6 @@ export function OvertimeFormDialog({
       ? calcDurationHours(form.start_time, form.end_time, overnight)
       : null;
 
-  // Money never comes from the employee. Trips use the flat trip rate, overtime
-  // is hours times the hourly rate. Both rates are set by the admin.
   const rateUsed = isOvertime
     ? (myRate?.overtime_rate ?? 0)
     : form.type === "BusinessTrip_Local"
@@ -134,7 +128,6 @@ export function OvertimeFormDialog({
     : rateUsed;
 
   const today = format(new Date(), "yyyy-MM-dd");
-  // Plain string compare is enough, both sides are yyyy-MM-dd.
   const error =
     form.date > today
       ? t("overtime.form.errFutureDate")
@@ -161,7 +154,6 @@ export function OvertimeFormDialog({
     const { overnight: _overnight, ...rest } = form;
     onSubmit({
       ...rest,
-      // A trip has no end_date, an overnight shift ends the next day.
       end_date: !isOvertime
         ? null
         : overnight
@@ -237,7 +229,6 @@ export function OvertimeFormDialog({
             </div>
           )}
 
-          {/* Overnight shift, so 22:00 to 02:00 is four hours and not a typo */}
           {isOvertime && (
             <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-secondary border border-border">
               <Label

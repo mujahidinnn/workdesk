@@ -20,7 +20,6 @@ export default function ChatPage() {
   const { data: users = [] } = useUsers();
   const startDm = useStartDm();
   const [profileUserId, setProfileUserId] = useState<string | null>(null);
-  // Mobile shows one pane; a ?channel= link opens straight into the chat.
   const [mobileChatOpen, setMobileChatOpen] = useState(
     searchParams.has("channel"),
   );

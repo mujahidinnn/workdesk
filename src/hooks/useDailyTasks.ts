@@ -17,7 +17,6 @@ import { startOfWeek, endOfWeek, format } from "date-fns";
 export interface DailyTaskFilters {
   employeeId?: string;
   projectId?: string;
-  /** yyyy-MM-dd, inclusive (`date` is a DATE column) */
   from?: string;
   to?: string;
 }
@@ -37,7 +36,8 @@ export function useDailyTasks(filters: DailyTaskFilters = {}) {
             *,
             project_type_assignment(type:m_project_types(id, type_name)),
             status:m_work_status(id, status_name)
-          )
+          ),
+          board_task:t_tasks(id, task_no, board_id, title)
         `,
         );
       if (filters.employeeId)
@@ -319,5 +319,21 @@ export function useWeeklyWorkload() {
       );
     },
     refetchInterval: 60_000,
+  });
+}
+
+export function useDailyTasksForBoardTask(boardTaskId: number | null) {
+  return useQuery<DailyTaskWithRelations[]>({
+    queryKey: ["daily-tasks", "board-task", boardTaskId],
+    enabled: boardTaskId != null,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("t_daily_tasks")
+        .select("*, employee:m_employees(*), project:m_projects(*)")
+        .eq("board_task_id", boardTaskId!)
+        .order("date", { ascending: false });
+      if (error) throw error;
+      return data as unknown as DailyTaskWithRelations[];
+    },
   });
 }

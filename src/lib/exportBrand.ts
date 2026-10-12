@@ -4,13 +4,6 @@ import type { Borders, Workbook, Worksheet } from "exceljs";
 import type { jsPDF } from "jspdf";
 import type { UserOptions } from "jspdf-autotable";
 
-/** Shared look for every PDF and Excel export: a plain formal document.
- *  Black on white, letterhead with the logo and a double rule, centered
- *  title, bordered tables with a gray header row. */
-
-/** Shared look for every PDF and Excel export: a plain formal document.
- *  Black on white, letterhead with the logo and a double rule, centered
- *  title, bordered tables with a gray header row. */
 type RGB = [number, number, number];
 
 export const INK: RGB = [17, 17, 17];
@@ -21,7 +14,6 @@ export const HEAD_FILL: RGB = [235, 235, 235];
 export const printedAt = () =>
   format(new Date(), "d MMMM yyyy, HH:mm", { locale: localeId });
 
-/** Caches a successful load; a failed one is retried next export. */
 function once<T>(load: () => Promise<T>) {
   let p: Promise<T> | undefined;
   return () =>
@@ -40,7 +32,6 @@ function blobToDataUrl(blob: Blob): Promise<string> {
   });
 }
 
-/** The PNG app icon as a data URL, since neither jsPDF nor Excel reads SVG. */
 export const logoPng = once(async () => {
   const res = await fetch("/apple-touch-icon.png");
   if (!res.ok) throw new Error(`logo: ${res.status}`);
@@ -58,11 +49,8 @@ const interFonts = once(() =>
 );
 
 export const PDF_MARGIN = 14;
-/** Where content starts, below the letterhead and title drawn by brandPdfPages. */
 export const PDF_TOP = 50;
 
-/** Embeds Inter in the document and returns the family to use. Falls back to
- *  Helvetica when the font files can't be fetched, so the export still works. */
 export async function registerPdfFont(doc: jsPDF): Promise<string> {
   try {
     const [regular, bold] = await interFonts();
@@ -76,7 +64,6 @@ export async function registerPdfFont(doc: jsPDF): Promise<string> {
   }
 }
 
-/** Bordered table with a gray header row, shared by every PDF table. */
 export function pdfTableStyle(font: string): Partial<UserOptions> {
   return {
     theme: "grid",
@@ -100,9 +87,6 @@ export function pdfTableStyle(font: string): Partial<UserOptions> {
   };
 }
 
-/** Letterhead, title and page number on every page. Runs once after all
- *  content is laid out, so the footer can say "of N". Content must start at
- *  PDF_TOP. */
 export async function brandPdfPages(
   doc: jsPDF,
   meta: { company: string; title: string; subtitle: string; font: string },
@@ -149,7 +133,6 @@ const XL_FONT = "Inter";
 const argb = ([r, g, b]: RGB) =>
   `FF${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`.toUpperCase();
 
-/** Expects headers in row 1 and data below; call after the rows are added. */
 export function brandSheet(
   wb: Workbook,
   ws: Worksheet,
@@ -179,8 +162,6 @@ export function brandSheet(
     }
   }
 
-  // Company, title, period line, spacer. The logo sits in the last column so
-  // the text can start at A whatever its width.
   ws.spliceRows(1, 0, [], [], [], []);
   const textEnd = ws.getColumn(Math.max(1, cols - 1)).letter;
   const lines: [string, number, object][] = [

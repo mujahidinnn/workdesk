@@ -54,7 +54,6 @@ export function AttendanceRecapPanel({
   workingDays,
 }: {
   records: AttendanceWithProfile[];
-  /** Working days in the period up to today; Alpa is derived from it. */
   workingDays: number;
 }) {
   const { t } = useTranslation();
@@ -71,7 +70,6 @@ export function AttendanceRecapPanel({
       Alpa: 0,
     };
     records.forEach((r) => result[r.status]++);
-    // A working day with no row at all is an unexcused absence.
     result.Alpa += Math.max(0, workingDays - records.length);
     return result;
   }, [records, workingDays]);

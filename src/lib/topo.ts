@@ -1,8 +1,3 @@
-// Topographic contour lines as one SVG path. A height field (a few random
-// hills and dips plus low-frequency ripples) is sampled on a grid and each
-// level is traced with marching squares, so lines never cross or repeat.
-// A fixed seed keeps the map the same on every load.
-
 function mulberry32(seed: number) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
@@ -41,8 +36,6 @@ export function topoPath({
   seed = 14,
 } = {}) {
   const rand = mulberry32(seed);
-  // Hills are stretched and rotated, and the sample point is warped, so no
-  // contour closes into a clean circle.
   const hills = Array.from({ length: 10 }, () => {
     const a = rand() * Math.PI;
     const s = (0.06 + rand() * 0.1) * w;
@@ -122,7 +115,6 @@ export function topoPath({
         if (!edges.length) continue;
         const x0 = i * cell;
         const y0 = j * cell;
-        // Only called for crossed edges, whose ends sit on opposite sides of t.
         const pt = (edge: number) =>
           edge === 0
             ? [x0 + (cell * (t - a)) / (b - a), y0]

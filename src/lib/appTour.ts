@@ -85,7 +85,6 @@ export function startAppTour(key: string): boolean {
     },
   });
 
-  // The first step may need its tab opened before anything is highlighted.
   const firstClickFirst = steps[0]?.data?.clickFirst as string | undefined;
   if (firstClickFirst) clickTarget(firstClickFirst);
   setTimeout(() => tour.drive(), firstClickFirst ? TAB_SWITCH_DELAY : 0);

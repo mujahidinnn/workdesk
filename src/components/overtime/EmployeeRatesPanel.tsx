@@ -61,7 +61,6 @@ export function EmployeeRatesPanel({ profiles, currentUserId }: Props) {
   const [draft, setDraft] = useState<Rates>(EMPTY_RATES);
   const [viewing, setViewing] = useState<EmployeeRate | null>(null);
 
-  // One row per employee, since rates may not be configured yet.
   const rows = useMemo(() => {
     const byProfile = new Map(allRates.map((r) => [r.profile_id, r]));
     const q = search.trim().toLowerCase();

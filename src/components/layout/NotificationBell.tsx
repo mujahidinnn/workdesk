@@ -40,7 +40,6 @@ export function NotificationBell() {
   }
 
   function handleSelect(n: Notification) {
-    // Chat notifications are cleared by opening the channel (useMarkChannelRead).
     if (!n.is_read && !isChatNotification(n)) markRead.mutate(n.id);
     if (n.link) navigate(n.link);
   }

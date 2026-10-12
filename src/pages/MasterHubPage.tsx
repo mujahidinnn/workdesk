@@ -5,6 +5,7 @@ import {
   Users,
   Tag,
   ListChecks,
+  Network,
   UserCog,
   History,
   Download,
@@ -17,6 +18,7 @@ import { ProjectsKanban } from "@/components/master-hub/ProjectsKanban";
 import { EmployeesTable } from "@/components/master-hub/EmployeesTable";
 import { MasterListTable } from "@/components/master-hub/MasterListTable";
 import { MasterListFormDialog } from "@/components/master-hub/MasterListFormDialog";
+import { DivisionsSection } from "@/components/master-hub/DivisionsSection";
 import { UserManagement } from "@/components/master-hub/UserManagement";
 import { AuditLogTable } from "@/components/master-hub/AuditLogTable";
 import { FilterSelect } from "@/components/master-hub/FilterSelect";
@@ -73,6 +75,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useEmployeePresence } from "@/hooks/useEmployeePresence";
 import { useAuth } from "@/context/auth";
 import { useTabParam } from "@/hooks/useTabParam";
+import { useSearchParams } from "react-router-dom";
 import type { Project, Employee } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -88,6 +91,7 @@ type TabId =
   | "employees"
   | "proj-types"
   | "proj-status"
+  | "divisions"
   | "users"
   | "audit-log";
 
@@ -112,9 +116,6 @@ export default function MasterHubPage() {
 
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
 
-  // Ordered by setup dependency, not click frequency: taxonomies a Project
-  // needs to exist first (Project Types, Project Status), then the entities
-  // that reference them (Projects, Employees), then account access last.
   const ALL_TABS = [
     {
       id: "proj-types" as TabId,
@@ -126,6 +127,12 @@ export default function MasterHubPage() {
       id: "proj-status" as TabId,
       labelKey: "master.tabs.projectStatus",
       icon: ListChecks,
+      adminOnly: false,
+    },
+    {
+      id: "divisions" as TabId,
+      labelKey: "master.tabs.divisions",
+      icon: Network,
       adminOnly: false,
     },
     {
@@ -160,7 +167,6 @@ export default function MasterHubPage() {
     "projects",
   );
 
-  // On phones the tab bar scrolls sideways: keep the active tab in view.
   useEffect(() => {
     document
       .querySelector(`[data-tour="master-tabbtn-${activeTab}"]`)
@@ -171,6 +177,18 @@ export default function MasterHubPage() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [projectFilters, setProjectFilters] = useState<ProjectFilters>({});
   const { data: allProjects = [] } = useProjects();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const deepProject = searchParams.get("project");
+  useEffect(() => {
+    const p = deepProject && allProjects.find((x) => x.id === Number(deepProject));
+    if (!p) return;
+    setEditingProject(p);
+    setProjectDialogOpen(true);
+    setSearchParams((sp) => {
+      sp.delete("project");
+      return sp;
+    }, { replace: true });
+  }, [deepProject, allProjects, setSearchParams]);
   const { data: projects = [], isLoading: projectsLoading } =
     useProjects(projectFilters);
   const [projectSearch, setProjectSearch] = useState("");
@@ -613,6 +631,8 @@ export default function MasterHubPage() {
               isLoading={typesLoading}
             />
           )}
+
+          {activeTab === "divisions" && <DivisionsSection />}
 
           {activeTab === "proj-status" && (
             <MasterListTable

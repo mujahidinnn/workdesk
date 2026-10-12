@@ -15,8 +15,6 @@ export interface HrisSummary {
   overtimeHoursThisMonth: number;
 }
 
-/** Counted in the database to avoid PostgREST's silent 1000-row cap.
- *  RLS scopes rows: employees see their own items, approvers the queue. */
 export function useHrisSummary() {
   const { data: schedule } = useWorkSchedule();
   const today = format(new Date(), "yyyy-MM-dd");

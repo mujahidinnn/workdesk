@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { countWorkdays, isWorkday, periodRange } from "../workday";
 import type { Holiday, WorkSchedule } from "../types";
 
-// June 2025: 1st is a Sunday, so 2nd-6th is Mon-Fri and 7th is a Saturday.
 const sixDayWeek = { work_days: [1, 2, 3, 4, 5, 6] } as WorkSchedule;
 const holidays = [{ date: "2025-06-04" }] as Holiday[];
 const saturday = new Date(2025, 5, 7);
@@ -56,7 +55,6 @@ describe("countWorkdays", () => {
 
   it("stops at today instead of running to the end of the month", () => {
     const { start, end } = periodRange("monthly", new Date(2025, 5, 10));
-    // Jun 2-6 and Jun 9-10, not the full 21 workdays of June.
     expect(countWorkdays(start, end, [])).toBe(7);
   });
 
@@ -67,7 +65,6 @@ describe("countWorkdays", () => {
 
   it("adds the Saturdays on a six day week", () => {
     const { start, end } = periodRange("monthly", new Date(2025, 5, 10));
-    // Same days plus Jun 7.
     expect(countWorkdays(start, end, [], sixDayWeek)).toBe(8);
   });
 

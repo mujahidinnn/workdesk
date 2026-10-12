@@ -15,7 +15,6 @@ import { taskDetailFields } from "@/components/daily-report/detailFields";
 const FOOTER_LINK =
   "flex-1 flex items-center justify-center gap-1.5 rounded-md border border-border py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors";
 
-/** Small donut; the number is the point, the ring only hints at it. */
 function ProgressRing({ value }: { value: number }) {
   const pct = Math.max(0, Math.min(100, value));
   const r = 14;
@@ -116,7 +115,6 @@ export function RecentProblemsCard({ tasks }: RecentProblemsCardProps) {
                 {...detailRowProps(() => setViewing(task))}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                // Cap the stagger: 70 items must not take 3.5s to appear.
                 transition={{ delay: 0.3 + Math.min(i, 8) * 0.05 }}
                 className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200 hover:border-amber-300 dark:bg-amber-950/30 dark:border-amber-800/20 dark:hover:border-amber-700/40 transition-colors group cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-primary/50"
               >

@@ -28,7 +28,6 @@ const EMPLOYMENT_TYPES: EmploymentType[] = [
   "Intern",
 ];
 
-// Probation and interns get no annual leave by default; admin can override.
 const DEFAULT_LEAVE_QUOTA: Record<EmploymentType, number> = {
   Permanent: 12,
   Contract: 12,

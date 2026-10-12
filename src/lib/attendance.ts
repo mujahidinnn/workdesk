@@ -1,6 +1,5 @@
 import type { AttendanceStatus, WorkSchedule } from "./types";
 
-/** "HH:MM[:SS]" to minutes, or null when the value is missing or junk. */
 function toMinutes(time: string | null | undefined): number | null {
   if (!time) return null;
   // Number("") is 0, not NaN, so an empty segment like ":30" or "8:" would
@@ -15,7 +14,6 @@ function toMinutes(time: string | null | undefined): number | null {
   return h * 60 + m;
 }
 
-/** Late only means something on a day the person was actually present. */
 export function isLateArrival(
   clockIn: string | null,
   schedule: WorkSchedule | null | undefined,
@@ -28,7 +26,6 @@ export function isLateArrival(
   return actual > start + schedule.late_tolerance_minutes;
 }
 
-/** Clocked out before the schedule's end of day. */
 export function isEarlyLeave(
   clockOut: string | null,
   schedule: WorkSchedule | null | undefined,
@@ -41,7 +38,6 @@ export function isEarlyLeave(
   return actual < end;
 }
 
-/** Hours between clock in and clock out, or null when the day is not closed. */
 export function workHours(
   clockIn: string | null,
   clockOut: string | null,

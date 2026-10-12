@@ -10,12 +10,6 @@ interface PagerProps {
   onPageChange: (page: number) => void;
 }
 
-// Named Pager to avoid colliding with shadcn pagination.tsx on case-insensitive filesystems.
-/**
- * Prev/next pager for client-side paginated lists. Named Pager (not
- * Pagination) to avoid colliding with the existing unused shadcn
- * pagination.tsx primitive on case-insensitive filesystems.
- */
 export function Pager({
   page,
   pageCount,

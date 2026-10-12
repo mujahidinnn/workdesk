@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-/** Returns a map of employee_id → latest task created_at (ISO string) */
 export function useEmployeePresence() {
   return useQuery<Record<number, string>>({
     queryKey: ["employee-presence"],
@@ -27,7 +26,6 @@ export function useEmployeePresence() {
   });
 }
 
-/** Returns true if the employee was active in the last 4 hours */
 export function isEmployeeActive(lastActiveAt: string | undefined): boolean {
   if (!lastActiveAt) return false;
   const diffMs = Date.now() - new Date(lastActiveAt).getTime();

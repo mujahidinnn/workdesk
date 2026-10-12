@@ -19,15 +19,10 @@ import type {
 
 const QK = ["attendance"] as const;
 const BUCKET = "attendance-attachments";
-const SIGNED_URL_TTL = 60 * 60; // 1 hour - bucket is private
+const SIGNED_URL_TTL = 60 * 60;
 
-// Paths starting with "/" are demo files in public/demo, not bucket objects.
-/** A path starting with "/" is a file shipped with the app (the demo seed's
- *  files live in public/demo), not an object in the bucket. */
 const isStatic = (path: string) => path.startsWith("/");
 
-// Storage policy requires files under the uploader's folder.
-/** Stores the file under the uploader's folder, as the storage policy requires. */
 async function uploadAttachment(uploaderId: string, file: File) {
   const ext = file.name.split(".").pop();
   const path = `${uploaderId}/${crypto.randomUUID()}.${ext}`;
@@ -36,8 +31,6 @@ async function uploadAttachment(uploaderId: string, file: File) {
   return { attachment_path: path, attachment_name: file.name };
 }
 
-// Removes the uploaded file if the insert fails.
-/** Uploads the optional file, then inserts; drops the file if the insert fails. */
 async function insertWithAttachment(
   uploaderId: string | undefined,
   payload: Record<string, unknown> & { user_id: string; date: string; status: AttendanceStatus },
@@ -57,7 +50,6 @@ async function insertWithAttachment(
   return data;
 }
 
-/** Turns the raw Postgres complaints into something an employee can read. */
 function friendlyError(e: Error): string {
   const msg = e.message ?? "";
   if (msg.includes("duplicate key"))
@@ -73,7 +65,6 @@ function friendlyError(e: Error): string {
   return msg;
 }
 
-/** Today in yyyy-MM-dd, updates when a tab stays open past midnight. */
 export function useToday(): string {
   const [today, setToday] = useState(() => format(new Date(), "yyyy-MM-dd"));
   useEffect(() => {
@@ -91,7 +82,6 @@ export interface AttendanceFilters {
   status?: AttendanceStatus;
 }
 
-/** Filters server-side to stay under PostgREST's 1000 row cap. */
 export function useAttendance(
   from: string,
   to: string,
@@ -132,7 +122,6 @@ export function useAttendance(
   });
 }
 
-/** Today's attendance row for one user, or null when not yet recorded. */
 export function useTodayAttendance(userId: string | undefined, date: string) {
   return useQuery<Attendance | null>({
     queryKey: [...QK, "today", userId, date],
@@ -158,7 +147,6 @@ export type CheckInPayload = {
   file?: File | null;
 };
 
-/** Date and clock_in are stamped by the server clock, never the device. */
 export function useCheckIn() {
   const qc = useQueryClient();
   const { user } = useAuth();
@@ -177,7 +165,6 @@ export function useCheckIn() {
   });
 }
 
-/** Closes today's open check-in using the server clock. */
 export function useCheckOut() {
   const qc = useQueryClient();
   return useMutation({
@@ -202,12 +189,10 @@ export type AttendanceCorrection = {
   clock_out: string | null;
   note: string | null;
   updated_by: string;
-  /** New file replaces the current one (old_path) when given. */
   file?: File | null;
   old_path?: string | null;
 };
 
-/** Admin correction of an existing record's status / clock in / clock out. */
 export function useUpdateAttendance() {
   const qc = useQueryClient();
   return useMutation({
@@ -236,7 +221,6 @@ export function useUpdateAttendance() {
   });
 }
 
-/** Admin manual entry - logging attendance on behalf of an employee. */
 export function useCreateAttendanceForUser() {
   const qc = useQueryClient();
   return useMutation({

@@ -2,11 +2,6 @@ import { useMemo, useState } from "react";
 
 export type SortDirection = "asc" | "desc";
 
-/**
- * Generic click-to-sort helper for table columns. `key` identifies which
- * column is active; comparison is delegated to `getValue` so callers don't
- * need parallel switch statements for string/number/date columns.
- */
 export function useSortableData<T, K extends string>(
   items: T[],
   getValue: (item: T, key: K) => string | number,

@@ -13,7 +13,6 @@ import { useDateFnsLocale } from "@/lib/dateLocale";
 import { cn } from "@/lib/utils";
 
 interface DateRangeValue {
-  /** yyyy-MM-dd, inclusive */
   from?: string;
   to?: string;
 }
@@ -21,7 +20,6 @@ interface DateRangeValue {
 const toDate = (v?: string) => (v ? new Date(`${v}T00:00:00`) : undefined);
 const toStr = (d?: Date) => (d ? format(d, "yyyy-MM-dd") : undefined);
 
-/** Toolbar-sized date range picker; emits both ends on every change. */
 export function DateRangeFilter({
   value,
   onChange,
@@ -29,7 +27,6 @@ export function DateRangeFilter({
 }: {
   value: DateRangeValue;
   onChange: (v: DateRangeValue) => void;
-  /** Page's default range; matching it isn't highlighted as a filter. */
   defaultValue?: DateRangeValue;
 }) {
   const { t } = useTranslation();

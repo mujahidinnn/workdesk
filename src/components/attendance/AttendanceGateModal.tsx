@@ -32,8 +32,6 @@ const ICONS: Record<string, typeof CheckCircle2> = {
 };
 
 interface AttendanceGateModalProps {
-  /** Controlled mode: the employee opened it themselves, so it stays
-   *  dismissible and works on a weekend or holiday too. */
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
 }

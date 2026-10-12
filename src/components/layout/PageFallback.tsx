@@ -1,6 +1,5 @@
 import { LogoMark } from "@/components/brand/Logo";
 
-/** Shown while a lazily loaded page chunk is still downloading. */
 export function PageFallback() {
   return (
     <div

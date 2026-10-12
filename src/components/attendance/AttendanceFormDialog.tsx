@@ -35,10 +35,8 @@ const STATUS_OPTIONS: AttendanceStatus[] = [
   "Alpa",
 ];
 
-/** Days with no attendance at all - a time on them is a data entry slip. */
 const NO_TIME_STATUSES: AttendanceStatus[] = ["Alpa", "Cuti"];
 
-/** Absences that must carry a reason and may carry a supporting file. */
 const NOTE_STATUSES: AttendanceStatus[] = ["Izin", "Sakit"];
 
 export interface AttendanceFormValues {
@@ -100,7 +98,6 @@ export function AttendanceFormDialog({
   const noTimes = NO_TIME_STATUSES.includes(status);
   const needsNote = NOTE_STATUSES.includes(status);
 
-  // One reason at a time, shown under the fields instead of a silent disable.
   const error = (() => {
     if (noTimes && (clockIn || clockOut)) return t("attendance.errors.noTimes");
     if (needsNote && !note.trim()) return t("attendance.errors.noteRequired");

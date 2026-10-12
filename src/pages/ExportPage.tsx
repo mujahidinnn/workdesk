@@ -68,7 +68,6 @@ type ExportStatus = "idle" | "generating" | "done";
 
 const TASKS_TITLE = "Laporan Tugas Harian";
 
-/** The filter part of buildTitle(), for the line under the report title. */
 function taskFilters(title: string) {
   return title.split(" · ").slice(1).join(" · ") || "Semua periode";
 }
@@ -160,18 +159,15 @@ async function exportCSV(tasks: DailyTaskWithRelations[], title: string) {
 }
 
 type PdfTable = {
-  /** Heading above the table, for files with more than one. */
   caption?: string;
   head: string[];
   body: RowInput[];
   columnStyles?: UserOptions["columnStyles"];
 };
 
-/** Each table after the first starts on its own page. */
 async function exportPDF(
   company: string,
   title: string,
-  /** Line under the title: period, filters, record count. */
   subtitle: string,
   tables: PdfTable[],
   fileName: string,
@@ -253,9 +249,7 @@ async function exportOvertimeExcel(
   records: OvertimeRecordWithRelations[],
   rates: EmployeeRate[],
   fileName: string,
-  /** Period and status line, so the sheet says what it was filtered by. */
   subtitle: string,
-  /** True only when the export covers exactly one month, see payrollRecap. */
   monthlyPeriod: boolean,
   company: string,
   jobTitle: (userId: string) => string | undefined,
@@ -340,8 +334,6 @@ async function exportOvertimeExcel(
       });
     });
 
-  // Gross only. Tax, BPJS and other deductions belong to the payroll system
-  // that reads this file.
   const wsPay = wb.addWorksheet("Rekap Gaji");
   wsPay.columns = [
     { header: "No", key: "no", width: 6 },
@@ -392,7 +384,6 @@ async function exportOvertimeExcel(
   await saveWorkbook(wb, fileName);
 }
 
-/** Daily rows in the order both exports print them. */
 function sortedAttendance(
   records: AttendanceWithProfile[],
 ): AttendanceWithProfile[] {
@@ -410,12 +401,9 @@ type AttendanceRecapRow = {
   hours: number;
 };
 
-/** Everyone gets a row, so an employee with no record at all still shows up
- *  as fully Alpa instead of quietly dropping out of payroll. */
 function attendanceRecap(
   records: AttendanceWithProfile[],
   users: UserWithEmail[],
-  /** Working days in the period, up to today. Alpa is derived from it. */
   workingDays: number,
 ): AttendanceRecapRow[] {
   const byUser = new Map<
@@ -452,7 +440,6 @@ function attendanceRecap(
         Alpa: 0,
       };
       rows.forEach((r) => counts[r.status]++);
-      // A working day with no row at all is an unexcused absence.
       counts.Alpa += Math.max(0, workingDays - rows.length);
       return {
         name,
@@ -474,7 +461,6 @@ async function exportAttendanceExcel(
   records: AttendanceWithProfile[],
   users: UserWithEmail[],
   schedule: WorkSchedule | null | undefined,
-  /** Working days in the period, up to today. Alpa is derived from it. */
   workingDays: number,
   title: string,
   fileName: string,
@@ -651,9 +637,6 @@ function applyFilters(
   employeeId: string,
 ): DailyTaskWithRelations[] {
   return tasks.filter((t) => {
-    // Dates are plain yyyy-MM-dd, so a string compare is already chronological.
-    // An empty end only drops that one bound, and an inverted range (from later
-    // than to) matches nothing instead of silently exporting everything.
     const inRange =
       (!dateFrom || t.date >= dateFrom) && (!dateTo || t.date <= dateTo);
     const matchProj = projectId === "all" || t.project_id === Number(projectId);
@@ -663,7 +646,6 @@ function applyFilters(
   });
 }
 
-// One button color per section (matches its icon), not per file format.
 const BTN = {
   tasks: "bg-emerald-600 text-white hover:bg-emerald-700",
   overtime: "bg-amber-600 text-white hover:bg-amber-700",
@@ -673,8 +655,6 @@ const BTN = {
 const SELECT_TRIGGER =
   "bg-secondary border-border text-foreground text-sm h-9";
 
-/** One export type: icon header, description, then whatever the caller puts
- *  in (filters, preview, buttons). */
 function ExportSection({
   icon: Icon,
   tint,
@@ -819,7 +799,6 @@ function ExportButton({
   );
 }
 
-/** A file format inside the daily report section. */
 function FormatOption({
   icon: Icon,
   tint,
@@ -870,7 +849,6 @@ export default function ExportPage() {
     new Date().getFullYear(),
   );
   const [overtimeMonth, setOvertimeMonth] = useState("all");
-  // Payroll reads the overtime file, so only approved rows are in it by default.
   const [overtimeApproval, setOvertimeApproval] = useState("Approved");
   const [attendanceStatus, setAttendanceStatus] =
     useState<ExportStatus>("idle");
@@ -935,7 +913,6 @@ export default function ExportPage() {
             ?.full_name.split(" ")[0]
         : null;
     const parts = [TASKS_TITLE];
-    // Either end can be open now, so neither side is formatted blindly.
     const from = dateFrom ? format(parseISO(dateFrom), "dd MMM yyyy") : "...";
     const to = dateTo ? format(parseISO(dateTo), "dd MMM yyyy") : "...";
     if (dateFrom || dateTo) parts.push(`${from}–${to}`);
@@ -992,7 +969,6 @@ export default function ExportPage() {
         ? t("export.overtimeStatus.all")
         : t(`overtime.status.${overtimeApproval}`);
     try {
-      // The list the UI counted is the list that gets exported.
       await exportOvertimeExcel(
         filteredOvertimeRecords,
         employeeRates,
@@ -1009,8 +985,6 @@ export default function ExportPage() {
     }
   }
 
-  /** Title and file name the attendance exports share, both built from the
-   *  period the card is showing. */
   function attendanceLabels() {
     const from = format(attRange.start, "yyyy-MM-dd");
     const to = format(attRange.end, "yyyy-MM-dd");

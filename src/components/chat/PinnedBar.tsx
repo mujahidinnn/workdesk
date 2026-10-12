@@ -7,13 +7,10 @@ import type { ChatMessage } from "@/lib/types";
 
 interface PinnedBarProps {
   channelId: number;
-  /** False in General for non-admins: they can read pins, not clear them. */
   canPin: boolean;
-  /** Newest pin first. */
   messages: ChatMessage[];
 }
 
-/** Strip above the message list listing what's pinned in this channel. Collapsed it shows the newest pin, expanded the whole list; clicking one jumps to it. */
 export function PinnedBar({ channelId, canPin, messages }: PinnedBarProps) {
   const { t } = useTranslation();
   const togglePin = useTogglePinMessage();

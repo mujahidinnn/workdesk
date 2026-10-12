@@ -25,8 +25,6 @@ export function usePayrollRuns() {
   });
 }
 
-/** RLS decides the rows: the whole run for a payroll officer, the caller's own line
- *  otherwise, and nothing while the run is a draft. */
 export interface PayrollLineFilters {
   paymentStatus?: PayrollLine["payment_status"];
   employmentType?: EmploymentType;
@@ -41,8 +39,6 @@ export function usePayrollLines(
     enabled: runId !== null,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      // Employment type lives on the employee behind the profile, reached
-      // through a filter-only !inner embed so unfiltered runs keep every line.
       let query = supabase
         .from("t_payroll_lines")
         .select(
@@ -65,7 +61,6 @@ export function usePayrollLines(
   });
 }
 
-/** Caller's finalized lines, newest first. RLS hides drafts and other people's lines. */
 export function useMyPayslips(userId: string | undefined) {
   return useQuery<(PayrollLine & { period: string })[]>({
     queryKey: [...LINES_QK, "mine", userId],
@@ -83,8 +78,6 @@ export function useMyPayslips(userId: string | undefined) {
   });
 }
 
-/** Opens the month if it is new and restates its earnings from the approved
- *  rows. Deductions and payment status already entered are left alone. */
 export function useGeneratePayrollRun() {
   const qc = useQueryClient();
   return useMutation({
@@ -104,8 +97,6 @@ export function useGeneratePayrollRun() {
   });
 }
 
-/** Deductions are the only money a human types here, and only while the run
- *  is a draft: the database refuses the update once it is finalized. */
 export function useUpdatePayrollDeductions() {
   const qc = useQueryClient();
   return useMutation({
@@ -131,7 +122,6 @@ export function useUpdatePayrollDeductions() {
   });
 }
 
-/** paid_at is stamped by the database, so it always matches the flag. */
 export function useSetPaymentStatus() {
   const qc = useQueryClient();
   return useMutation({

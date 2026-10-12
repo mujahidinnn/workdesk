@@ -1,9 +1,4 @@
-/**
- * Generic single-column master list table (for Project Types & Work Statuses).
- * Add/edit happens in a modal owned by the parent; this component only lists
- * and delegates row-level delete.
- */
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Pencil, Trash2, Plus, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -18,15 +13,14 @@ import { cn } from "@/lib/utils";
 interface MasterItem {
   id: number;
   label: string;
+  description?: string | null;
+  inactive?: boolean;
 }
 
 interface MasterListTableProps {
-  /** Distinguishes the tour anchor when reused across master-hub tabs. */
   tourId: string;
   title: string;
   subtitle: string;
-  /** Singular name of one row, used for the Add button (e.g. "Project Type"
-   * when `title` is the plural section heading "Project Types"). */
   itemLabel: string;
   icon: LucideIcon;
   items: MasterItem[];
@@ -34,6 +28,7 @@ interface MasterListTableProps {
   onAdd: () => void;
   onEdit: (item: MasterItem) => void;
   onDelete: (id: number) => void;
+  rowActions?: (item: MasterItem) => ReactNode;
   isLoading?: boolean;
 }
 
@@ -48,6 +43,7 @@ export function MasterListTable({
   onAdd,
   onEdit,
   onDelete,
+  rowActions,
   isLoading,
 }: MasterListTableProps) {
   const { t } = useTranslation();
@@ -150,9 +146,21 @@ export function MasterListTable({
                           )}
                         />
                       )}
-                      <span className="text-sm text-foreground">
-                        {item.label}
-                      </span>
+                      <div className={cn("min-w-0", item.inactive && "opacity-60")}>
+                        <p className="text-sm text-foreground">
+                          {item.label}
+                          {item.inactive && (
+                            <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                              {t("master.masterList.inactive")}
+                            </span>
+                          )}
+                        </p>
+                        {item.description && (
+                          <p className="text-xs text-muted-foreground line-clamp-1">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -160,6 +168,7 @@ export function MasterListTable({
                       onClick={(e) => e.stopPropagation()}
                       className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity"
                     >
+                      {rowActions?.(item)}
                       <AccessControl feature="master" action="update">
                         <button
                           onClick={() => onEdit(item)}
@@ -205,6 +214,19 @@ export function MasterListTable({
                 </span>
               ),
             },
+            ...(viewing.description
+              ? [
+                  {
+                    label: t("master.masterList.description"),
+                    block: true,
+                    value: (
+                      <span className="whitespace-pre-wrap">
+                        {viewing.description}
+                      </span>
+                    ),
+                  },
+                ]
+              : []),
           ]
         }
         onClose={() => setViewing(null)}

@@ -1,17 +1,25 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 import { LogoMark } from "@/components/brand/Logo";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/auth";
 import { useNavGroups } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
+import { useMyTasks } from "@/hooks/useMyTasks";
+import { useUnreadMentionCounts } from "@/hooks/useChat";
 
 export function Sidebar() {
   const location = useLocation();
   const { canRead } = useAuth();
   const { t } = useTranslation();
   const navGroups = useNavGroups();
+  const { data: myTasks } = useMyTasks();
+  const { data: unread = {} } = useUnreadMentionCounts();
+  const counts: Record<string, number> = {
+    "/my-tasks":
+      myTasks?.assigned.filter((task) => task.status !== "done").length ?? 0,
+    "/chat": Object.values(unread).reduce((a, b) => a + b, 0),
+  };
 
   return (
     <aside className="w-60 flex-shrink-0 flex flex-col h-full bg-sidebar border-r border-sidebar-border">
@@ -92,14 +100,18 @@ export function Sidebar() {
                             {item.description}
                           </p>
                         </div>
-                        <ChevronRight
-                          className={cn(
-                            "w-3 h-3 flex-shrink-0 transition-all",
-                            isActive
-                              ? "opacity-100 text-primary"
-                              : "opacity-0 group-hover:opacity-50",
-                          )}
-                        />
+                        {(counts[item.href] ?? 0) > 0 && (
+                          <span
+                            className={cn(
+                              "flex-shrink-0 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold leading-none flex items-center justify-center",
+                              item.href === "/chat"
+                                ? "bg-rose-500 text-white"
+                                : "bg-primary/15 text-primary",
+                            )}
+                          >
+                            {counts[item.href] > 99 ? "99+" : counts[item.href]}
+                          </span>
+                        )}
                       </motion.div>
                     </NavLink>
                   );

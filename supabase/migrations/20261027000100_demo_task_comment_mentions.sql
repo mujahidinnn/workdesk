@@ -1,6 +1,3 @@
--- Demo seed: issue-log comments that @mention people.
--- Same function as 20261026000400; only the task-comment insert changed.
-
 CREATE OR REPLACE FUNCTION public.notify_task_comment_mention() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
@@ -227,7 +224,6 @@ BEGIN
       ELSE CASE WHEN x.h % 97 = 0 AND x.d < v_today THEN 'Lupa check-out' END
     END,
     CASE WHEN x.uid = v_yoga THEN v_maya END,
-    -- A leading "/" means a static file in public/demo, not the storage bucket.
     CASE
       WHEN x.status = 'Sakit' AND x.h % 3 <> 0 THEN
         (ARRAY['/demo/surat-keterangan-sakit.png', '/demo/resep-obat.jpg'])[(1 + x.h % 2)::INT]
@@ -422,8 +418,6 @@ BEGIN
   WHERE t.problem_desc IS NOT NULL
     AND (c.uid = v_dewi OR t.id % 2 = 0)
     AND t.created_at + make_interval(hours => c.after_h) < NOW();
-
-  -- The trigger stamps mention notifications with the comment time, so back-dated ones aren't "just now".
 
   DROP TABLE IF EXISTS _seed_ot;
   CREATE TEMP TABLE _seed_ot ON COMMIT DROP AS

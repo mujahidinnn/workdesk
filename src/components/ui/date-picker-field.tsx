@@ -22,6 +22,9 @@ export function DatePickerField({
   error,
   fromDate,
   className,
+  labelClassName,
+  triggerClassName,
+  disabled,
 }: {
   label: string;
   value: string | null;
@@ -32,6 +35,9 @@ export function DatePickerField({
   error?: string;
   fromDate?: string | null;
   className?: string;
+  labelClassName?: string;
+  triggerClassName?: string;
+  disabled?: boolean;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -39,18 +45,20 @@ export function DatePickerField({
 
   return (
     <div className={cn("space-y-1.5", className)}>
-      <Label className="text-xs text-muted-foreground font-medium">
+      <Label className={cn("text-xs text-muted-foreground font-medium", labelClassName)}>
         {label}
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             type="button"
+            disabled={disabled}
             variant="outline"
             className={cn(
               "w-full h-9 justify-start text-sm border-border bg-secondary hover:bg-secondary/80 font-normal",
               !value && "text-muted-foreground",
               error && "border-destructive",
+              triggerClassName,
             )}
           >
             <CalendarIcon className="w-3.5 h-3.5 mr-2 flex-shrink-0 text-muted-foreground" />

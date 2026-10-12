@@ -18,13 +18,11 @@ import type { DailyTaskWithRelations, Project } from "@/lib/types";
 import { PROJECT_BADGE_COLORS as projectBadgeColors } from "@/lib/colorPalettes";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { BoardTaskChip } from "@/components/board/BoardTaskChip";
 
 interface DailyReportTableProps {
-  /** Already filtered by the parent's shared search/filter toolbar */
   tasks: DailyTaskWithRelations[];
-  /** Used only for stable badge-color assignment per project */
   projects: Project[];
-  /** Whether search or a filter is currently narrowing `tasks` */
   hasActiveFilter?: boolean;
   onEdit: (task: DailyTaskWithRelations) => void;
   onDelete: (id: number) => void;
@@ -274,6 +272,11 @@ export function DailyReportTable({
 
                           <td className="px-4 py-3 max-w-[260px]">
                             <p className="text-xs text-foreground/90 line-clamp-2 leading-snug">
+                              {task.board_task && (
+                                <span className="mr-1.5">
+                                  <BoardTaskChip task={task.board_task} />
+                                </span>
+                              )}
                               {task.task_desc}
                             </p>
                           </td>

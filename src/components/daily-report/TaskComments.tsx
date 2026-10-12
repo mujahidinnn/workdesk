@@ -15,19 +15,21 @@ import { useAuth } from "@/context/auth";
 import { useDateFnsLocale } from "@/lib/dateLocale";
 import { messageParts } from "@/lib/chat";
 import { cn } from "@/lib/utils";
-import type { UserWithEmail } from "@/lib/types";
+import type { TaskSource, UserWithEmail } from "@/lib/types";
 
 interface TaskCommentsProps {
   taskId: number;
+  source?: TaskSource;
+  canModerate?: boolean;
 }
 
-export function TaskComments({ taskId }: TaskCommentsProps) {
+export function TaskComments({ taskId, source = "daily", canModerate = false }: TaskCommentsProps) {
   const { t } = useTranslation();
   const dateFnsLocale = useDateFnsLocale();
   const { user, isAdmin } = useAuth();
-  const { data: comments = [], isLoading } = useTaskComments(taskId);
-  const addComment = useAddTaskComment();
-  const deleteComment = useDeleteTaskComment();
+  const { data: comments = [], isLoading } = useTaskComments(taskId, source);
+  const addComment = useAddTaskComment(source);
+  const deleteComment = useDeleteTaskComment(source);
   const [value, setValue] = useState("");
   const { data: allUsers = [] } = useUsers();
   const people = useMemo(
@@ -82,7 +84,6 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
   function handleSend() {
     const comment = value.trim();
     if (!comment) return;
-    // Only keep mentions whose "@Name" is still in the text.
     const mentions = people
       .filter(
         (u) =>
@@ -183,7 +184,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
                 )}
               </p>
             </div>
-            {(c.user_id === user?.id || isAdmin()) && (
+            {(c.user_id === user?.id || isAdmin() || canModerate) && (
               <button
                 onClick={() => deleteComment.mutate({ id: c.id, taskId })}
                 title={t("issues.deleteComment")}

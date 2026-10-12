@@ -1,4 +1,3 @@
--- @mentions in issue/task comments: people only, no @everyone broadcast.
 ALTER TABLE public.t_task_comments
   ADD COLUMN IF NOT EXISTS mentions uuid[] NOT NULL DEFAULT '{}';
 

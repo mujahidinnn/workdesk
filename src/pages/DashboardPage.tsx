@@ -15,6 +15,8 @@ import { ProductivityGauge } from "@/components/dashboard/ProductivityGauge";
 import { TasksPerProjectChart } from "@/components/dashboard/TasksPerProjectChart";
 import { RecentProblemsCard } from "@/components/dashboard/RecentProblemsCard";
 import { WorkloadHeatmap } from "@/components/dashboard/WorkloadHeatmap";
+import { TaskWorkloadCard } from "@/components/dashboard/TaskWorkloadCard";
+import { AccessControl } from "@/components/auth/AccessControl";
 import { UpcomingCards } from "@/components/dashboard/UpcomingCards";
 import {
   useDashboardSummary,
@@ -93,7 +95,6 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Same grid as the KPIs so every row keeps one height and gap. */}
         <StatsCard
           title={t("dashboard.hris.presentToday")}
           value={`${hris?.presentToday ?? 0}/${hris?.headcount ?? 0}`}
@@ -144,8 +145,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch">
-        {/* The list never sets the row height: the heatmap does (desktop),
-            a fixed height does (mobile), and the list scrolls inside. */}
         <div
           data-tour="dashboard-problems"
           className="lg:col-span-2 relative h-[420px] lg:h-auto lg:min-h-[320px]"
@@ -160,6 +159,10 @@ export default function DashboardPage() {
       </div>
 
       <UpcomingCards />
+
+      <AccessControl feature="board" action="read">
+        <TaskWorkloadCard />
+      </AccessControl>
     </div>
   );
 }
