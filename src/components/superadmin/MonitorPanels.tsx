@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { DetailDialog, type DetailField } from "@/components/ui/DetailDialog";
 import { detailRowProps } from "@/components/ui/detail-row";
 import { useJobTitles } from "@/hooks/useJobTitles";
+import { describeChange, entityLabel } from "./labels";
 
 export interface Monitor {
   failed_logins: { email: string | null; message: string; created_at: string }[];
@@ -69,11 +70,13 @@ function bytes(n: number) {
 
 function Panel({
   title,
+  hint,
   count,
   children,
   className,
 }: {
   title: string;
+  hint?: string;
   count?: number;
   children: ReactNode;
   className?: string;
@@ -93,6 +96,7 @@ function Panel({
           </span>
         )}
       </div>
+      {hint && <p className="text-xs text-muted-foreground -mt-1">{hint}</p>}
       <div className="max-h-48 overflow-y-auto text-xs divide-y divide-border">{children}</div>
     </div>
   );
@@ -168,6 +172,15 @@ function Ranking({ items }: { items: { name: string; n: number }[] }) {
   );
 }
 
+export function SectionTitle({ title, hint }: { title: string; hint: string }) {
+  return (
+    <div className="mb-2">
+      <h2 className="text-sm font-medium">{title}</h2>
+      <p className="text-xs text-muted-foreground">{hint}</p>
+    </div>
+  );
+}
+
 export function MonitorPanels({ m }: { m: Monitor }) {
   const jobTitles = useJobTitles();
   const [detail, setDetail] = useState<{ title: string; fields: DetailField[] } | null>(null);
@@ -181,9 +194,9 @@ export function MonitorPanels({ m }: { m: Monitor }) {
   return (
     <div className="space-y-6">
       <section>
-        <h2 className="text-sm font-medium mb-2">Security</h2>
+        <SectionTitle title="Security" hint="Who is trying to get in, who has stopped using the app, and who changed permissions." />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <Panel title="Failed sign-ins · 7 days" count={m.failed_logins.length}>
+          <Panel title="Failed sign-ins · 7 days" hint="Wrong password or unknown email. Many from one email may mean someone is guessing." count={m.failed_logins.length}>
             {m.failed_logins.length ? (
               m.failed_logins.map((f, i) => (
                 <Row
@@ -201,7 +214,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               <Empty />
             )}
           </Panel>
-          <Panel title="Inactive over 30 days" count={m.inactive_accounts.length}>
+          <Panel title="Inactive over 30 days" hint="Accounts nobody has signed in to for a month. Consider disabling them." count={m.inactive_accounts.length}>
             {m.inactive_accounts.length ? (
               m.inactive_accounts.map((a) => (
                 <Row
@@ -231,18 +244,18 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               <Empty />
             )}
           </Panel>
-          <Panel title="Role & access changes">
+          <Panel title="Role & access changes" hint="Who changed someone's role or what they are allowed to open.">
             {m.access_changes.length ? (
               m.access_changes.map((a, i) => (
                 <Row
                   key={i}
-                  left={`${a.actor ?? "system"}: ${a.action} ${a.entity_type} ${a.entity_id}`}
+                  left={`${a.actor ?? "System"} · ${describeChange(a.action, a.entity_type)}`}
                   right={when(a.created_at)}
                   onOpen={open("Access change", [
-                    { label: "Actor", value: a.actor ?? "system" },
-                    { label: "Action", value: a.action },
-                    { label: "Entity", value: a.entity_type },
-                    { label: "Entity ID", value: a.entity_id },
+                    { label: "Done by", value: a.actor ?? "System" },
+                    { label: "What happened", value: describeChange(a.action, a.entity_type) },
+                    { label: "Raw", value: `${a.action} ${a.entity_type}` },
+                    { label: "Record ID", value: a.entity_id },
                     { label: "Time", value: when(a.created_at) },
                   ])}
                 />
@@ -255,9 +268,9 @@ export function MonitorPanels({ m }: { m: Monitor }) {
       </section>
 
       <section>
-        <h2 className="text-sm font-medium mb-2">Data health</h2>
+        <SectionTitle title="Data health" hint="Problems in the app and data that is not connected properly." />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <Panel title="Errors · 24 hours" count={m.errors.last_24h}>
+          <Panel title="Errors · 24 hours" hint="Things that broke for users. The red text is the part of the app where it happened." count={m.errors.last_24h}>
             {m.errors.recent.length ? (
               m.errors.recent.map((e, i) => (
                 <Row
@@ -269,7 +282,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
                   }
                   right={when(e.created_at)}
                   onOpen={open("Error", [
-                    { label: "Source", value: e.source },
+                    { label: "Where", value: e.source },
                     { label: "User", value: e.user_name },
                     { label: "Time", value: when(e.created_at) },
                     {
@@ -284,7 +297,7 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               <Empty text="No errors reported" />
             )}
           </Panel>
-          <Panel title="Unlinked records" count={orphanCount}>
+          <Panel title="Unlinked records" hint="Data missing its partner, e.g. a login with no employee profile. Fix in Master Hub." count={orphanCount}>
             <Names
               label="Accounts without employee"
               names={o.accounts_without_employee}
@@ -310,12 +323,12 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               ])}
             />
           </Panel>
-          <Panel title="Storage">
+          <Panel title="Storage" hint="Uploaded files (photos, attachments) and how much space they use.">
             {m.storage.length ? (
               m.storage.map((s) => (
                 <Row
                   key={s.bucket}
-                  left={s.bucket}
+                  left={entityLabel(s.bucket)}
                   right={`${s.files} files · ${bytes(s.bytes)}`}
                   onOpen={open("Storage bucket", [
                     { label: "Bucket", value: s.bucket },
@@ -332,10 +345,11 @@ export function MonitorPanels({ m }: { m: Monitor }) {
       </section>
 
       <section>
-        <h2 className="text-sm font-medium mb-2">HR operations</h2>
+        <SectionTitle title="HR operations" hint="Today's attendance, requests waiting too long, and payroll status." />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <Panel
             title={`Not checked in · ${m.attendance_today.date}`}
+            hint="Active staff with no attendance yet today (includes people on leave)."
             count={m.attendance_today.missing.length}
           >
             <p className="py-1.5 text-muted-foreground">
@@ -345,16 +359,16 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               <Row key={n} left={n} />
             ))}
           </Panel>
-          <Panel title="Pending over 3 days" count={m.stale_approvals.length}>
+          <Panel title="Pending over 3 days" hint="Leave or overtime requests no approver has answered yet." count={m.stale_approvals.length}>
             {m.stale_approvals.length ? (
               m.stale_approvals.map((a, i) => (
                 <Row
                   key={i}
-                  left={`${a.full_name ?? "-"} · ${a.kind} ${a.type}`}
+                  left={`${a.full_name ?? "-"} · ${a.type}`}
                   right={`${daysAgo(a.created_at)} days`}
                   onOpen={open("Pending approval", [
                     { label: "Name", value: a.full_name },
-                    { label: "Kind", value: a.kind },
+                    { label: "Kind", value: a.kind === "leave" ? "Leave" : "Overtime / business trip" },
                     { label: "Type", value: a.type },
                     { label: "Submitted", value: when(a.created_at) },
                     { label: "Waiting", value: `${daysAgo(a.created_at)} days` },
@@ -365,9 +379,9 @@ export function MonitorPanels({ m }: { m: Monitor }) {
               <Empty />
             )}
           </Panel>
-          <Panel title="Payroll">
+          <Panel title="Payroll" hint="Last 6 salary periods. Finalized periods can no longer be edited.">
             <p className="py-1.5 text-muted-foreground">
-              Locked until {m.payroll.locked_until ?? "-"}
+              Attendance locked until {m.payroll.locked_until ?? "-"}
             </p>
             {m.payroll.runs.length ? (
               m.payroll.runs.map((r) => (
@@ -394,15 +408,15 @@ export function MonitorPanels({ m }: { m: Monitor }) {
       </section>
 
       <section>
-        <h2 className="text-sm font-medium mb-2">Activity</h2>
+        <SectionTitle title="Activity" hint="Who uses the app most and what they change." />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <Panel title="Most active users · 30 days">
+          <Panel title="Most active users · 30 days" hint="People who created or changed the most data.">
             <Ranking items={m.top_actors} />
           </Panel>
-          <Panel title="Most changed data · 30 days">
-            <Ranking items={m.top_entities} />
+          <Panel title="Most changed data · 30 days" hint="Which kinds of data were edited most.">
+            <Ranking items={m.top_entities.map((e) => ({ ...e, name: entityLabel(e.name) }))} />
           </Panel>
-          <Panel title="Active in last 15 minutes">
+          <Panel title="Active in last 15 minutes" hint="People who saved something in the last 15 minutes.">
             {m.active_now.length ? (
               m.active_now.map((a, i) => (
                 <Row

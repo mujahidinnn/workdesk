@@ -18,9 +18,11 @@ import {
 } from "@/components/superadmin/ActivityChart";
 import {
   MonitorPanels,
+  SectionTitle,
   clickableRow,
   type Monitor,
 } from "@/components/superadmin/MonitorPanels";
+import { describeChange, entityLabel, tableDescription, tableLabel } from "@/components/superadmin/labels";
 
 interface Stats {
   tables: Record<string, number>;
@@ -116,19 +118,36 @@ export default function SuperadminPage() {
         </Button>
       </div>
 
-      <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-        {tables.map(([name, n]) => (
-          <div key={name} className="rounded-lg border border-border bg-card p-3">
-            <p className="text-xs text-muted-foreground truncate">{name}</p>
-            <p className="text-xl font-semibold tabular-nums">{n}</p>
-          </div>
-        ))}
+      <section>
+        <SectionTitle title="Data overview" hint="How many records of each kind are stored. Empty kinds are hidden. Click a card to see what it holds." />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+          {tables.map(([name, n]) => (
+            <div
+              key={name}
+              {...detailRowProps(() =>
+                setDetail({
+                  title: tableLabel(name),
+                  fields: [
+                    { label: "What is this", value: tableDescription(name) },
+                    { label: "Records", value: n },
+                    { label: "Table", value: <code className="text-xs">{name}</code> },
+                  ],
+                }),
+              )}
+              className={cn("rounded-lg border border-border bg-card p-3", clickableRow, "rounded-lg")}
+            >
+              <p className="text-xs font-medium truncate">{tableLabel(name)}</p>
+              <p className="text-[10px] font-mono text-muted-foreground truncate">{name}</p>
+              <p className="text-xl font-semibold tabular-nums">{n}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {monitor.data && <MonitorPanels m={monitor.data} />}
 
       <section>
-        <h2 className="text-sm font-medium mb-2">Accounts</h2>
+        <SectionTitle title="Accounts" hint="Everyone who can sign in, newest sign-in first. Click a row for details." />
         <div className="rounded-lg border border-border bg-card divide-y divide-border">
           {(stats.data?.accounts ?? []).map((a) => (
             <div
@@ -180,14 +199,14 @@ export default function SuperadminPage() {
       </section>
 
       <section>
-        <h2 className="text-sm font-medium mb-2">Event activity · last 14 days</h2>
+        <SectionTitle title="Changes per day · last 14 days" hint="How much data was created, changed or deleted each day." />
         <div className="rounded-lg border border-border bg-card p-3">
           <ActivityChart buckets={stats.data?.activity ?? []} />
         </div>
       </section>
 
       <section>
-        <h2 className="text-sm font-medium mb-2">Recent activity</h2>
+        <SectionTitle title="Recent activity" hint="The last 20 changes made in the app." />
         <div className="rounded-lg border border-border bg-card divide-y divide-border">
           {(stats.data?.recent_audit ?? []).map((a) => (
             <div
@@ -197,9 +216,9 @@ export default function SuperadminPage() {
                   title: "Activity",
                   fields: [
                     { label: "Time", value: new Date(a.created_at).toLocaleString() },
-                    { label: "Action", value: a.action },
-                    { label: "Entity", value: a.entity_type },
-                    { label: "Entity ID", value: a.entity_id },
+                    { label: "What happened", value: describeChange(a.action, a.entity_type) },
+                    { label: "Data", value: `${entityLabel(a.entity_type)} (${a.entity_type})` },
+                    { label: "Record ID", value: a.entity_id },
                   ],
                 }),
               )}
@@ -209,7 +228,10 @@ export default function SuperadminPage() {
                 {new Date(a.created_at).toLocaleString()}
               </span>
               <span className="flex-1 truncate">
-                {a.action} {a.entity_type} {a.entity_id ?? ""}
+                {describeChange(a.action, a.entity_type)}{" "}
+                <span className="font-mono text-muted-foreground">
+                  {a.action} {a.entity_type}
+                </span>
               </span>
             </div>
           ))}
