@@ -1,0 +1,77 @@
+<style>
+  .bar{display:flex;gap:8px;align-items:center;border:1px solid #cbd5e1;border-radius:14px;padding:10px 12px;background:#fff}
+  .bar input{flex:1;border:0;outline:0;font-size:14px;background:transparent}
+  .chip{display:inline-block;font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #cbd5e1;margin:6px 4px 0 0;background:#f8fafc}
+  .mode{font-size:11px;border:1px solid #cbd5e1;border-radius:8px;overflow:hidden;display:flex}
+  .mode span{padding:3px 8px}.mode .on{background:#0f172a;color:#fff}
+  .send{background:#0f172a;color:#fff;border-radius:8px;padding:4px 10px;font-size:12px}
+  .card{border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;margin-top:10px;background:#fff;font-size:12px}
+  .card b{font-size:12px}.muted{color:#64748b;font-size:11px}
+  .btns{margin-top:8px;display:flex;gap:6px}.btns span{font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid #cbd5e1}
+  .btns .pri{background:#16a34a;color:#fff;border-color:#16a34a}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+  .tile{height:44px;border-radius:10px;background:#e2e8f0}
+  .drawer{border-left:1px solid #e2e8f0;padding-left:10px}
+  .overlay{background:rgba(15,23,42,.45);border-radius:12px;padding:16px}
+  .bubble{background:#f1f5f9;border-radius:10px;padding:6px 10px;font-size:12px;margin-top:8px;display:inline-block}
+</style>
+
+<h2>Kolom perintah AI di Dashboard: tata letak mana yang pas?</h2>
+<p class="subtitle">Ketiganya memakai isi yang sama: prompt "buatkan task untuk Budi", kartu konfirmasi, menu cepat, dan pilihan mode. Bedanya ada di tempat hasil AI ditampilkan.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Hasil di bawah kolom, inline</h3>
+      <p>Hasil muncul tepat di bawah kolom dan mendorong isi dashboard ke bawah. Sederhana, tapi riwayat percakapan tidak tersimpan dan hanya jawaban terakhir yang terlihat.</p>
+      <div class="mockup"><div class="mockup-body">
+        <div class="bar"><span>✦</span><input value="buatkan task untuk Budi hari ini: - membuat laporan - cek server" /><div class="mode"><span class="on">Selalu tanya</span><span>Auto</span></div><span class="send">Kirim</span></div>
+        <div><span class="chip">+ Buat task</span><span class="chip">Ajukan cuti</span><span class="chip">Rekap minggu ini</span><span class="chip">Siapa yang belum absen?</span></div>
+        <div class="card"><b>Buat task "Tugas Budi 3 Nov"</b><div class="muted">Board: Website Revamp · Assign: Budi Santoso · Deadline: 3 Nov 2026 · 2 checklist</div><div class="btns"><span class="pri">Jalankan</span><span>Ubah</span><span>Batal</span></div></div>
+        <div class="tiles"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Kolom di atas, percakapan di panel samping</h3>
+      <p>Setelah dikirim, panel kanan terbuka berisi percakapan, jadi bisa lanjut bertanya ("tambahkan satu checklist lagi"). Dashboard tetap terlihat. Di HP, panel ini jadi layar penuh.</p>
+      <div class="mockup"><div class="mockup-body">
+        <div style="display:flex;gap:10px">
+          <div style="flex:1.4">
+            <div class="bar"><span>✦</span><input placeholder="Ketik perintah atau pertanyaan..." /><span class="send">Kirim</span></div>
+            <div><span class="chip">+ Buat task</span><span class="chip">Ajukan cuti</span><span class="chip">Rekap minggu ini</span></div>
+            <div class="tiles" style="grid-template-columns:repeat(2,1fr)"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div>
+          </div>
+          <div class="drawer" style="flex:1">
+            <div class="mode" style="width:max-content"><span class="on">Selalu tanya</span><span>Auto</span></div>
+            <div class="bubble">buatkan task untuk Budi hari ini...</div>
+            <div class="card"><b>Buat task "Tugas Budi 3 Nov"</b><div class="muted">Website Revamp · Budi · 3 Nov · 2 checklist</div><div class="btns"><span class="pri">Jalankan</span><span>Batal</span></div></div>
+            <div class="bubble">gaji Andi Agustus sudah dibayar?</div>
+            <div class="card">Sudah. Status <b>Paid</b> di payroll Agustus 2026.<div class="btns"><span>Buka di Payroll →</span></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Kolom di atas, membuka jendela fokus</h3>
+      <p>Klik kolom (atau tekan Ctrl+K dari halaman mana pun) untuk membuka jendela besar di tengah layar, seperti Command Palette yang sudah ada. Fokus penuh dan bisa dipanggil dari mana saja, tapi dashboard tertutup selama dipakai.</p>
+      <div class="mockup"><div class="mockup-body">
+        <div class="overlay">
+          <div style="background:#fff;border-radius:12px;padding:10px">
+            <div class="bar"><span>✦</span><input value="rangkum pekerjaan Siti minggu ini" /><div class="mode"><span>Selalu tanya</span><span class="on">Auto</span></div></div>
+            <div class="card"><b>Siti, 27 Okt sampai 2 Nov</b><div class="muted">5 task selesai, 2 in review · 4 daily report · 1 blocker: akses VPN</div><div class="btns"><span>Buka Task Board →</span></div></div>
+            <div><span class="chip">+ Buat task</span><span class="chip">Ajukan cuti</span><span class="chip">Rekap minggu ini</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
