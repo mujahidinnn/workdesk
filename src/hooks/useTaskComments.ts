@@ -28,6 +28,26 @@ export function useTaskComments(taskId: number | null, source: TaskSource = "dai
   });
 }
 
+export async function addTaskComment(
+  source: TaskSource,
+  {
+    taskId,
+    userId,
+    comment,
+    mentions = [],
+  }: {
+    taskId: number;
+    userId: string;
+    comment: string;
+    mentions?: string[];
+  },
+) {
+  const { error } = await supabase
+    .from(table(source))
+    .insert({ task_id: taskId, user_id: userId, comment, mentions });
+  if (error) throw error;
+}
+
 export function useAddTaskComment(source: TaskSource = "daily") {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -42,10 +62,7 @@ export function useAddTaskComment(source: TaskSource = "daily") {
       mentions?: string[];
     }) => {
       if (!user) throw new Error("Not signed in");
-      const { error } = await supabase
-        .from(table(source))
-        .insert({ task_id: taskId, user_id: user.id, comment, mentions });
-      if (error) throw error;
+      await addTaskComment(source, { taskId, userId: user.id, comment, mentions });
     },
     onSuccess: (_data, { taskId }) => {
       qc.invalidateQueries({ queryKey: ["task-comments", source, taskId] });

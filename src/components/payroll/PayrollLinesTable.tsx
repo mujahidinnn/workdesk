@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FLASH_CLASS, useRowFlash } from "@/hooks/useRowFlash";
 import { FileDown, Pencil, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
@@ -36,6 +37,7 @@ interface Props {
   }) => void;
   onTogglePaid: (payload: { id: number; paid: boolean }) => void;
   isSaving: boolean;
+  highlightUserId?: string;
 }
 
 export function PayrollLinesTable({
@@ -47,8 +49,14 @@ export function PayrollLinesTable({
   onTogglePaid,
   isSaving,
   companyName,
+  highlightUserId,
 }: Props) {
   const { t } = useTranslation();
+  const flash = useRowFlash(
+    highlightUserId,
+    lines.some((l) => l.user_id === highlightUserId),
+    "user",
+  );
   const [editing, setEditing] = useState<PayrollLineWithName | null>(null);
   const [draft, setDraft] = useState({
     pph21: "",
@@ -128,8 +136,12 @@ export function PayrollLinesTable({
             return (
               <tr
                 key={line.id}
+                data-row-id={line.user_id}
                 {...detailRowProps(() => setViewing(line))}
-                className="border-b border-border/50 last:border-0 hover:bg-secondary/20 cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50"
+                className={cn(
+                  "border-b border-border/50 last:border-0 hover:bg-secondary/20 cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50",
+                  flash === line.user_id && FLASH_CLASS,
+                )}
               >
                 <td className="px-3 py-2.5 text-foreground font-medium">
                   {line.name}

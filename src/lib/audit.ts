@@ -29,3 +29,12 @@ export function logAudit(
       });
   });
 }
+
+/** Set when a write is run by the AI command bar instead of a form. */
+export interface WriteOpts {
+  via?: "ai";
+}
+
+/** Adds `via` to an audit detail only when set, so UI rows stay unchanged. */
+export const withVia = (detail: Record<string, Json> | undefined, opts?: WriteOpts) =>
+  opts?.via ? { ...detail, via: opts.via } : detail;

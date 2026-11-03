@@ -4,6 +4,7 @@ import { positionBetween } from "@/lib/position";
 import type { BoardTask } from "@/lib/types";
 import { boardKey, type BoardData } from "./useBoard";
 import { toast } from "sonner";
+import type { QueryClient } from "@tanstack/react-query";
 
 export type TaskPatch = Partial<
   Pick<
@@ -21,6 +22,15 @@ export type TaskPatch = Partial<
   >
 >;
 
+export function invalidateBoard(qc: QueryClient, boardId: number, taskId?: number) {
+  return Promise.all([
+    qc.invalidateQueries({ queryKey: boardKey(boardId) }),
+    qc.invalidateQueries({ queryKey: ["board-stats"] }),
+    qc.invalidateQueries({ queryKey: ["my-tasks"] }),
+    taskId != null && qc.invalidateQueries({ queryKey: ["task-activity", taskId] }),
+  ]);
+}
+
 function useBoardWrite<V, R = unknown>(
   boardId: number,
   fn: (v: V) => Promise<R>,
@@ -32,12 +42,7 @@ function useBoardWrite<V, R = unknown>(
     // Stay pending until the board has refetched, so buttons keep their
     // loading state until the change is on screen (no double submits).
     onSuccess: (_d, v) =>
-      Promise.all([
-        qc.invalidateQueries({ queryKey: boardKey(boardId) }),
-        qc.invalidateQueries({ queryKey: ["board-stats"] }),
-        qc.invalidateQueries({ queryKey: ["my-tasks"] }),
-        taskIdOf && qc.invalidateQueries({ queryKey: ["task-activity", taskIdOf(v)] }),
-      ]),
+      invalidateBoard(qc, boardId, taskIdOf?.(v)),
     onError: (e: Error) => toast.error(e.message),
   });
 }
@@ -46,47 +51,65 @@ const ok = ({ error }: { error: unknown }) => {
   if (error) throw error;
 };
 
-export function useCreateTask(boardId: number) {
-  return useBoardWrite(
-    boardId,
-    async (v: {
-      title: string;
-      position: number;
-      column_id?: number | null;
-      parent_id?: number | null;
-      division_id?: number | null;
-    }) => {
-      const { data, error } = await supabase
-        .from("t_tasks")
-        .insert({ board_id: boardId, ...v })
-        .select("id, task_no")
-        .single();
-      if (error) throw error;
-      return data;
-    },
+export async function createTask(
+  boardId: number,
+  v: {
+    title: string;
+    position: number;
+    column_id?: number | null;
+    parent_id?: number | null;
+    division_id?: number | null;
+    description?: string | null;
+    due_date?: string | null;
+  },
+) {
+  const { data, error } = await supabase
+    .from("t_tasks")
+    .insert({ board_id: boardId, ...v })
+    .select("id, task_no")
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// RLS turns a forbidden change into 0 rows without an error, so check the count.
+const okRows = (msg: string) => ({ error, count }: { error: unknown; count: number | null }) => {
+  if (error) throw error;
+  if (count === 0) throw new Error(msg);
+};
+
+export async function updateTask({ id, ...patch }: TaskPatch & { id: number }) {
+  okRows("You cannot change this task")(
+    await supabase.from("t_tasks").update(patch, { count: "exact" }).eq("id", id),
   );
+}
+
+export async function deleteTask(id: number) {
+  okRows("You cannot delete this task")(
+    await supabase.from("t_tasks").delete({ count: "exact" }).eq("id", id),
+  );
+}
+
+export async function assignUser(taskId: number, userId: string) {
+  ok(await supabase.from("t_task_assignees").insert({ task_id: taskId, user_id: userId }));
+}
+
+export function useCreateTask(boardId: number) {
+  return useBoardWrite(boardId, (v: Parameters<typeof createTask>[1]) => createTask(boardId, v));
 }
 
 export function useUpdateTask(boardId: number) {
-  return useBoardWrite(
-    boardId,
-    async ({ id, ...patch }: TaskPatch & { id: number }) =>
-      ok(await supabase.from("t_tasks").update(patch).eq("id", id)),
-    (v) => v.id,
-  );
+  return useBoardWrite(boardId, updateTask, (v) => v.id);
 }
 
 export function useDeleteTask(boardId: number) {
-  return useBoardWrite(boardId, async (id: number) =>
-    ok(await supabase.from("t_tasks").delete().eq("id", id)),
-  );
+  return useBoardWrite(boardId, deleteTask);
 }
 
 export function useAssign(boardId: number) {
   return useBoardWrite(
     boardId,
-    async (v: { taskId: number; userId: string }) =>
-      ok(await supabase.from("t_task_assignees").insert({ task_id: v.taskId, user_id: v.userId })),
+    (v: { taskId: number; userId: string }) => assignUser(v.taskId, v.userId),
     (v) => v.taskId,
   );
 }

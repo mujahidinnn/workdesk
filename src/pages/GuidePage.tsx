@@ -4,6 +4,7 @@ import {
   ArrowRight,
   Compass,
   Info,
+  Sparkles,
   Workflow,
   ListChecks,
   StickyNote,
@@ -32,6 +33,7 @@ interface GuideEntry {
   label: string;
   description: string;
   skipNavigate?: boolean;
+  tourKey?: string;
 }
 
 export default function GuidePage() {
@@ -86,19 +88,31 @@ export default function GuidePage() {
       description: t("guide.extra.logoutDesc"),
       skipNavigate: true,
     },
+    {
+      href: "/",
+      guideKey: "ai",
+      tourKey: "dashboard",
+      icon: Sparkles,
+      label: t("guide.extra.aiLabel"),
+      description: t("guide.extra.aiDesc"),
+    },
   ];
 
   const features = [...pageFeatures, ...extraFeatures];
 
   function handleOpen(item: GuideEntry) {
     if (item.skipNavigate) {
-      startAppTour(item.guideKey);
+      startAppTour(item.tourKey ?? item.guideKey);
       return;
     }
     navigate(item.href);
     const startedAt = Date.now();
     const tryStart = () => {
-      if (startAppTour(item.guideKey) || Date.now() - startedAt > 8000) return;
+      if (
+        startAppTour(item.tourKey ?? item.guideKey) ||
+        Date.now() - startedAt > 8000
+      )
+        return;
       setTimeout(tryStart, 200);
     };
     setTimeout(tryStart, 400);

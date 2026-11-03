@@ -5,7 +5,7 @@ import {
   keepPreviousData,
 } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { logAudit } from "@/lib/audit";
+import { logAudit, withVia, type WriteOpts } from "@/lib/audit";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import type {
@@ -17,6 +17,7 @@ import type {
 } from "@/lib/types";
 
 const QK = ["overtime-records"] as const;
+export const OVERTIME_QK = QK;
 const RK = ["employee-rates"] as const;
 
 // Must match the compute_overtime_totals trigger. Without the overnight flag,
@@ -188,24 +189,58 @@ export type OvertimeRecordPayload = Omit<
   | "daily_allowance"
 >;
 
+export async function createOvertime(payload: OvertimeRecordPayload, opts?: WriteOpts) {
+  const { data, error } = await supabase
+    .from("t_overtime_business_trips")
+    .insert(payload)
+    .select()
+    .single();
+  if (error) throw error;
+  logAudit(
+    "create",
+    "overtime",
+    data.id,
+    withVia({ type: data.type, date: data.date }, opts),
+  );
+  return data;
+}
+
+export async function approveOvertime(id: number, opts?: WriteOpts) {
+  const approvedBy = await sessionUserId();
+  const { error, count } = await supabase
+    .from("t_overtime_business_trips")
+    .update({
+      status: "Approved",
+      approved_by: approvedBy,
+      rejection_note: null,
+    }, { count: "exact" })
+    .eq("id", id);
+  if (error) throw error;
+  if (count === 0) throw new Error("You cannot review this overtime request");
+  logAudit("update", "overtime", id, withVia({ status: "Approved" }, opts));
+}
+
+export async function rejectOvertime(id: number, note: string, opts?: WriteOpts) {
+  const approvedBy = await sessionUserId();
+  const { error, count } = await supabase
+    .from("t_overtime_business_trips")
+    .update({
+      status: "Rejected",
+      approved_by: approvedBy,
+      rejection_note: note || null,
+    }, { count: "exact" })
+    .eq("id", id);
+  if (error) throw error;
+  if (count === 0) throw new Error("You cannot review this overtime request");
+  logAudit("update", "overtime", id, withVia({ status: "Rejected", note }, opts));
+}
+
 export function useCreateOvertimeRecord() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: OvertimeRecordPayload) => {
-      const { data, error } = await supabase
-        .from("t_overtime_business_trips")
-        .insert(payload)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
+    mutationFn: (payload: OvertimeRecordPayload) => createOvertime(payload),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("create", "overtime", data.id, {
-        type: data.type,
-        date: data.date,
-      });
       toast.success("Request submitted successfully");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -262,21 +297,9 @@ export function useDeleteOvertimeRecord() {
 export function useApproveOvertimeRecord() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }: { id: number; approvedBy: string }) => {
-      const approvedBy = await sessionUserId();
-      const { error } = await supabase
-        .from("t_overtime_business_trips")
-        .update({
-          status: "Approved",
-          approved_by: approvedBy,
-          rejection_note: null,
-        })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: (_data, { id }) => {
+    mutationFn: ({ id }: { id: number; approvedBy: string }) => approveOvertime(id),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("update", "overtime", id, { status: "Approved" });
       toast.success("Request approved");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -286,28 +309,16 @@ export function useApproveOvertimeRecord() {
 export function useRejectOvertimeRecord() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       id,
       note,
     }: {
       id: number;
       approvedBy: string;
       note: string;
-    }) => {
-      const approvedBy = await sessionUserId();
-      const { error } = await supabase
-        .from("t_overtime_business_trips")
-        .update({
-          status: "Rejected",
-          approved_by: approvedBy,
-          rejection_note: note || null,
-        })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: (_data, { id, note }) => {
+    }) => rejectOvertime(id, note),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("update", "overtime", id, { status: "Rejected", note });
       toast.success("Request rejected");
     },
     onError: (e: Error) => toast.error(e.message),

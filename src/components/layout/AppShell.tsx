@@ -17,6 +17,8 @@ import { NotificationBell } from "./NotificationBell";
 import { CommandPalette } from "./CommandPalette";
 import { SignOutConfirmModal } from "./SignOutConfirmModal";
 import { AttendanceGateModal } from "@/components/attendance/AttendanceGateModal";
+import { AiProvider } from "@/components/ai/AiProvider";
+import { CommandPanel } from "@/components/ai/CommandPanel";
 import { useTheme } from "@/context/theme";
 import { useAuth } from "@/context/auth";
 import { useTrackPresence } from "@/hooks/useOnlineUsers";
@@ -30,7 +32,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
+// AiProvider sits above the routed page so the AI panel, draft and countdowns
+// survive page changes.
 export function AppShell() {
+  return (
+    <AiProvider>
+      <Shell />
+      <CommandPanel />
+    </AiProvider>
+  );
+}
+
+function Shell() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [signOutConfirmOpen, setSignOutConfirmOpen] = useState(false);
   const [chatSidebarHidden, setChatSidebarHidden] = useState(false);

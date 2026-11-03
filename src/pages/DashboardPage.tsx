@@ -25,6 +25,7 @@ import {
 } from "@/hooks/useDailyTasks";
 import { useHrisSummary } from "@/hooks/useHrisSummary";
 import { useAuth } from "@/context/auth";
+import { CommandBar } from "@/components/ai/CommandBar";
 
 export default function DashboardPage() {
   const { profile } = useAuth();
@@ -44,6 +45,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
+      <CommandBar />
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}

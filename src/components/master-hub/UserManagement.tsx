@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { FLASH_CLASS, useRowFlash } from "@/hooks/useRowFlash";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -86,7 +87,7 @@ function useEmployees() {
   });
 }
 
-export function UserManagement() {
+export function UserManagement({ highlightId }: { highlightId?: string }) {
   const { t } = useTranslation();
   const { user: currentUser, profile: currentProfile } = useAuth();
   const myRank = currentProfile?.role?.rank ?? Number.MAX_SAFE_INTEGER;
@@ -114,6 +115,8 @@ export function UserManagement() {
         u.email?.toLowerCase().includes(q),
     );
   }, [users, search]);
+
+  const flash = useRowFlash(highlightId, filtered.some((u) => u.id === highlightId), "user");
 
   const handleRevokeConfirm = () => {
     if (!revokeTarget) return;
@@ -253,11 +256,15 @@ export function UserManagement() {
                 return (
                   <motion.tr
                     key={user.id}
+                    data-row-id={user.id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
                     {...detailRowProps(() => setViewing(user))}
-                    className="border-b border-border/40 group hover:bg-secondary/40 transition-colors cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50"
+                    className={cn(
+                      "border-b border-border/40 group hover:bg-secondary/40 transition-colors cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50",
+                      flash === user.id && FLASH_CLASS,
+                    )}
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">

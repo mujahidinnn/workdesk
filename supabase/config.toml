@@ -16,5 +16,8 @@ verify_jwt = true
 [functions.link-preview]
 verify_jwt = true
 
+[functions.ai-command]
+verify_jwt = true
+
 [functions.seed-admin]
 verify_jwt = false

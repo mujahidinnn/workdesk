@@ -251,7 +251,8 @@
       "projectStatus": "Status Proyek",
       "users": "Pengguna",
       "auditLog": "Log Audit",
-      "divisions": "Divisi"
+      "divisions": "Divisi",
+      "ai": "AI"
     },
     "projects": {
       "title": "Proyek",
@@ -457,6 +458,12 @@
       "from": "Dari tanggal",
       "to": "Sampai tanggal",
       "dateRange": "Rentang tanggal"
+    },
+    "ai": {
+      "title": "Asisten AI",
+      "subtitle": "Batas prompt harian per pengguna.",
+      "dailyLimit": "Batas prompt harian per pengguna",
+      "yourUsage": "Pemakaian Anda hari ini: {{used}} dari {{limit}} prompt"
     }
   },
   "deleteModal": {
@@ -1035,7 +1042,9 @@
       "themeLabel": "Ganti Tema",
       "themeDesc": "Beralih antara mode terang dan gelap",
       "logoutLabel": "Menu Akun & Keluar",
-      "logoutDesc": "Buka pengaturan profil atau keluar dari akun"
+      "logoutDesc": "Buka pengaturan profil atau keluar dari akun",
+      "aiLabel": "Kolom Perintah AI",
+      "aiDesc": "Bertanya atau memberi perintah dengan bahasa sehari-hari dari Dashboard"
     },
     "features": {
       "dashboard": {
@@ -1208,6 +1217,16 @@
           "Karyawan: slip gaji yang sudah difinalkan muncul di sini untuk diunduh."
         ],
         "note": "Periode yang sudah difinalkan tidak bisa diubah lagi; hanya status pembayaran yang masih bisa diperbarui."
+      },
+      "ai": {
+        "purpose": "Kolom perintah di bagian atas Dashboard. Ketik kebutuhanmu dengan bahasa sehari-hari, lalu AI menjawab pertanyaan atau menyiapkan aksi untukmu.",
+        "flow": "AI hanya membaca data yang bisa dilihat akunmu. Aksi yang mengubah data muncul sebagai kartu dulu, dan aksi berisiko selalu menunggu konfirmasimu. AI berjalan di Gemini free tier, jadi Google bisa memakai prompt untuk memperbaiki produknya. Isi hanya data fiktif demo.",
+        "steps": [
+          "Buka Dashboard lalu ketik di kolom perintah, misalnya \"buatkan task untuk budi hari ini\".",
+          "Baca kartu yang muncul lalu klik \"Jalankan\" untuk mengonfirmasi.",
+          "Pakai menu cepat kalau lebih suka klik daripada mengetik."
+        ],
+        "note": "Tiap akun punya kuota prompt harian (default 30, bisa diubah di Master Hub > AI). Percakapan disimpan 30 hari. Akun demo bersama berbagi satu riwayat dan satu kuota dengan semua yang memakainya."
       }
     },
     "tour": {
@@ -1217,6 +1236,14 @@
     },
     "tours": {
       "dashboard": [
+        {
+          "title": "Command bar AI",
+          "desc": "Tulis kebutuhanmu dengan kalimat biasa. Asisten menjawab pertanyaan dan menyiapkan aksi untuk kamu konfirmasi."
+        },
+        {
+          "title": "Pintasan",
+          "desc": "Awalan sekali klik. Ajukan cuti dan Isi daily report membuka form biasa tanpa memakai AI."
+        },
         {
           "title": "Total Tugas",
           "desc": "Jumlah semua tugas yang pernah dicatat tim."
@@ -1926,5 +1953,80 @@
       "restoreDesc": "\"{{title}}\" kembali ke board di tempat semula, beserta subtask-nya."
     },
     "superadmin": "Superadmin"
+  },
+  "ai": {
+    "alreadyRun": "Aksi ini sudah dijalankan atau dibatalkan di tempat lain",
+    "title": "Asisten AI",
+    "description": "Tanya asisten soal pekerjaanmu atau minta dia menyiapkan aksi.",
+    "placeholder": "Tanya atau suruh WorkDesk Asisten...",
+    "send": "Kirim",
+    "stop": "Hentikan",
+    "thinking": "Berpikir...",
+    "notConfigured": "AI belum disiapkan (belum ada API key di server)",
+    "retentionNote": "Obrolan disimpan 30 hari dan diproses Google Gemini versi gratis. Jangan masukkan data rahasia.",
+    "autoMode": "Auto",
+    "newConversation": "Percakapan baru",
+    "history": "Riwayat",
+    "noHistory": "Belum ada percakapan",
+    "historyChip": "Riwayat chat",
+    "newChat": "Chat baru",
+    "deleteConversation": "Hapus percakapan",
+    "deleteConversationDesc": "Percakapan \"{{title}}\" beserta seluruh pesannya akan dihapus permanen.",
+    "untitled": "Tanpa judul",
+    "empty": "Belum ada apa-apa. Coba salah satu pintasan di dashboard.",
+    "run": "Jalankan",
+    "cancel": "Batalkan",
+    "runAll": "Jalankan semua ({{count}})",
+    "runsIn": "Jalan dalam {{s}} dtk",
+    "waitingRun": "Menunggu Jalankan",
+    "running": "Sedang berjalan...",
+    "executed": "Selesai",
+    "cancelled": "Dibatalkan",
+    "failed": "Gagal: {{error}}",
+    "openResult": "Buka",
+    "statusUnknown": "Status tidak diketahui, cek halaman terkait sebelum menjalankannya lagi.",
+    "tier": {
+      "read": "Baca",
+      "write": "Tulis",
+      "critical": "Krusial"
+    },
+    "quick": {
+      "createTask": "Buat task",
+      "createTaskPrompt": "Buatkan task untuk ... hari ini:\n- ",
+      "weekSummary": "Rangkum pekerjaan saya minggu ini",
+      "weekSummaryPrompt": "Rangkum pekerjaan saya minggu ini",
+      "approvals": "Approval menunggu saya",
+      "approvalsPrompt": "Approval apa yang menunggu saya?",
+      "notCheckedIn": "Siapa yang belum absen hari ini",
+      "notCheckedInPrompt": "Siapa yang belum absen hari ini?",
+      "requestLeave": "Ajukan cuti",
+      "dailyReport": "Isi daily report",
+      "deadlines": "Deadline minggu ini",
+      "deadlinesPrompt": "Task saya apa saja yang deadline minggu ini?",
+      "leaveBalance": "Sisa cuti saya",
+      "leaveBalancePrompt": "Berapa sisa cuti tahunan saya?",
+      "myAttendance": "Absensi saya bulan ini",
+      "myAttendancePrompt": "Rekap absensi saya bulan ini: hadir, terlambat, izin.",
+      "onLeaveWeek": "Siapa cuti minggu ini",
+      "onLeaveWeekPrompt": "Siapa saja yang cuti minggu ini?",
+      "blockers": "Blocker aktif",
+      "blockersPrompt": "Apa saja blocker dari daily report yang belum selesai?",
+      "projectProgress": "Progres proyek",
+      "projectProgressPrompt": "Bagaimana progres setiap proyek saat ini?",
+      "requestOvertime": "Ajukan lembur",
+      "myTasks": "Task saya",
+      "more": "Lainnya"
+    },
+    "error": {
+      "invalid": "Permintaan tidak bisa dipahami.",
+      "too_long": "Pesan terlalu panjang.",
+      "quota": "Batas harian tercapai ({{limit}} prompt). Kuota direset pukul 00.00 WIB.",
+      "not_configured": "AI belum disiapkan (belum ada API key di server).",
+      "model_busy": "Model AI sedang sibuk. Prompt tetap tersimpan, coba lagi sebentar.",
+      "blocked": "AI menolak menjawab itu.",
+      "timeout": "Terlalu lama, coba lagi.",
+      "aborted": "Dihentikan.",
+      "unknown": "Terjadi kesalahan. Prompt tetap tersimpan, coba lagi."
+    }
   }
 }

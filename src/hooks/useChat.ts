@@ -71,7 +71,7 @@ function messageSelect(attachmentsOnly = false) {
   return `*, sender:profiles!t_chat_messages_sender_id_fkey(id, full_name, avatar_url), attachments:t_chat_attachments${attachmentsOnly ? "!inner" : ""}(id, file_path, file_name, file_type, file_size), reactions:t_chat_message_reactions(id, emoji, user_id), poll_votes:t_chat_poll_votes(user_id, option_idx, voter:profiles(id, full_name, avatar_url))`;
 }
 
-function messagesKey(channelId: number | null) {
+export function messagesKey(channelId: number | null) {
   return ["chat-messages", channelId] as const;
 }
 
@@ -218,44 +218,49 @@ async function uploadAttachments(
   }
 }
 
+export async function sendChatMessage({
+  senderId,
+  channelId,
+  body,
+  replyToId,
+  mentions,
+  mentionsEveryone,
+  files,
+  payload = null,
+}: {
+  senderId: string;
+  channelId: number;
+  body: string;
+  replyToId: number | null;
+  mentions: string[];
+  mentionsEveryone: boolean;
+  files: File[];
+  payload?: ChatPayload | null;
+}) {
+  const { data: inserted, error } = await supabase
+    .from("t_chat_messages")
+    .insert({
+      channel_id: channelId,
+      sender_id: senderId,
+      body,
+      reply_to_id: replyToId,
+      mentions,
+      mentions_everyone: mentionsEveryone,
+      payload,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  if (files.length > 0) await uploadAttachments(channelId, inserted.id, files);
+}
+
 export function useSendChatMessage() {
   const { user } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      channelId,
-      body,
-      replyToId,
-      mentions,
-      mentionsEveryone,
-      files,
-      payload = null,
-    }: {
-      channelId: number;
-      body: string;
-      replyToId: number | null;
-      mentions: string[];
-      mentionsEveryone: boolean;
-      files: File[];
-      payload?: ChatPayload | null;
-    }) => {
+    mutationFn: async (v: Omit<Parameters<typeof sendChatMessage>[0], "senderId">) => {
       if (!user) throw new Error("Not signed in");
-      const { data: inserted, error } = await supabase
-        .from("t_chat_messages")
-        .insert({
-          channel_id: channelId,
-          sender_id: user.id,
-          body,
-          reply_to_id: replyToId,
-          mentions,
-          mentions_everyone: mentionsEveryone,
-          payload,
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      if (files.length > 0)
-        await uploadAttachments(channelId, inserted.id, files);
+      await sendChatMessage({ senderId: user.id, ...v });
     },
     onSuccess: (_data, { channelId }) => {
       qc.invalidateQueries({ queryKey: messagesKey(channelId) });

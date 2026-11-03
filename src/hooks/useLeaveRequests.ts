@@ -5,7 +5,7 @@ import {
   keepPreviousData,
 } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { logAudit } from "@/lib/audit";
+import { logAudit, withVia, type WriteOpts } from "@/lib/audit";
 import { toast } from "sonner";
 import { eachDayOfInterval, format, getISODay, parseISO } from "date-fns";
 import { useHolidays } from "@/hooks/useHolidays";
@@ -18,6 +18,7 @@ import type {
 } from "@/lib/types";
 
 const QK = ["leave-requests"] as const;
+export const LEAVE_QK = QK;
 const DEFAULT_WORK_DAYS = [1, 2, 3, 4, 5];
 
 // Must match the DB approval trigger (skip non-work days and holidays) so the
@@ -142,24 +143,58 @@ export type LeaveRequestPayload = Pick<
   "user_id" | "type" | "start_date" | "end_date" | "reason"
 >;
 
+export async function createLeaveRequest(payload: LeaveRequestPayload, opts?: WriteOpts) {
+  const { data, error } = await supabase
+    .from("t_leave_requests")
+    .insert({ ...payload, status: "Pending" })
+    .select()
+    .single();
+  if (error) throw error;
+  logAudit(
+    "create",
+    "leave",
+    data.id,
+    withVia({ type: data.type, start_date: data.start_date }, opts),
+  );
+  return data;
+}
+
+export async function approveLeave(id: number, opts?: WriteOpts) {
+  const approvedBy = await sessionUserId();
+  const { error, count } = await supabase
+    .from("t_leave_requests")
+    .update({
+      status: "Approved",
+      approved_by: approvedBy,
+      rejection_note: null,
+    }, { count: "exact" })
+    .eq("id", id);
+  if (error) throw error;
+  if (count === 0) throw new Error("You cannot review this leave request");
+  logAudit("update", "leave", id, withVia({ status: "Approved" }, opts));
+}
+
+export async function rejectLeave(id: number, note: string, opts?: WriteOpts) {
+  const approvedBy = await sessionUserId();
+  const { error, count } = await supabase
+    .from("t_leave_requests")
+    .update({
+      status: "Rejected",
+      approved_by: approvedBy,
+      rejection_note: note || null,
+    }, { count: "exact" })
+    .eq("id", id);
+  if (error) throw error;
+  if (count === 0) throw new Error("You cannot review this leave request");
+  logAudit("update", "leave", id, withVia({ status: "Rejected", note }, opts));
+}
+
 export function useCreateLeaveRequest() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: LeaveRequestPayload) => {
-      const { data, error } = await supabase
-        .from("t_leave_requests")
-        .insert({ ...payload, status: "Pending" })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
+    mutationFn: (payload: LeaveRequestPayload) => createLeaveRequest(payload),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("create", "leave", data.id, {
-        type: data.type,
-        start_date: data.start_date,
-      });
       toast.success("Request submitted successfully");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -214,22 +249,10 @@ export function useDeleteLeaveRequest() {
 export function useApproveLeaveRequest() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }: { id: number }) => {
-      const approvedBy = await sessionUserId();
-      const { error } = await supabase
-        .from("t_leave_requests")
-        .update({
-          status: "Approved",
-          approved_by: approvedBy,
-          rejection_note: null,
-        })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: (_data, { id }) => {
+    mutationFn: ({ id }: { id: number }) => approveLeave(id),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
       qc.invalidateQueries({ queryKey: ["attendance"] });
-      logAudit("update", "leave", id, { status: "Approved" });
       toast.success("Request approved");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -239,21 +262,9 @@ export function useApproveLeaveRequest() {
 export function useRejectLeaveRequest() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, note }: { id: number; note: string }) => {
-      const approvedBy = await sessionUserId();
-      const { error } = await supabase
-        .from("t_leave_requests")
-        .update({
-          status: "Rejected",
-          approved_by: approvedBy,
-          rejection_note: note || null,
-        })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: (_data, { id, note }) => {
+    mutationFn: ({ id, note }: { id: number; note: string }) => rejectLeave(id, note),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("update", "leave", id, { status: "Rejected", note });
       toast.success("Request rejected");
     },
     onError: (e: Error) => toast.error(e.message),

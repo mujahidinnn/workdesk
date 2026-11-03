@@ -10,7 +10,7 @@ import type {
   DailyTaskWithRelations,
   DashboardSummary,
 } from "@/lib/types";
-import { logAudit } from "@/lib/audit";
+import { logAudit, withVia, type WriteOpts } from "@/lib/audit";
 import { toast } from "sonner";
 import { startOfWeek, endOfWeek, format } from "date-fns";
 
@@ -118,23 +118,30 @@ export function useTasksPerProject() {
   });
 }
 
+export const DAILY_TASKS_QK = ["daily-tasks"] as const;
+
+export async function createDailyTask(
+  payload: Omit<DailyTask, "id" | "created_at">,
+  opts?: WriteOpts,
+) {
+  const { data, error } = await supabase
+    .from("t_daily_tasks")
+    .insert(payload)
+    .select()
+    .single();
+  if (error) throw error;
+  logAudit("create", "daily_task", data.id, withVia({ date: data.date }, opts));
+  return data;
+}
+
 export function useCreateDailyTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: Omit<DailyTask, "id" | "created_at">) => {
-      const { data, error } = await supabase
-        .from("t_daily_tasks")
-        .insert(payload)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      qc.invalidateQueries({ queryKey: ["daily-tasks"] });
+    mutationFn: (payload: Omit<DailyTask, "id" | "created_at">) => createDailyTask(payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [...DAILY_TASKS_QK] });
       qc.invalidateQueries({ queryKey: ["dashboard-summary"] });
       qc.invalidateQueries({ queryKey: ["tasks-per-project"] });
-      logAudit("create", "daily_task", data.id, { date: data.date });
       toast.success("Task logged successfully");
     },
     onError: (e: Error) => toast.error(e.message),

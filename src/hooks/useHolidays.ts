@@ -1,11 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { logAudit } from "@/lib/audit";
+import { logAudit, withVia, type WriteOpts } from "@/lib/audit";
 import { toast } from "sonner";
 import type { Holiday } from "@/lib/types";
 import { estimateHolidays } from "@/lib/holidayEstimate";
 
 const QK = ["holidays"] as const;
+export const HOLIDAYS_QK = QK;
 
 export function useHolidays() {
   return useQuery<Holiday[]>({
@@ -21,24 +22,28 @@ export function useHolidays() {
   });
 }
 
+export async function createHoliday(payload: { date: string; name: string }, opts?: WriteOpts) {
+  const { data, error } = await supabase
+    .from("m_holidays")
+    .insert(payload)
+    .select()
+    .single();
+  if (error) throw error;
+  logAudit(
+    "create",
+    "holiday",
+    data.id,
+    withVia({ date: data.date, name: data.name }, opts),
+  );
+  return data;
+}
+
 export function useCreateHoliday() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { date: string; name: string }) => {
-      const { data, error } = await supabase
-        .from("m_holidays")
-        .insert(payload)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
+    mutationFn: (payload: { date: string; name: string }) => createHoliday(payload),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: [...QK] });
-      logAudit("create", "holiday", data.id, {
-        date: data.date,
-        name: data.name,
-      });
       toast.success("Holiday added");
     },
     onError: (e: Error) => toast.error(e.message),

@@ -50,6 +50,8 @@ what people already log.
 - **Notifications**: live alerts when a request is approved or rejected.
 - **Master data**: projects, employees, user accounts, per-feature access and
   an audit log of changes to attendance, leave, overtime and access.
+- **AI command bar**: type a request on the Dashboard and the assistant
+  answers questions or prepares actions for you to confirm.
 - **Export**: reports to Excel or PDF for meetings and archives.
 - **Bilingual and themed**: Indonesian and English, light and dark mode, and
   an in-app guide with a walkthrough for each page.
@@ -78,6 +80,38 @@ tests in `supabase/tests/` check these rules.
 React 19, TypeScript, Vite, Tailwind CSS, shadcn/ui, TanStack Query and
 i18next on the front end. Supabase (Postgres, Auth, Storage, Realtime, Edge
 Functions) on the back end. Deployed on Vercel.
+
+## AI command bar
+
+The bar at the top of the Dashboard turns plain requests ("buatkan task untuk
+budi hari ini") into answers or actions. The `ai-command` Edge Function calls
+Gemini, which can only read data through your own session, so it sees what your
+account is allowed to see. Writes show up as a card first. Risky ones always
+wait for a click, and payroll, roles and account changes are never done by the
+AI, it only points you to the right page.
+
+- **Privacy:** it uses the Gemini free tier, where Google may use prompts and
+  data to improve its products. WorkDesk is a portfolio, so only use fictional
+  data.
+- **Quota:** 30 prompts per account per day (Asia/Jakarta day). Master Hub
+  editors can change it in the AI tab.
+- **Shared demo account:** everyone using `admin@workdesk.com` shares one chat
+  history and one quota.
+- **Retention:** conversations are kept for 30 days.
+
+Setup, as Edge Function secrets (not `.env`):
+
+```bash
+supabase secrets set GEMINI_API_KEY=... GEMINI_MODEL=gemini-flash-lite-latest,gemini-3.1-flash-lite,gemini-3.5-flash
+supabase functions deploy ai-command
+```
+
+`GEMINI_MODEL` takes one model or a comma-separated list. Free-tier quotas are
+per model (some allow only about 20 requests a day) and models get busy now
+and then, so when one returns 429 or 503 the request moves on to the next.
+
+`docs/ai-eval.md` is a prompt checklist for checking the assistant after a
+deploy or a model change.
 
 ## Running locally
 

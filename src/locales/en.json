@@ -251,7 +251,8 @@
       "projectStatus": "Project Status",
       "users": "Users",
       "auditLog": "Audit Log",
-      "divisions": "Divisions"
+      "divisions": "Divisions",
+      "ai": "AI"
     },
     "projects": {
       "title": "Projects",
@@ -457,6 +458,12 @@
       "from": "From date",
       "to": "To date",
       "dateRange": "Date range"
+    },
+    "ai": {
+      "title": "AI assistant",
+      "subtitle": "Daily prompt limit per user.",
+      "dailyLimit": "Daily prompt limit per user",
+      "yourUsage": "Your usage today: {{used}} of {{limit}} prompts"
     }
   },
   "deleteModal": {
@@ -1035,7 +1042,9 @@
       "themeLabel": "Switch Theme",
       "themeDesc": "Toggle between light and dark mode",
       "logoutLabel": "Account Menu & Sign Out",
-      "logoutDesc": "Open profile settings or sign out of your account"
+      "logoutDesc": "Open profile settings or sign out of your account",
+      "aiLabel": "AI Command Bar",
+      "aiDesc": "Ask or give commands in plain words from the Dashboard"
     },
     "features": {
       "dashboard": {
@@ -1208,6 +1217,16 @@
           "Employees: your finalized payslips appear here for download."
         ],
         "note": "A finalized period can no longer be changed; only the payment status can still be updated."
+      },
+      "ai": {
+        "purpose": "A command bar at the top of the Dashboard. Type what you need in plain words and it answers questions or prepares actions for you.",
+        "flow": "It reads only what your own account can see. Anything that changes data shows a card first, and risky actions always wait for your confirmation. It runs on the Gemini free tier, so Google may use your prompts to improve its products. Only enter the fictional demo data.",
+        "steps": [
+          "Open the Dashboard and type in the command bar, for example \"create a task for Budi today\".",
+          "Read the card the assistant shows and click \"Run\" to confirm.",
+          "Use the quick menu if you prefer clicking over typing."
+        ],
+        "note": "Each account has a daily prompt quota (30 by default, adjustable in Master Hub > AI). Conversations are kept for 30 days. The shared demo account shares one history and one quota among everyone using it."
       }
     },
     "tour": {
@@ -1217,6 +1236,14 @@
     },
     "tours": {
       "dashboard": [
+        {
+          "title": "AI command bar",
+          "desc": "Type what you need in plain words. The assistant answers questions and prepares actions for you to confirm."
+        },
+        {
+          "title": "Shortcuts",
+          "desc": "One-click starters. Request leave and Daily report open the normal forms without using the AI."
+        },
         {
           "title": "Total Tasks",
           "desc": "The total number of tasks the team has ever logged."
@@ -1926,5 +1953,80 @@
       "restoreDesc": "\"{{title}}\" goes back on the board where it was, with its subtasks."
     },
     "superadmin": "Superadmin"
+  },
+  "ai": {
+    "alreadyRun": "This action was already run or cancelled elsewhere",
+    "title": "AI assistant",
+    "description": "Ask the assistant about your work or have it prepare actions.",
+    "placeholder": "Ask or tell WorkDesk Assistant what to do...",
+    "send": "Send",
+    "stop": "Stop",
+    "thinking": "Thinking...",
+    "notConfigured": "AI is not set up yet (no API key on the server)",
+    "retentionNote": "Chats are kept for 30 days and processed by Google Gemini's free tier. Don't enter confidential data.",
+    "autoMode": "Auto",
+    "newConversation": "New conversation",
+    "history": "History",
+    "noHistory": "No conversations yet",
+    "historyChip": "Chat history",
+    "newChat": "New chat",
+    "deleteConversation": "Delete conversation",
+    "deleteConversationDesc": "\"{{title}}\" and all its messages will be deleted for good.",
+    "untitled": "Untitled",
+    "empty": "Nothing here yet. Try one of the shortcuts on the dashboard.",
+    "run": "Run",
+    "cancel": "Cancel",
+    "runAll": "Run all ({{count}})",
+    "runsIn": "Runs in {{s}}s",
+    "waitingRun": "Waiting for Run",
+    "running": "Running...",
+    "executed": "Done",
+    "cancelled": "Cancelled",
+    "failed": "Failed: {{error}}",
+    "openResult": "Open",
+    "statusUnknown": "Status unknown, check the related page before running it again.",
+    "tier": {
+      "read": "Read",
+      "write": "Write",
+      "critical": "Critical"
+    },
+    "quick": {
+      "createTask": "Create task",
+      "createTaskPrompt": "Create a task for ... today:\n- ",
+      "weekSummary": "Summarize my work this week",
+      "weekSummaryPrompt": "Summarize my work this week",
+      "approvals": "Approvals waiting for me",
+      "approvalsPrompt": "Which approvals are waiting for me?",
+      "notCheckedIn": "Who has not checked in today",
+      "notCheckedInPrompt": "Who has not checked in today?",
+      "requestLeave": "Request leave",
+      "dailyReport": "Daily report",
+      "deadlines": "Due this week",
+      "deadlinesPrompt": "Which of my tasks are due this week?",
+      "leaveBalance": "My leave balance",
+      "leaveBalancePrompt": "How much annual leave do I have left?",
+      "myAttendance": "My attendance this month",
+      "myAttendancePrompt": "Summarise my attendance this month: present, late, permission.",
+      "onLeaveWeek": "Who is on leave this week",
+      "onLeaveWeekPrompt": "Who is on leave this week?",
+      "blockers": "Active blockers",
+      "blockersPrompt": "Which blockers from daily reports are still unresolved?",
+      "projectProgress": "Project progress",
+      "projectProgressPrompt": "How far along is each project right now?",
+      "requestOvertime": "Request overtime",
+      "myTasks": "My tasks",
+      "more": "More"
+    },
+    "error": {
+      "invalid": "That request could not be understood.",
+      "too_long": "That message is too long.",
+      "quota": "Daily limit reached ({{limit}} prompts). It resets at 00:00 WIB.",
+      "not_configured": "AI is not set up yet (no API key on the server).",
+      "model_busy": "The AI model is busy. Your prompt is kept, try again in a moment.",
+      "blocked": "The AI declined to answer that.",
+      "timeout": "Took too long, try again.",
+      "aborted": "Stopped.",
+      "unknown": "Something went wrong. Your prompt is kept, try again."
+    }
   }
 }

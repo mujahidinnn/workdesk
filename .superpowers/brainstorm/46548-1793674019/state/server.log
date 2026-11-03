@@ -1,3 +1,4 @@
 {"type":"server-started","port":64655,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:64655/?key=d320ce47a5bd4bf81cdf533b779840434ec739c1401f49819099d1e786a01c7c","screen_dir":"/home/moje/Desktop/project/porto/workdesk/.superpowers/brainstorm/46548-1793674019/content","state_dir":"/home/moje/Desktop/project/porto/workdesk/.superpowers/brainstorm/46548-1793674019/state","idle_timeout_ms":14400000}
 {"type":"screen-added","file":"/home/moje/Desktop/project/porto/workdesk/.superpowers/brainstorm/46548-1793674019/content/command-bar-layout.html"}
 {"type":"screen-added","file":"/home/moje/Desktop/project/porto/workdesk/.superpowers/brainstorm/46548-1793674019/content/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { format, parseISO } from "date-fns";
 import { FileDown, Lock, RefreshCw, Trash2, Wallet } from "lucide-react";
@@ -41,6 +42,9 @@ export default function PayrollPage() {
   const { canUpdate } = useAuth();
   const canManage = canUpdate("payroll");
 
+  const [params, setParams] = useSearchParams();
+  const monthParam = params.get("month");
+  const highlightUserId = params.get("user") ?? undefined;
   const [month, setMonth] = useState(() => format(new Date(), "yyyy-MM-01"));
   const [selectedRunId, setSelectedRunId] = useState<number | null>(null);
   const [confirmFinalize, setConfirmFinalize] = useState(false);
@@ -51,6 +55,16 @@ export default function PayrollPage() {
   const { data: runs = [], isLoading } = usePayrollRuns();
   const { data: users = [] } = useUsers();
   const companyName = useWorkSchedule().data?.company_name ?? "WorkDesk";
+
+  // Deep link: pick the run whose period starts with ?month=YYYY-MM.
+  useEffect(() => {
+    if (!monthParam) return;
+    const run = runs.find((r) => r.period.startsWith(monthParam));
+    if (!run) return;
+    setSelectedRunId(run.id);
+    // Used once: a later refetch or refresh must not override a run the user picked.
+    setParams((p) => { p.delete("month"); return p; }, { replace: true });
+  }, [monthParam, runs, setParams]);
 
   const activeRun = runs.find((r) => r.id === selectedRunId) ?? runs[0] ?? null;
   const { data: lines = [] } = usePayrollLines(
@@ -292,6 +306,7 @@ export default function PayrollPage() {
               onSaveDeductions={(payload) => updateDeductions.mutate(payload)}
               onTogglePaid={(payload) => setPaymentStatus.mutate(payload)}
               isSaving={updateDeductions.isPending}
+              highlightUserId={highlightUserId}
             />
           </>
         )

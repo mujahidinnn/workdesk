@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -48,9 +49,19 @@ export default function LeavePage() {
     "myRequests",
   );
   const [formOpen, setFormOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState<LeaveRequestWithProfile | null>(null);
   const [deleteTarget, setDeleteTarget] =
     useState<LeaveRequestWithProfile | null>(null);
+
+  useEffect(() => {
+    if ((location.state as { openAdd?: boolean } | null)?.openAdd) {
+      setFormOpen(true);
+      navigate(location.pathname + location.search, { replace: true, state: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [myFilters, setMyFilters] = useState<LeaveFilters>({});
   const [approvalFilters, setApprovalFilters] = useState<LeaveFilters>({});

@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { FLASH_CLASS, useRowFlash } from "@/hooks/useRowFlash";
 import { motion } from "framer-motion";
 import {
   Pencil,
@@ -58,6 +59,7 @@ interface EmployeesTableProps {
   presenceMap?: Record<number, string>;
   filters: EmployeeFilters;
   onFiltersChange: (f: EmployeeFilters) => void;
+  highlightId?: string;
 }
 
 const EMPLOYMENT_TYPES: EmploymentType[] = [
@@ -76,6 +78,7 @@ export function EmployeesTable({
   presenceMap = {},
   filters,
   onFiltersChange,
+  highlightId,
 }: EmployeesTableProps) {
   const company = useWorkSchedule().data?.company_name ?? "WorkDesk";
   const { t } = useTranslation();
@@ -101,6 +104,18 @@ export function EmployeesTable({
   >(filtered, (e, key) => e[key] ?? "");
   const { paged, page, setPage, pageCount, pageSize, total } =
     usePagination(sorted);
+
+  // Jump to the page holding the linked employee, then flash its row.
+  useEffect(() => {
+    const idx = sorted.findIndex((e) => String(e.id) === highlightId);
+    if (idx >= 0) setPage(Math.floor(idx / pageSize) + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [highlightId, sorted.length]);
+  const flash = useRowFlash(
+    highlightId,
+    paged.some((e) => String(e.id) === highlightId),
+    "employee",
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -247,11 +262,15 @@ export function EmployeesTable({
               paged.map((emp, i) => (
                 <motion.tr
                   key={emp.id}
+                  data-row-id={String(emp.id)}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   {...detailRowProps(() => setViewing(emp))}
-                  className="border-b border-border/40 group hover:bg-secondary/40 transition-colors cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50"
+                  className={cn(
+                    "border-b border-border/40 group hover:bg-secondary/40 transition-colors cursor-pointer outline-none focus-visible:bg-secondary/60 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/50",
+                    flash === String(emp.id) && FLASH_CLASS,
+                  )}
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">

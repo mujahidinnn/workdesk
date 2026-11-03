@@ -11,6 +11,7 @@ import {
   Download,
   Upload,
   Plus,
+  Sparkles,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ProjectsTable } from "@/components/master-hub/ProjectsTable";
@@ -19,6 +20,7 @@ import { EmployeesTable } from "@/components/master-hub/EmployeesTable";
 import { MasterListTable } from "@/components/master-hub/MasterListTable";
 import { MasterListFormDialog } from "@/components/master-hub/MasterListFormDialog";
 import { DivisionsSection } from "@/components/master-hub/DivisionsSection";
+import { AiSettingsSection } from "@/components/master-hub/AiSettingsSection";
 import { UserManagement } from "@/components/master-hub/UserManagement";
 import { AuditLogTable } from "@/components/master-hub/AuditLogTable";
 import { FilterSelect } from "@/components/master-hub/FilterSelect";
@@ -93,7 +95,8 @@ type TabId =
   | "proj-status"
   | "divisions"
   | "users"
-  | "audit-log";
+  | "audit-log"
+  | "ai";
 
 const statusDot = (label: string): string => {
   const map: Record<string, string> = {
@@ -158,6 +161,12 @@ export default function MasterHubPage() {
       labelKey: "master.tabs.auditLog",
       icon: History,
       adminOnly: true,
+    },
+    {
+      id: "ai" as TabId,
+      labelKey: "master.tabs.ai",
+      icon: Sparkles,
+      adminOnly: false,
     },
   ];
 
@@ -602,6 +611,7 @@ export default function MasterHubPage() {
               presenceMap={presenceMap}
               filters={employeeFilters}
               onFiltersChange={setEmployeeFilters}
+              highlightId={searchParams.get("employee") ?? undefined}
             />
           )}
 
@@ -662,7 +672,10 @@ export default function MasterHubPage() {
             />
           )}
 
-          {activeTab === "users" && <UserManagement />}
+          {activeTab === "users" && (
+            <UserManagement highlightId={searchParams.get("user") ?? undefined} />
+          )}
+          {activeTab === "ai" && <AiSettingsSection />}
 
           {activeTab === "audit-log" && <AuditLogTable />}
         </motion.div>

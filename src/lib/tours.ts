@@ -7,6 +7,8 @@ export interface TourStepConfig {
 
 export const TOUR_STEPS: Record<string, TourStepConfig[]> = {
   dashboard: [
+    { selector: "dashboard-ai" },
+    { selector: "dashboard-ai-quick" },
     { selector: "dashboard-stat-total", side: "right" },
     { selector: "dashboard-stat-progress", side: "right" },
     { selector: "dashboard-stat-completed", side: "right" },

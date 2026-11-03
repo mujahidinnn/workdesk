@@ -39,6 +39,22 @@ export type Database = {
   };
   public: {
     Tables: {
+      m_ai_settings: {
+        Row: {
+          daily_limit: number;
+          id: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          daily_limit?: number;
+          id?: boolean;
+        };
+        Update: {
+          daily_limit?: number;
+          id?: boolean;
+        };
+        Relationships: [];
+      };
       m_divisions: {
         Row: {
           color: string | null;
@@ -349,6 +365,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          ai_mode: string;
           avatar_url: string | null;
           created_at: string;
           employee_id: number | null;
@@ -361,6 +378,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          ai_mode?: string;
           avatar_url?: string | null;
           created_at?: string;
           employee_id?: number | null;
@@ -372,6 +390,7 @@ export type Database = {
           role_id?: number | null;
         };
         Update: {
+          ai_mode?: string;
           avatar_url?: string | null;
           created_at?: string;
           employee_id?: number | null;
@@ -426,6 +445,99 @@ export type Database = {
             columns: ["type_id"];
             isOneToOne: false;
             referencedRelation: "m_project_types";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      t_ai_conversations: {
+        Row: {
+          created_at: string;
+          id: number;
+          title: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: number;
+          title?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          title?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "t_ai_conversations_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      t_ai_messages: {
+        Row: {
+          content: NonNullable<Json>;
+          conversation_id: number;
+          created_at: string;
+          id: number;
+          role: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          content: NonNullable<Json>;
+          conversation_id: number;
+          created_at?: string;
+          id?: number;
+          role: string;
+        };
+        Update: {
+          content?: NonNullable<Json>;
+          conversation_id?: number;
+          created_at?: string;
+          id?: number;
+          role?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "t_ai_messages_conversation_id_fkey";
+            columns: ["conversation_id"];
+            isOneToOne: false;
+            referencedRelation: "t_ai_conversations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      t_ai_usage: {
+        Row: {
+          count: number;
+          day: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          count?: number;
+          day: string;
+          user_id: string;
+        };
+        Update: {
+          count?: number;
+          day?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "t_ai_usage_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -2084,6 +2196,18 @@ export type Database = {
     };
     Functions: {
       actor_name: { Args: Record<PropertyKey, never>; Returns: string };
+      ai_consume_quota: { Args: Record<PropertyKey, never>; Returns: number };
+      ai_day: { Args: { ts?: string }; Returns: string };
+      ai_quota_today: { Args: Record<PropertyKey, never>; Returns: Json };
+      ai_set_proposal_status: {
+        Args: {
+          p_message_id: number;
+          p_proposal_id: string;
+          p_result?: Json;
+          p_status: string;
+        };
+        Returns: boolean;
+      };
       attendance_check_out: {
         Args: Record<PropertyKey, never>;
         Returns: {
