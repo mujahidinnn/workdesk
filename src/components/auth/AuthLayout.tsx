@@ -85,6 +85,9 @@ export function AuthLayout({ children }: { children: ReactNode }) {
 
         <section className="relative flex items-start md:items-center justify-center px-6 pt-8 pb-14 sm:px-12 md:py-10">
           <div className="w-full max-w-sm">{children}</div>
+          <p className="absolute bottom-4 inset-x-0 text-center text-[11px] text-muted-foreground">
+            © {new Date().getFullYear()} Mujahidin. All rights reserved.
+          </p>
         </section>
       </motion.div>
     </div>

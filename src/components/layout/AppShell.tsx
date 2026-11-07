@@ -330,9 +330,14 @@ function Shell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={isChat ? "h-full" : "min-h-full"}
+              className={isChat ? "h-full" : "min-h-full flex flex-col"}
             >
               {outlet}
+              {!isChat && (
+                <p className="mt-auto pt-6 text-center text-[11px] text-muted-foreground">
+                  © {new Date().getFullYear()} Mujahidin. All rights reserved.
+                </p>
+              )}
             </motion.div>
           </AnimatePresence>
         </main>

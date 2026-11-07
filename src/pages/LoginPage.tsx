@@ -14,6 +14,20 @@ import { supabase } from "@/integrations/supabase/client";
 // always sign in.
 const DEFAULT_ADMIN = { email: "admin@workdesk.com", password: "Admin123!" };
 
+// Seeded by superadmin_seed_demo_data(); all share the password Demo123!.
+const demo = (handle: string, role: string) => ({
+  email: `${handle}@workdesk.demo`,
+  password: "Demo123!",
+  role,
+});
+const DEMO_ACCOUNTS = [
+  { ...DEFAULT_ADMIN, role: "Admin" },
+  demo("dewi", "Manager"),
+  demo("laras", "Finance"),
+  demo("maya", "HR"),
+  demo("fajar", "Employee"),
+];
+
 function GoogleIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -286,9 +300,35 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="absolute bottom-4 inset-x-0 text-center text-[11px] text-muted-foreground">
-        {DEFAULT_ADMIN.email} · {DEFAULT_ADMIN.password}
-      </p>
+      <div className="mt-6">
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("login.demoAccounts")}
+        </p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {DEMO_ACCOUNTS.map((a) => (
+            <button
+              key={a.email}
+              type="button"
+              onClick={() => {
+                setError(null);
+                setEmail(a.email);
+                setPassword(a.password);
+              }}
+              className="rounded-lg border px-3 py-1 text-left transition-colors hover:bg-muted"
+            >
+              <span className="block text-xs font-semibold leading-tight text-foreground">
+                {a.role}
+              </span>
+              <span className="block truncate text-[11px] leading-tight text-muted-foreground">
+                {a.email}
+              </span>
+              <span className="block text-[11px] leading-tight text-muted-foreground">
+                {a.password}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
     </AuthLayout>
   );
 }

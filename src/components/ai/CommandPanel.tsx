@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { History, Loader2, MessageSquare, Plus, Send, Square, Trash2 } from "lucide-react";
+import { History, Loader2, MessageSquare, Plus, Send, Sparkles, Square, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -139,6 +139,9 @@ function PanelSheet() {
         onOpenAutoFocus={(e) => { e.preventDefault(); input.current?.focus(); }}
       >
         <div className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-3 pr-10">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Sparkles className="h-4 w-4" />
+          </span>
           <SheetTitle className="text-sm">{t("ai.title")}</SheetTitle>
           <SheetDescription className="sr-only">{t("ai.description")}</SheetDescription>
           <label className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground">
